@@ -8,11 +8,11 @@
 		<version>2.7.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>auth_config</artifactId>
+	<groupId>com.api</groupId>
+	<artifactId>bkland-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>auth_config</name>
-	<description>Demo project for Spring Boot</description>
+	<name>bkland-api</name>
+	<description>DATN</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

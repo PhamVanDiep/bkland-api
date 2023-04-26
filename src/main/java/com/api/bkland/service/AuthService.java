@@ -112,13 +112,16 @@ public class AuthService {
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
-
                         break;
-                    case RoleValue.ROLE_MODERATOR:
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                    case RoleValue.ROLE_ENTERPRISE:
+                        Role modRole = roleRepository.findByName(ERole.ROLE_ENTERPRISE)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(modRole);
-
+                        break;
+                    case RoleValue.ROLE_AGENCY:
+                        Role agencyRole = roleRepository.findByName(ERole.ROLE_AGENCY)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(agencyRole);
                         break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)

@@ -85,7 +85,7 @@ public class WebSecurityConfig {
                         "/webjars/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
 //                .antMatchers("/api/test/**").permitAll()
-                .antMatchers("/api/v1/photos/**").permitAll()
+                .antMatchers("/api/no-auth/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

@@ -6,13 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="auth_config" />
+        <module name="bkland-api" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auth_config" target="11" />
+      <module name="bkland" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="auth_config" options="-parameters" />
+      <module name="bkland" options="-parameters" />
+      <module name="bkland-api" options="-parameters" />
     </option>
   </component>
 </project>
