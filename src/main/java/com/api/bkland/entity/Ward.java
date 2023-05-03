@@ -24,17 +24,23 @@ public class Ward {
     @Column(name = "code_name")
     private String codeName;
 
-    @JoinColumn(name = "administrative_unit_id")
-    @ManyToOne
-    @JoinTable(name = "administrative_units",
-            joinColumns = @JoinColumn(name = "id"))
-    private AdministrativeUnit administrativeUnit;
+//    @JoinColumn(name = "administrative_unit_id")
+//    @ManyToOne
+//    @JoinTable(name = "administrative_units",
+//            joinColumns = @JoinColumn(name = "id"))
+//    private AdministrativeUnit administrativeUnit;
 
-    @JoinColumn(name = "district_code")
-    @ManyToOne
-    @JoinTable(name = "districts",
-            joinColumns = @JoinColumn(name = "code"))
-    private District district;
+//    @JoinColumn(name = "district_code")
+//    @ManyToOne
+//    @JoinTable(name = "districts",
+//            joinColumns = @JoinColumn(name = "code"))
+//    private District district;
+
+    @Column(name = "administrative_unit_id")
+    private Integer administrativeUnitId;
+
+    @Column(name = "district_code")
+    private String districtCode;
 
     public String getCode() {
         return code;
@@ -84,19 +90,35 @@ public class Ward {
         this.codeName = codeName;
     }
 
-    public AdministrativeUnit getAdministrativeUnit() {
-        return administrativeUnit;
+//    public AdministrativeUnit getAdministrativeUnit() {
+//        return administrativeUnit;
+//    }
+//
+//    public void setAdministrativeUnit(AdministrativeUnit administrativeUnit) {
+//        this.administrativeUnit = administrativeUnit;
+//    }
+
+//    public District getDistrict() {
+//        return district;
+//    }
+//
+//    public void setDistrict(District district) {
+//        this.district = district;
+//    }
+
+    public Integer getAdministrativeUnitId() {
+        return administrativeUnitId;
     }
 
-    public void setAdministrativeUnit(AdministrativeUnit administrativeUnit) {
-        this.administrativeUnit = administrativeUnit;
+    public void setAdministrativeUnitId(Integer administrativeUnitId) {
+        this.administrativeUnitId = administrativeUnitId;
     }
 
-    public District getDistrict() {
-        return district;
+    public String getDistrictCode() {
+        return districtCode;
     }
 
-    public void setDistrict(District district) {
-        this.district = district;
+    public void setDistrictCode(String districtCode) {
+        this.districtCode = districtCode;
     }
 }

@@ -24,17 +24,23 @@ public class District {
     @Column(name = "code_name")
     private String codeName;
 
-    @JoinColumn(name = "administrative_unit_id")
-    @ManyToOne
-    @JoinTable(name = "administrative_units",
-            joinColumns = @JoinColumn(name = "id"))
-    private AdministrativeUnit administrativeUnit;
+//    @JoinColumn(name = "administrative_unit_id")
+//    @ManyToOne
+//    @JoinTable(name = "administrative_units",
+//            joinColumns = @JoinColumn(name = "id"))
+//    private AdministrativeUnit administrativeUnit;
 
-    @JoinColumn(name = "province_code")
-    @ManyToOne
-    @JoinTable(name = "provinces",
-            joinColumns = @JoinColumn(name = "code"))
-    private Province province;
+//    @JoinColumn(name = "province_code")
+//    @ManyToOne
+//    @JoinTable(name = "provinces",
+//            joinColumns = @JoinColumn(name = "code"))
+//    private Province province;
+
+    @Column(name = "administrative_unit_id")
+    private String administrativeUnitId;
+
+    @Column(name = "province_code")
+    private String provinceCode;
 
     public String getCode() {
         return code;
@@ -84,19 +90,35 @@ public class District {
         this.codeName = codeName;
     }
 
-    public AdministrativeUnit getAdministrativeUnit() {
-        return administrativeUnit;
+//    public AdministrativeUnit getAdministrativeUnit() {
+//        return administrativeUnit;
+//    }
+//
+//    public void setAdministrativeUnit(AdministrativeUnit administrativeUnit) {
+//        this.administrativeUnit = administrativeUnit;
+//    }
+
+    public String getAdministrativeUnitId() {
+        return administrativeUnitId;
     }
 
-    public void setAdministrativeUnit(AdministrativeUnit administrativeUnit) {
-        this.administrativeUnit = administrativeUnit;
+    public void setAdministrativeUnitId(String administrativeUnitId) {
+        this.administrativeUnitId = administrativeUnitId;
     }
 
-    public Province getProvince() {
-        return province;
+    public String getProvinceCode() {
+        return provinceCode;
     }
 
-    public void setProvince(Province province) {
-        this.province = province;
+    public void setProvinceCode(String provinceCode) {
+        this.provinceCode = provinceCode;
     }
+
+    //    public Province getProvince() {
+//        return province;
+//    }
+//
+//    public void setProvince(Province province) {
+//        this.province = province;
+//    }
 }

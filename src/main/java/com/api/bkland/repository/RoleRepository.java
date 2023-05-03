@@ -1,6 +1,6 @@
 package com.api.bkland.repository;
 
-import com.api.bkland.entity.ERole;
+import com.api.bkland.constant.enumeric.ERole;
 import com.api.bkland.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

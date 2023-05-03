@@ -8,8 +8,10 @@ public class DistrictDTO {
     private String fullName;
     private String fullNameEn;
     private String codeName;
-    private AdministrativeUnitDTO administrativeUnitDTO;
-    private ProvinceDTO provinceDTO;
+//    private AdministrativeUnitDTO administrativeUnitDTO;
+//    private ProvinceDTO provinceDTO;
+    private Integer administrativeUnitId;
+    private String provinceCode;
 
     public String getCode() {
         return code;
@@ -59,19 +61,35 @@ public class DistrictDTO {
         this.codeName = codeName;
     }
 
-    public AdministrativeUnitDTO getAdministrativeUnitDTO() {
-        return administrativeUnitDTO;
+//    public AdministrativeUnitDTO getAdministrativeUnitDTO() {
+//        return administrativeUnitDTO;
+//    }
+//
+//    public void setAdministrativeUnitDTO(AdministrativeUnitDTO administrativeUnitDTO) {
+//        this.administrativeUnitDTO = administrativeUnitDTO;
+//    }
+//
+//    public ProvinceDTO getProvinceDTO() {
+//        return provinceDTO;
+//    }
+//
+//    public void setProvinceDTO(ProvinceDTO provinceDTO) {
+//        this.provinceDTO = provinceDTO;
+//    }
+
+    public Integer getAdministrativeUnitId() {
+        return administrativeUnitId;
     }
 
-    public void setAdministrativeUnitDTO(AdministrativeUnitDTO administrativeUnitDTO) {
-        this.administrativeUnitDTO = administrativeUnitDTO;
+    public void setAdministrativeUnitId(Integer administrativeUnitId) {
+        this.administrativeUnitId = administrativeUnitId;
     }
 
-    public ProvinceDTO getProvinceDTO() {
-        return provinceDTO;
+    public String getProvinceCode() {
+        return provinceCode;
     }
 
-    public void setProvinceDTO(ProvinceDTO provinceDTO) {
-        this.provinceDTO = provinceDTO;
+    public void setProvinceCode(String provinceCode) {
+        this.provinceCode = provinceCode;
     }
 }

@@ -7,8 +7,10 @@ public class WardDTO {
     private String fullName;
     private String fullNameEn;
     private String codeName;
-    private AdministrativeUnitDTO administrativeUnitDTO;
-    private DistrictDTO districtDTO;
+//    private AdministrativeUnitDTO administrativeUnitDTO;
+//    private DistrictDTO districtDTO;
+    private Integer administrativeUnitId;
+    private String districtCode;
 
     public String getCode() {
         return code;
@@ -58,19 +60,35 @@ public class WardDTO {
         this.codeName = codeName;
     }
 
-    public AdministrativeUnitDTO getAdministrativeUnitDTO() {
-        return administrativeUnitDTO;
+//    public AdministrativeUnitDTO getAdministrativeUnitDTO() {
+//        return administrativeUnitDTO;
+//    }
+//
+//    public void setAdministrativeUnitDTO(AdministrativeUnitDTO administrativeUnitDTO) {
+//        this.administrativeUnitDTO = administrativeUnitDTO;
+//    }
+//
+//    public DistrictDTO getDistrictDTO() {
+//        return districtDTO;
+//    }
+//
+//    public void setDistrictDTO(DistrictDTO districtDTO) {
+//        this.districtDTO = districtDTO;
+//    }
+
+    public Integer getAdministrativeUnitId() {
+        return administrativeUnitId;
     }
 
-    public void setAdministrativeUnitDTO(AdministrativeUnitDTO administrativeUnitDTO) {
-        this.administrativeUnitDTO = administrativeUnitDTO;
+    public void setAdministrativeUnitId(Integer administrativeUnitId) {
+        this.administrativeUnitId = administrativeUnitId;
     }
 
-    public DistrictDTO getDistrictDTO() {
-        return districtDTO;
+    public String getDistrictCode() {
+        return districtCode;
     }
 
-    public void setDistrictDTO(DistrictDTO districtDTO) {
-        this.districtDTO = districtDTO;
+    public void setDistrictCode(String districtCode) {
+        this.districtCode = districtCode;
     }
 }

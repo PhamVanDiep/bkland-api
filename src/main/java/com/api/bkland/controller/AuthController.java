@@ -2,6 +2,7 @@ package com.api.bkland.controller;
 
 import javax.validation.Valid;
 
+import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.request.LoginRequest;
 import com.api.bkland.payload.request.SignupRequest;
 import com.api.bkland.payload.request.TokenRefreshRequest;
@@ -35,7 +36,7 @@ public class AuthController {
 
     @ApiOperation("register")
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<BaseResponse> registerUser(@Valid @RequestBody UserDTO signUpRequest) {
         return ResponseEntity.ok(authService.registerUser(signUpRequest));
     }
 

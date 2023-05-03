@@ -1,5 +1,7 @@
 package com.api.bkland.entity;
 
+import com.api.bkland.constant.enumeric.ERole;
+
 import javax.persistence.*;
 @Entity
 @Table(name = "role")
