@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -154,7 +155,7 @@ public class AuthService {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+                    String token = jwtUtils.generateTokenFromUsername(user.getUsername(), user.getId());
                     return new BaseResponse(
                             new TokenRefreshResponse(token, requestRefreshToken),
                             "", HttpStatus.OK
@@ -163,6 +164,21 @@ public class AuthService {
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                         "Refresh token is not in database!"));
+    }
+
+    public BaseResponse emailExist(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            return new BaseResponse(null, "", HttpStatus.NO_CONTENT);
+        } else {
+            if (user.get().getUsername().equals(user.get().getEmail() + "_user_bkland")) {
+                return new BaseResponse(null, "", HttpStatus.OK);
+            } else {
+                return new BaseResponse(null,
+                        "Email đã được sử dụng để đăng ký tài khoản trước đó.",
+                        HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
     private User convertToEntity(UserDTO userDTO) {

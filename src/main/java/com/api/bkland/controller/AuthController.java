@@ -12,11 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -44,5 +40,11 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<BaseResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest tokenRefreshRequest) {
         return ResponseEntity.ok(authService.refreshToken(tokenRefreshRequest));
+    }
+
+    @ApiOperation("check email exist")
+    @GetMapping("/email-exist/{email}")
+    public ResponseEntity<BaseResponse> emailExist(@PathVariable("email") String email) {
+        return ResponseEntity.ok(authService.emailExist(email));
     }
 }

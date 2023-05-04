@@ -28,6 +28,7 @@ public class UserDTO {
     private Long accountBalance;
     private boolean enable;
     private Set<RoleDTO> roles;
+    private String avatarUrl;
     private String createBy;
     private Instant createAt;
     private String updateBy;
@@ -207,5 +208,13 @@ public class UserDTO {
 
     public void setUpdateAt(Instant updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

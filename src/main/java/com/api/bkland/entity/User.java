@@ -76,6 +76,9 @@ public class User {
     @Column(name = "enable")
     private boolean enable;
 
+    @Column(name = "avatarUrl")
+    private String avatarUrl;
+
     @Column(name = "create_by")
     private String createBy;
 
@@ -229,6 +232,14 @@ public class User {
 
     public void setAccountBalance(Long accountBalance) {
         this.accountBalance = accountBalance;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public boolean isEnable() {
