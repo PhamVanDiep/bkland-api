@@ -24,17 +24,23 @@ public class Province {
     @Column(name = "code_name")
     private String codeName;
 
-    @JoinColumn(name = "administrative_unit_id")
-    @ManyToOne
-    @JoinTable(name = "administrative_units",
-            joinColumns = @JoinColumn(name = "id"))
-    private AdministrativeUnit administrativeUnit;
+//    @JoinColumn(name = "administrative_unit_id")
+//    @ManyToOne
+//    @JoinTable(name = "administrative_units",
+//            joinColumns = @JoinColumn(name = "id"))
+//    private AdministrativeUnit administrativeUnit;
+//
+//    @JoinColumn(name = "administrative_region_id")
+//    @ManyToOne
+//    @JoinTable(name = "administrative_regions",
+//            joinColumns = @JoinColumn(name = "id"))
+//    private AdministrativeRegion administrativeRegion;
 
-    @JoinColumn(name = "administrative_region_id")
-    @ManyToOne
-    @JoinTable(name = "administrative_regions",
-            joinColumns = @JoinColumn(name = "id"))
-    private AdministrativeRegion administrativeRegion;
+    @Column(name = "administrative_unit_id")
+    private String administrativeUnitId;
+
+    @Column(name = "administrative_region_id")
+    private String administrativeRegionId;
 
     public String getCode() {
         return code;
@@ -84,19 +90,19 @@ public class Province {
         this.codeName = codeName;
     }
 
-    public AdministrativeUnit getAdministrativeUnit() {
-        return administrativeUnit;
+    public String getAdministrativeUnitId() {
+        return administrativeUnitId;
     }
 
-    public void setAdministrativeUnit(AdministrativeUnit administrativeUnit) {
-        this.administrativeUnit = administrativeUnit;
+    public void setAdministrativeUnitId(String administrativeUnitId) {
+        this.administrativeUnitId = administrativeUnitId;
     }
 
-    public AdministrativeRegion getAdministrativeRegion() {
-        return administrativeRegion;
+    public String getAdministrativeRegionId() {
+        return administrativeRegionId;
     }
 
-    public void setAdministrativeRegion(AdministrativeRegion administrativeRegion) {
-        this.administrativeRegion = administrativeRegion;
+    public void setAdministrativeRegionId(String administrativeRegionId) {
+        this.administrativeRegionId = administrativeRegionId;
     }
 }

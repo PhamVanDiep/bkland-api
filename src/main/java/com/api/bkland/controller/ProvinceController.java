@@ -26,7 +26,7 @@ public class ProvinceController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<BaseResponse> getAll() {
         try {
             List<Province> provinces = service.getAll();

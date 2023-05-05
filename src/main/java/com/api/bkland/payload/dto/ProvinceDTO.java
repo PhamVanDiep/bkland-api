@@ -7,8 +7,8 @@ public class ProvinceDTO {
     private String fullName;
     private String fullNameEn;
     private String codeName;
-    private AdministrativeUnitDTO administrativeUnitDTO;
-    private AdministrativeRegionDTO administrativeRegionDTO;
+    private String administrativeUnitId;
+    private String administrativeRegionId;
 
     public String getCode() {
         return code;
@@ -58,19 +58,19 @@ public class ProvinceDTO {
         this.codeName = codeName;
     }
 
-    public AdministrativeUnitDTO getAdministrativeUnitDTO() {
-        return administrativeUnitDTO;
+    public String getAdministrativeUnitId() {
+        return administrativeUnitId;
     }
 
-    public void setAdministrativeUnitDTO(AdministrativeUnitDTO administrativeUnitDTO) {
-        this.administrativeUnitDTO = administrativeUnitDTO;
+    public void setAdministrativeUnitId(String administrativeUnitId) {
+        this.administrativeUnitId = administrativeUnitId;
     }
 
-    public AdministrativeRegionDTO getAdministrativeRegionDTO() {
-        return administrativeRegionDTO;
+    public String getAdministrativeRegionId() {
+        return administrativeRegionId;
     }
 
-    public void setAdministrativeRegionDTO(AdministrativeRegionDTO administrativeRegionDTO) {
-        this.administrativeRegionDTO = administrativeRegionDTO;
+    public void setAdministrativeRegionId(String administrativeRegionId) {
+        this.administrativeRegionId = administrativeRegionId;
     }
 }
