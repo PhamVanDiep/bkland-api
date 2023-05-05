@@ -1,8 +1,10 @@
 package com.api.bkland.entity;
 
+import com.api.bkland.constant.enumeric.ERole;
+
 import javax.persistence.*;
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

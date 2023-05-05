@@ -73,6 +73,11 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.headers()
+                .xssProtection()
+                .and()
+                .contentSecurityPolicy("script-src 'self'");
+
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -85,7 +90,7 @@ public class WebSecurityConfig {
                         "/webjars/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
 //                .antMatchers("/api/test/**").permitAll()
-                .antMatchers("/api/v1/photos/**").permitAll()
+                .antMatchers("/api/no-auth/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

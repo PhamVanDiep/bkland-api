@@ -51,6 +51,7 @@ public class TestController {
     }
 
     @GetMapping("/all-users")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> getAllUsers() {
         List<User> users = testService.getAllUsers();
         if (users.size() == 0) {

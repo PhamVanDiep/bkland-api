@@ -1,6 +1,8 @@
 package com.api.bkland.security.jwt;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.api.bkland.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
@@ -23,11 +25,16 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        return generateTokenFromUsername(userPrincipal.getUsername());
+        logger.info("authorities: {}", userPrincipal.getAuthorities());
+        return generateTokenFromUsername(userPrincipal.getUsername(),
+                userPrincipal.getId());
     }
 
-    public String generateTokenFromUsername(String username) {
+    public String generateTokenFromUsername(String username, String id) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", id);
         return Jwts.builder().setSubject(username).setIssuedAt(new Date())
+                .setClaims(claims)
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();

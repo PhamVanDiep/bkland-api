@@ -8,13 +8,13 @@
 		<version>2.7.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>auth_config</artifactId>
+	<groupId>com.api</groupId>
+	<artifactId>bkland-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>auth_config</name>
-	<description>Demo project for Spring Boot</description>
+	<name>bkland-api</name>
+	<description>DATN</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -82,6 +82,10 @@
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<version>3.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 	</dependencies>
 
