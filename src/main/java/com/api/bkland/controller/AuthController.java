@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import com.api.bkland.entity.UserDeviceToken;
 import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.dto.UserDeviceTokenDTO;
+import com.api.bkland.payload.request.ForgotPassword;
 import com.api.bkland.payload.request.LoginRequest;
 import com.api.bkland.payload.request.SignupRequest;
 import com.api.bkland.payload.request.TokenRefreshRequest;
@@ -69,6 +70,24 @@ public class AuthController {
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null, "Đã xảy ra lỗi khi đăng xuất",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @ApiOperation("forgot password - change password")
+    @PostMapping("/change-password")
+    public ResponseEntity<BaseResponse> changePassword(@RequestBody ForgotPassword forgotPassword) {
+        try {
+            if (authService.changePassword(forgotPassword)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Đổi mật khẩu thành công",
+                        HttpStatus.OK));
+            } else {
+                return ResponseEntity.ok(new BaseResponse(null, "Đã xảy ra lỗi khi đổi mật khẩu",
+                        HttpStatus.INTERNAL_SERVER_ERROR));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi đổi mật khẩu " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }

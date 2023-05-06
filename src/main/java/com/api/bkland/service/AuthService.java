@@ -2,6 +2,7 @@ package com.api.bkland.service;
 
 import com.api.bkland.payload.dto.RoleDTO;
 import com.api.bkland.payload.dto.UserDTO;
+import com.api.bkland.payload.request.ForgotPassword;
 import com.api.bkland.repository.RoleRepository;
 import com.api.bkland.repository.UserRepository;
 import com.api.bkland.security.jwt.JwtUtils;
@@ -24,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -179,6 +181,18 @@ public class AuthService {
                         HttpStatus.BAD_REQUEST);
             }
         }
+    }
+
+    @Transactional
+    public boolean changePassword(ForgotPassword forgotPassword) {
+        Optional<User> user = userRepository.findByEmail(forgotPassword.getEmail());
+        if (user.isEmpty()) {
+            return false;
+        }
+        User user1 = user.get();
+        user1.setPassword(encoder.encode(forgotPassword.getNewPassword()));
+        userRepository.save(user1);
+        return true;
     }
 
     private User convertToEntity(UserDTO userDTO) {
