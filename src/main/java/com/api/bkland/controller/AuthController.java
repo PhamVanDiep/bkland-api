@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -59,13 +61,15 @@ public class AuthController {
     @ApiOperation("logout")
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse> logout(@RequestBody UserDeviceTokenDTO userDeviceTokenDTO) {
-        UserDeviceToken userDeviceToken = userDeviceTokenService
-                .findByUserIdAndDeviceInfo(userDeviceTokenDTO.getUserId(), userDeviceTokenDTO.getDeviceInfo());
-        if (userDeviceToken == null) {
-            return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
-        }
-        userDeviceToken.setLogout(true);
         try {
+            UserDeviceToken userDeviceToken = userDeviceTokenService
+                    .findByUserIdAndDeviceInfo(userDeviceTokenDTO.getUserId(), userDeviceTokenDTO.getDeviceInfo());
+            if (userDeviceToken == null) {
+                return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
+            }
+            userDeviceToken.setLogout(true);
+            userDeviceToken.setUpdateBy(userDeviceTokenDTO.getUpdateBy());
+            userDeviceToken.setUpdateAt(Instant.now());
             userDeviceTokenService.update(userDeviceToken);
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
         } catch (Exception e) {

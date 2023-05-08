@@ -191,6 +191,7 @@ public class AuthService {
         }
         User user1 = user.get();
         user1.setPassword(encoder.encode(forgotPassword.getNewPassword()));
+        user1.setUpdateAt(Instant.now());
         userRepository.save(user1);
         return true;
     }

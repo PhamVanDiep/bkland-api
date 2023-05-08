@@ -1,6 +1,7 @@
 package com.api.bkland.entity;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "user_device_token")
@@ -23,6 +24,18 @@ public class UserDeviceToken {
 
     @Column(name = "is_logout")
     private boolean logout;
+
+    @Column(name = "create_by")
+    private String createBy;
+
+    @Column(name = "create_at")
+    private Instant createAt;
+
+    @Column(name = "update_by")
+    private String updateBy;
+
+    @Column(name = "update_at")
+    private Instant updateAt;
 
     public Integer getId() {
         return id;
@@ -70,5 +83,37 @@ public class UserDeviceToken {
 
     public void setLogout(boolean logout) {
         this.logout = logout;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Instant getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Instant updateAt) {
+        this.updateAt = updateAt;
     }
 }

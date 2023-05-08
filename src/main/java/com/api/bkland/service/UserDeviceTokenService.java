@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -24,5 +25,17 @@ public class UserDeviceTokenService {
     @Transactional
     public void update(UserDeviceToken userDeviceToken) {
         repository.save(userDeviceToken);
+    }
+
+    @Transactional
+    public void create(UserDeviceToken userDeviceToken) {
+        UserDeviceToken repoSave = findByUserIdAndDeviceInfo(userDeviceToken.getUserId(), userDeviceToken.getDeviceInfo());
+        if (repoSave != null) {
+            repoSave.setLogout(false);
+            repoSave.setUpdateAt(Instant.now());
+        } else {
+            repoSave = userDeviceToken;
+        }
+        repository.save(repoSave);
     }
 }
