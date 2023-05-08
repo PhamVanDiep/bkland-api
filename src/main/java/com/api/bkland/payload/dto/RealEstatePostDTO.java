@@ -1,90 +1,58 @@
-package com.api.bkland.entity;
+package com.api.bkland.payload.dto;
 
 import com.api.bkland.constant.enumeric.EDirection;
 import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
+import com.api.bkland.entity.User;
 
-import javax.persistence.*;
 import java.time.Instant;
 
-@Entity
-@Table(name = "real_estate_post")
-public class RealEstatePost {
-    @Id
-    @Column(name = "id")
+public class RealEstatePostDTO {
+
     private String id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
     private EType type;
 
-    @OneToOne
-    @JoinColumn(name = "owner_id")
     private User ownerId;
 
-    @Column(name = "title")
     private String title;
 
-    @Column(name = "description")
     private String description;
 
-    @Column(name = "address_show")
     private String addressShow;
 
-    @Column(name = "area")
     private Double area;
 
-    @Column(name = "price")
     private Double price;
 
-    @OneToOne
-    @JoinColumn(name = "province_code")
-    private Province province;
+    private ProvinceDTO province;
 
-    @OneToOne
-    @JoinColumn(name = "district_code")
-    private District district;
+    private DistrictDTO district;
 
-    @OneToOne
-    @JoinColumn(name = "ward_code")
-    private Ward ward;
+    private WardDTO ward;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
     private EStatus status;
 
-    @Column(name = "lat")
     private Double lat;
 
-    @Column(name = "lng")
     private Double lng;
 
-    @Column(name = "enable")
     private boolean enable;
 
-    @Column(name = "priority")
     private Integer priority;
 
-    @Column(name = "period")
     private Integer period;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "direction")
     private EDirection direction;
 
-    @Column(name = "is_sell")
     private boolean sell;
 
-    @Column(name = "create_by")
     private String createBy;
 
-    @Column(name = "create_at")
     private Instant createAt;
 
-    @Column(name = "update_by")
     private String updateBy;
 
-    @Column(name = "update_at")
     private Instant updateAt;
 
 
@@ -152,27 +120,27 @@ public class RealEstatePost {
         this.price = price;
     }
 
-    public Province getProvince() {
+    public ProvinceDTO getProvince() {
         return province;
     }
 
-    public void setProvince(Province province) {
+    public void setProvince(ProvinceDTO province) {
         this.province = province;
     }
 
-    public District getDistrict() {
+    public DistrictDTO getDistrict() {
         return district;
     }
 
-    public void setDistrict(District district) {
+    public void setDistrict(DistrictDTO district) {
         this.district = district;
     }
 
-    public Ward getWard() {
+    public WardDTO getWard() {
         return ward;
     }
 
-    public void setWard(Ward ward) {
+    public void setWard(WardDTO ward) {
         this.ward = ward;
     }
 

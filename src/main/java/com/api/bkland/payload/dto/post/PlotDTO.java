@@ -1,22 +1,14 @@
-package com.api.bkland.entity;
+package com.api.bkland.payload.dto.post;
 
-import javax.persistence.*;
+import com.api.bkland.payload.dto.RealEstatePostDTO;
 
-@Entity
-@Table(name = "plot")
-public class Plot {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
+public class PlotDTO extends BasePost{
     private Long id;
+    private RealEstatePostDTO realEstatePost;
 
-    @OneToOne
-    @JoinColumn(name = "real_estate_post_id")
-    private RealEstatePost realEstatePost;
-
-    @Column(name = "front_width")
     private Double frontWidth;
 
-    @Column(name = "behind_width")
     private Double behindWidth;
 
     public Long getId() {
@@ -27,11 +19,11 @@ public class Plot {
         this.id = id;
     }
 
-    public RealEstatePost getRealEstatePost() {
+    public RealEstatePostDTO getRealEstatePost() {
         return realEstatePost;
     }
 
-    public void setRealEstatePost(RealEstatePost realEstatePost) {
+    public void setRealEstatePost(RealEstatePostDTO realEstatePost) {
         this.realEstatePost = realEstatePost;
     }
 
