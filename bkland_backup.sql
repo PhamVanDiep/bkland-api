@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)
 --
 -- Host: localhost    Database: bkland
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.33-0ubuntu0.22.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -136,6 +136,7 @@ DROP TABLE IF EXISTS `apartment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `apartment` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `real_estate_post_id` varchar(255) NOT NULL,
   `floor_no` int DEFAULT NULL,
   `no_bedroom` int DEFAULT NULL,
@@ -143,7 +144,8 @@ CREATE TABLE `apartment` (
   `furniture` varchar(255) DEFAULT NULL,
   `balcony_direction` varchar(50) DEFAULT NULL,
   `construction` text,
-  PRIMARY KEY (`real_estate_post_id`),
+  PRIMARY KEY (`id`),
+  KEY `apartment_ibfk_1` (`real_estate_post_id`),
   CONSTRAINT `apartment_ibfk_1` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -314,6 +316,7 @@ DROP TABLE IF EXISTS `house`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `house` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `real_estate_post_id` varchar(255) NOT NULL,
   `no_floor` int DEFAULT NULL,
   `no_bedroom` int DEFAULT NULL,
@@ -323,7 +326,8 @@ CREATE TABLE `house` (
   `front_width` double DEFAULT NULL,
   `behind_width` double DEFAULT NULL,
   `street_width` double DEFAULT NULL,
-  PRIMARY KEY (`real_estate_post_id`),
+  PRIMARY KEY (`id`),
+  KEY `house_ibfk_1` (`real_estate_post_id`),
   CONSTRAINT `house_ibfk_1` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -466,12 +470,14 @@ DROP TABLE IF EXISTS `plot`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `plot` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `real_estate_post_id` varchar(255) NOT NULL,
   `front_width` double NOT NULL,
   `behind_width` double NOT NULL,
-  PRIMARY KEY (`real_estate_post_id`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `real_estate_post_id` (`real_estate_post_id`),
   CONSTRAINT `plot_ibfk_1` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -480,6 +486,7 @@ CREATE TABLE `plot` (
 
 LOCK TABLES `plot` WRITE;
 /*!40000 ALTER TABLE `plot` DISABLE KEYS */;
+INSERT INTO `plot` VALUES (1,'sdgasdfasfasdf',20.5,50.5),(2,'plot-123',20.5,50.5);
 /*!40000 ALTER TABLE `plot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -711,6 +718,7 @@ CREATE TABLE `real_estate_post` (
 
 LOCK TABLES `real_estate_post` WRITE;
 /*!40000 ALTER TABLE `real_estate_post` DISABLE KEYS */;
+INSERT INTO `real_estate_post` VALUES ('plot-123','PLOT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4',NULL,'2023-05-08 22:21:14',NULL,'DONG_NAM',1),('sdgasdfasfasdf','PLOT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4',NULL,'2023-05-08 21:13:45',NULL,'DONG_NAM',1);
 /*!40000 ALTER TABLE `real_estate_post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1027,4 +1035,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-08 20:19:07
+-- Dump completed on 2023-05-08 23:19:48
