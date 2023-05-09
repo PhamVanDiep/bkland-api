@@ -4,6 +4,7 @@ import com.api.bkland.entity.House;
 import com.api.bkland.repository.HouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class HouseService {
@@ -12,5 +13,10 @@ public class HouseService {
 
     public House findByRealEstatePostId(String id) {
         return repository.findByRealEstatePostId(id).get();
+    }
+
+    @Transactional
+    public House create(House house) {
+        return repository.save(house);
     }
 }

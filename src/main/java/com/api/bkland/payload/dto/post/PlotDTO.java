@@ -1,14 +1,20 @@
 package com.api.bkland.payload.dto.post;
 
-import com.api.bkland.payload.dto.RealEstatePostDTO;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class PlotDTO extends BasePost{
+    @NotNull
+    @NotBlank
     private Long id;
-    private RealEstatePostDTO realEstatePost;
 
+    @NotNull
+    @NotBlank
     private Double frontWidth;
 
+    @NotNull
+    @NotBlank
     private Double behindWidth;
 
     public Long getId() {
@@ -17,14 +23,6 @@ public class PlotDTO extends BasePost{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public RealEstatePostDTO getRealEstatePost() {
-        return realEstatePost;
-    }
-
-    public void setRealEstatePost(RealEstatePostDTO realEstatePost) {
-        this.realEstatePost = realEstatePost;
     }
 
     public Double getFrontWidth() {

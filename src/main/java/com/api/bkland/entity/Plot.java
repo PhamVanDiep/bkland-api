@@ -1,12 +1,14 @@
 package com.api.bkland.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "plot")
 public class Plot {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
@@ -14,9 +16,13 @@ public class Plot {
     private RealEstatePost realEstatePost;
 
     @Column(name = "front_width")
+    @NotNull
+    @NotBlank
     private Double frontWidth;
 
     @Column(name = "behind_width")
+    @NotNull
+    @NotBlank
     private Double behindWidth;
 
     public Long getId() {

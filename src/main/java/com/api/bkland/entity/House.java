@@ -3,12 +3,14 @@ package com.api.bkland.entity;
 import com.api.bkland.constant.enumeric.EDirection;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "house")
 public class House {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
@@ -16,27 +18,42 @@ public class House {
     private RealEstatePost realEstatePost;
 
     @Column(name = "no_floor")
+    @NotNull
+    @NotBlank
     private Integer noFloor;
 
     @Column(name = "no_bedroom")
+    @NotNull
+    @NotBlank
     private Integer noBedroom;
 
     @Column(name = "no_bathroom")
+    @NotNull
+    @NotBlank
     private Integer noBathroom;
 
     @Column(name = "furniture")
+    @NotNull
+    @NotBlank
     private String furniture;
 
     @Column(name = "balcony_direction")
+    @NotBlank
     private EDirection balconyDirection;
 
     @Column(name = "front_width")
+    @NotNull
+    @NotBlank
     private Double frontWidth;
 
     @Column(name = "behind_width")
+    @NotNull
+    @NotBlank
     private Double behindWidth;
 
     @Column(name = "street_width")
+    @NotNull
+    @NotBlank
     private Double streetWidth;
 
     public Long getId() {

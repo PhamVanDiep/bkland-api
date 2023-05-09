@@ -5,6 +5,8 @@ import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Entity
@@ -16,6 +18,8 @@ public class RealEstatePost {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
+    @NotNull
+    @NotBlank
     private EType type;
 
     @OneToOne
@@ -23,53 +27,83 @@ public class RealEstatePost {
     private User ownerId;
 
     @Column(name = "title")
+    @NotNull
+    @NotBlank
     private String title;
 
     @Column(name = "description")
+    @NotNull
+    @NotBlank
     private String description;
 
     @Column(name = "address_show")
+    @NotNull
+    @NotBlank
     private String addressShow;
 
     @Column(name = "area")
+    @NotNull
+    @NotBlank
     private Double area;
 
     @Column(name = "price")
+    @NotNull
+    @NotBlank
     private Double price;
 
     @OneToOne
     @JoinColumn(name = "province_code")
+    @NotNull
+    @NotBlank
     private Province province;
 
     @OneToOne
     @JoinColumn(name = "district_code")
+    @NotNull
+    @NotBlank
     private District district;
 
     @OneToOne
     @JoinColumn(name = "ward_code")
+    @NotNull
+    @NotBlank
     private Ward ward;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @NotNull
+    @NotBlank
     private EStatus status;
 
     @Column(name = "lat")
+    @NotNull
+    @NotBlank
     private Double lat;
 
     @Column(name = "lng")
+    @NotNull
+    @NotBlank
     private Double lng;
 
     @Column(name = "enable")
+    @NotNull
+    @NotBlank
     private boolean enable;
 
     @Column(name = "priority")
+    @NotNull
+    @NotBlank
     private Integer priority;
 
     @Column(name = "period")
+    @NotNull
+    @NotBlank
     private Integer period;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "direction")
+    @NotNull
+    @NotBlank
     private EDirection direction;
 
     @Column(name = "is_sell")

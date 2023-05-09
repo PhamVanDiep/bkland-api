@@ -1,50 +1,73 @@
-package com.api.bkland.payload.dto;
+package com.api.bkland.payload.dto.post;
 
 import com.api.bkland.constant.enumeric.EDirection;
 import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.User;
+import com.api.bkland.payload.dto.DistrictDTO;
+import com.api.bkland.payload.dto.ProvinceDTO;
+import com.api.bkland.payload.dto.WardDTO;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 public class RealEstatePostDTO {
 
+    @NotNull
     private String id;
 
+    @NotNull
     private EType type;
 
+    @NotNull
     private User ownerId;
 
+    @NotNull
     private String title;
 
+    @NotNull
     private String description;
 
+    @NotNull
     private String addressShow;
 
+    @NotNull
     private Double area;
 
+    @NotNull
     private Double price;
 
+    @NotNull
     private ProvinceDTO province;
 
+    @NotNull
     private DistrictDTO district;
 
+    @NotNull
     private WardDTO ward;
 
+    @NotNull
     private EStatus status;
 
+    @NotNull
     private Double lat;
 
+    @NotNull
     private Double lng;
 
+    @NotNull
     private boolean enable;
 
+    @NotNull
     private Integer priority;
 
+    @NotNull
     private Integer period;
 
+    @NotNull
     private EDirection direction;
 
+    @NotNull
     private boolean sell;
 
     private String createBy;

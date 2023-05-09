@@ -1,23 +1,37 @@
 package com.api.bkland.payload.dto.post;
 
 import com.api.bkland.constant.enumeric.EDirection;
-import com.api.bkland.payload.dto.RealEstatePostDTO;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class ApartmentDTO extends BasePost{
+    @NotNull
+    @NotBlank
     private Long id;
 
-    private RealEstatePostDTO realEstatePost;
-
+    @NotNull
+    @NotBlank
     private Integer floorNo;
 
+    @NotNull
+    @NotBlank
     private Integer noBedroom;
 
+    @NotNull
+    @NotBlank
     private Integer noBathroom;
 
+    @NotNull
+    @NotBlank
     private String furniture;
 
+    @NotNull
+    @NotBlank
     private EDirection balconyDirection;
 
+    @NotNull
+    @NotBlank
     private String construction;
 
     public Long getId() {
@@ -26,14 +40,6 @@ public class ApartmentDTO extends BasePost{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public RealEstatePostDTO getRealEstatePost() {
-        return realEstatePost;
-    }
-
-    public void setRealEstatePost(RealEstatePostDTO realEstatePost) {
-        this.realEstatePost = realEstatePost;
     }
 
     public Integer getFloorNo() {
