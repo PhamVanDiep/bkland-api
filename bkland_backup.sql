@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: localhost    Database: bkland
 -- ------------------------------------------------------
--- Server version	8.0.33-0ubuntu0.22.04.1
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -477,7 +477,7 @@ CREATE TABLE `plot` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `real_estate_post_id` (`real_estate_post_id`),
   CONSTRAINT `plot_ibfk_1` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -486,7 +486,7 @@ CREATE TABLE `plot` (
 
 LOCK TABLES `plot` WRITE;
 /*!40000 ALTER TABLE `plot` DISABLE KEYS */;
-INSERT INTO `plot` VALUES (1,'sdgasdfasfasdf',20.5,50.5),(2,'plot-123',20.5,50.5);
+INSERT INTO `plot` VALUES (1,'plot-12345',20.5,50.5);
 /*!40000 ALTER TABLE `plot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -718,7 +718,7 @@ CREATE TABLE `real_estate_post` (
 
 LOCK TABLES `real_estate_post` WRITE;
 /*!40000 ALTER TABLE `real_estate_post` DISABLE KEYS */;
-INSERT INTO `real_estate_post` VALUES ('plot-123','PLOT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4',NULL,'2023-05-08 22:21:14',NULL,'DONG_NAM',1),('sdgasdfasfasdf','PLOT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4',NULL,'2023-05-08 21:13:45',NULL,'DONG_NAM',1);
+INSERT INTO `real_estate_post` VALUES ('plot-12345','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-09 13:51:00',NULL,'DONG_NAM',1);
 /*!40000 ALTER TABLE `real_estate_post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1035,4 +1035,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-08 23:19:48
+-- Dump completed on 2023-05-09 17:05:10
