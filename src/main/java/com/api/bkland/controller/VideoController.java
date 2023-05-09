@@ -14,35 +14,35 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Base64;
 
 /**
  *
  * @author dieppv
  */
 @RestController
-@CrossOrigin
-@RequestMapping("/api/v1/videos")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class VideoController {
 
     @Autowired
     private VideoService videoService;
 
-    @PostMapping("/add")
+    @PostMapping("/api/v1/videos/add")
     public String addVideo(@RequestParam("title") String title,
             @RequestParam("file") MultipartFile file, Model model) throws IOException {
         String id = videoService.addVideo(title, file);
-        return "redirect:/videos/" + id;
+        return id;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/no-auth/videos/{id}")
     public String getVideo(@PathVariable String id, Model model) throws Exception {
         VideoDTO video = videoService.getVideo(id);
         model.addAttribute("title", video.getTitle());
         model.addAttribute("url", "/videos/stream/" + id);
-        return "videos";
+        return Base64.getEncoder().encodeToString(video.getStream().readAllBytes());
     }
 
-    @GetMapping("/stream/{id}")
+    @GetMapping("/api/no-auth/videos/stream/{id}")
     public void streamVideo(@PathVariable String id, HttpServletResponse response) throws Exception {
         VideoDTO video = videoService.getVideo(id);
         FileCopyUtils.copy(video.getStream(), response.getOutputStream());
