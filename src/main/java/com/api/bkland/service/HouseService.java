@@ -19,4 +19,8 @@ public class HouseService {
     public House create(House house) {
         return repository.save(house);
     }
+
+    public void deleteByRealEstatePostId(String realEstatePostId) {
+        repository.deleteByRealEstatePostId(realEstatePostId);
+    }
 }

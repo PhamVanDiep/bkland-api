@@ -147,7 +147,7 @@ CREATE TABLE `apartment` (
   PRIMARY KEY (`id`),
   KEY `apartment_ibfk_1` (`real_estate_post_id`),
   CONSTRAINT `apartment_ibfk_1` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,6 +156,7 @@ CREATE TABLE `apartment` (
 
 LOCK TABLES `apartment` WRITE;
 /*!40000 ALTER TABLE `apartment` DISABLE KEYS */;
+INSERT INTO `apartment` VALUES (1,'apartment-405364b7-bad1-4ffe-8966-5ae29b330efc',7,4,4,'xcndfghdfhfgh','DONG','dfghdfghdfhdfghdfgh'),(2,'apartment-66480dd6-ef0f-462a-acd4-bf756bf1cc84',7,4,4,'xcndfghdfhfgh','DONG','dfghdfghdfhdfghdfgh');
 /*!40000 ALTER TABLE `apartment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -477,7 +478,7 @@ CREATE TABLE `plot` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `real_estate_post_id` (`real_estate_post_id`),
   CONSTRAINT `plot_ibfk_1` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -486,7 +487,7 @@ CREATE TABLE `plot` (
 
 LOCK TABLES `plot` WRITE;
 /*!40000 ALTER TABLE `plot` DISABLE KEYS */;
-INSERT INTO `plot` VALUES (1,'plot-12345',20.5,50.5);
+INSERT INTO `plot` VALUES (1,'plot-12345',20.5,50.5),(2,'plot-123456',20.5,50),(3,'plot-1234567',20.5,50),(4,'plot-12345678',20.5,50),(6,'plot-123456789',20.5,50),(7,'plot-12345678910',20.5,50),(8,'plot-1234567891011',20.5,50),(9,'plot-bd342885-369f-4b92-aa61-92dd3b085a66',5,5),(10,'plot-6abfd324-9a4d-4e3e-8313-5ef5d5bdc4aa',22,16);
 /*!40000 ALTER TABLE `plot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -517,6 +518,62 @@ CREATE TABLE `post_comment` (
 LOCK TABLES `post_comment` WRITE;
 /*!40000 ALTER TABLE `post_comment` DISABLE KEYS */;
 /*!40000 ALTER TABLE `post_comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `post_media`
+--
+
+DROP TABLE IF EXISTS `post_media`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `post_media` (
+  `id` varchar(100) NOT NULL,
+  `media_type` varchar(50) DEFAULT NULL,
+  `post_id` varchar(255) DEFAULT NULL,
+  `post_type` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `post_media`
+--
+
+LOCK TABLES `post_media` WRITE;
+/*!40000 ALTER TABLE `post_media` DISABLE KEYS */;
+INSERT INTO `post_media` VALUES ('645b2fd9a3d0b00d6e9f3682','image/png','plot-bd342885-369f-4b92-aa61-92dd3b085a66','REAL_ESTATE_POST'),('645b4410fd3499106de15624','image/png','plot-6abfd324-9a4d-4e3e-8313-5ef5d5bdc4aa','REAL_ESTATE_POST'),('645b445afd3499106de15625','image/png','apartment-405364b7-bad1-4ffe-8966-5ae29b330efc','REAL_ESTATE_POST'),('645b467782d074442939c6ae','image/png','apartment-66480dd6-ef0f-462a-acd4-bf756bf1cc84','REAL_ESTATE_POST');
+/*!40000 ALTER TABLE `post_media` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `post_pay`
+--
+
+DROP TABLE IF EXISTS `post_pay`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `post_pay` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
+  `price` int NOT NULL,
+  `real_estate_post_id` varchar(255) NOT NULL,
+  `create_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `real_estate_post_id` (`real_estate_post_id`),
+  CONSTRAINT `post_pay_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `post_pay_ibfk_2` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `post_pay`
+--
+
+LOCK TABLES `post_pay` WRITE;
+/*!40000 ALTER TABLE `post_pay` DISABLE KEYS */;
+/*!40000 ALTER TABLE `post_pay` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -700,6 +757,7 @@ CREATE TABLE `real_estate_post` (
   `update_at` datetime DEFAULT NULL,
   `direction` varchar(20) NOT NULL,
   `is_sell` tinyint DEFAULT NULL,
+  `street` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `owner_id` (`owner_id`),
   KEY `province_code` (`province_code`),
@@ -718,7 +776,7 @@ CREATE TABLE `real_estate_post` (
 
 LOCK TABLES `real_estate_post` WRITE;
 /*!40000 ALTER TABLE `real_estate_post` DISABLE KEYS */;
-INSERT INTO `real_estate_post` VALUES ('plot-12345','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-09 13:51:00',NULL,'DONG_NAM',1);
+INSERT INTO `real_estate_post` VALUES ('apartment-405364b7-bad1-4ffe-8966-5ae29b330efc','APARTMENT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','dfjhdfggjsashdfgsdfg','sdfhsdfhsfghdfghsdgfhdfgh','dghdfghdfghdfghdfg',15,9,'01','001','00001','CHO_KIEM_DUYET',0,0,1,1,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','','2023-05-10 14:15:25',NULL,'DONG',1,'cndfghsdfghdfgh'),('apartment-66480dd6-ef0f-462a-acd4-bf756bf1cc84','APARTMENT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','dfjhdfggjsashdfgsdfg','sdfhsdfhsfghdfghsdgfhdfgh','dghdfghdfghdfghdfg',15,9,'01','001','00001','CHO_KIEM_DUYET',0,0,1,1,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','','2023-05-10 14:25:01',NULL,'DONG',1,'cndfghsdfghdfgh'),('plot-12345','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-09 13:51:00',NULL,'DONG_NAM',1,''),('plot-123456','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-10 10:40:08',NULL,'DONG_NAM',1,''),('plot-1234567','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-10 10:51:35',NULL,'DONG_NAM',1,''),('plot-12345678','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-10 10:53:56',NULL,'DONG_NAM',1,''),('plot-123456789','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-10 10:59:21',NULL,'DONG_NAM',1,''),('plot-12345678910','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-10 11:00:28',NULL,'DONG_NAM',1,''),('plot-1234567891011','PLOT','83e94259-49f9-4f77-87a4-914d7586044b','abcabc','abcabc','abcabc',320,15.5,'01','001','00001','CHO_KIEM_DUYET',20.00120122342342,108.34539457345734,1,4,15,'83e94259-49f9-4f77-87a4-914d7586044b',NULL,'2023-05-10 11:03:32',NULL,'DONG_NAM',1,''),('plot-6abfd324-9a4d-4e3e-8313-5ef5d5bdc4aa','PLOT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','sfdgsdfgsdfgsg','sfgsfdgasergerg','asdfgsdfgsfdgs',24,25,'01','001','00001','CHO_KIEM_DUYET',0,0,1,1,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','','2023-05-10 14:13:21',NULL,'DONG',1,'fgsdfgsdfg'),('plot-bd342885-369f-4b92-aa61-92dd3b085a66','PLOT','0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','dfgndfgndfgn','dfgndfgndfgn','ncndfgndfgn',100,3.45,'01','001','00001','CHO_KIEM_DUYET',0,0,1,1,15,'0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','','2023-05-10 12:47:06',NULL,'DONG',1,'cb cbn');
 /*!40000 ALTER TABLE `real_estate_post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -929,7 +987,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','Phạm','Văn','Điệp','dieppv_user_2','dieppv.work@gmail.com','$2a$10$r6qlJyJkHike/i6xLMhb2Ofr8bFB0enhELS47UE6LW1bbG79psWQe','034201009053','0','01','001','00001','cửa hàng Dùng Quang, xóm 6, xã Thái Thọ','0362908968','2001-11-17',1,0,'2023-05-06 06:13:15',NULL,NULL,NULL,''),('4ba7b222-ea7d-4437-ac75-ea88df3ec462','Phạm','Văn','Điệp','dieppv1','phamdiepa1k57@gmail.com','$2a$10$UqowYjaOXhcs5USFUljdd.O3FlgYj1avCPueACqVUAtpx9eGI1hVW','034201009053','0','01','001','00001','cửa hàng Dùng Quang, xóm 6, xã Thái Thọ','0362908968','2001-11-17',1,0,'2023-05-05 08:19:43',NULL,NULL,NULL,''),('6eaf908a-9803-4ee7-852a-b1801e829c84','ZCXZCZXC','','','dieppv','phamdiepa1k56@gmail.com','$2a$10$2UJ1BwoJ1UR.wPGOpJdD2OnjPqiCKxeKVelE9mN/wgGx41MoNQbKa','','0','01','001','00001','cửa hàng Dùng Quang, xóm 6, xã Thái Thọ','0362908968',NULL,1,0,'2023-05-05 07:57:29',NULL,NULL,NULL,''),('83e94259-49f9-4f77-87a4-914d7586044b','Văn Điệp','','Phạm','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Boz3sEb4FTOxcCjFT1CjmeFhwHIUhvrjfgmGlTA2/iN.CTRSUdr8a','','2','NOT_FOUND','NOT_FOUND','NOT_FOUND','','',NULL,1,0,'2023-05-04 09:10:12',NULL,NULL,NULL,'https://lh3.googleusercontent.com/a/AGNmyxYq8IVJGDJc7ByX3QHk8jKZDn2NwKGVi-KjhadV=s96-c'),('admin','Phạm','Văn','Điệp','admin','supervisor.bkland@gmail.com','$2a$10$ObfGjC8sTRAgWBgs9WCVLOKlGpFjT4DRJqfO.Wxn9gEJQ8JHQQVoa','034201009053','0','34','341','12967','','0362908968','2001-11-17',1,0,'2023-05-05 09:06:29',NULL,NULL,NULL,'');
+INSERT INTO `user` VALUES ('0dedf5f3-e2f4-44bf-8dfb-b9d78448f2e4','Phạm','Văn','Điệp','dieppv_user_2','dieppv.work@gmail.com','$2a$10$r6qlJyJkHike/i6xLMhb2Ofr8bFB0enhELS47UE6LW1bbG79psWQe','034201009053','MALE','01','001','00001','cửa hàng Dùng Quang, xóm 6, xã Thái Thọ','0362908968','2001-11-17',1,0,'2023-05-06 06:13:15',NULL,NULL,NULL,''),('4ba7b222-ea7d-4437-ac75-ea88df3ec462','Phạm','Văn','Điệp','dieppv1','phamdiepa1k57@gmail.com','$2a$10$UqowYjaOXhcs5USFUljdd.O3FlgYj1avCPueACqVUAtpx9eGI1hVW','034201009053','MALE','01','001','00001','cửa hàng Dùng Quang, xóm 6, xã Thái Thọ','0362908968','2001-11-17',1,0,'2023-05-05 08:19:43',NULL,NULL,NULL,''),('6eaf908a-9803-4ee7-852a-b1801e829c84','ZCXZCZXC','','','dieppv','phamdiepa1k56@gmail.com','$2a$10$2UJ1BwoJ1UR.wPGOpJdD2OnjPqiCKxeKVelE9mN/wgGx41MoNQbKa','','MALE','01','001','00001','cửa hàng Dùng Quang, xóm 6, xã Thái Thọ','0362908968',NULL,1,0,'2023-05-05 07:57:29',NULL,NULL,NULL,''),('83e94259-49f9-4f77-87a4-914d7586044b','Văn Điệp','','Phạm','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Boz3sEb4FTOxcCjFT1CjmeFhwHIUhvrjfgmGlTA2/iN.CTRSUdr8a','','MALE','NOT_FOUND','NOT_FOUND','NOT_FOUND','','',NULL,1,0,'2023-05-04 09:10:12',NULL,NULL,NULL,'https://lh3.googleusercontent.com/a/AGNmyxYq8IVJGDJc7ByX3QHk8jKZDn2NwKGVi-KjhadV=s96-c'),('admin','Phạm','Văn','Điệp','admin','supervisor.bkland@gmail.com','$2a$10$ObfGjC8sTRAgWBgs9WCVLOKlGpFjT4DRJqfO.Wxn9gEJQ8JHQQVoa','034201009053','MALE','34','341','12967','','0362908968','2001-11-17',1,0,'2023-05-05 09:06:29',NULL,NULL,NULL,'');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1035,4 +1093,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 17:05:10
+-- Dump completed on 2023-05-10 14:26:29

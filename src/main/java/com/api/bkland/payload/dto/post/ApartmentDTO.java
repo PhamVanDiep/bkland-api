@@ -2,6 +2,8 @@ package com.api.bkland.payload.dto.post;
 
 import com.api.bkland.constant.enumeric.EDirection;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -26,6 +28,7 @@ public class ApartmentDTO extends BasePost{
     @NotBlank
     private String furniture;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     @NotBlank
     private EDirection balconyDirection;

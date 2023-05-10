@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
     Optional<Apartment> findByRealEstatePostId(String realEstatePostId);
+    void deleteByRealEstatePostId(String realEstatePostId);
 }

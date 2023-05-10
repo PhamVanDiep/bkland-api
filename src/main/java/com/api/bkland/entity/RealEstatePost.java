@@ -100,6 +100,11 @@ public class RealEstatePost {
     @NotBlank
     private Integer period;
 
+    @Column(name = "street")
+    @NotNull
+    @NotBlank
+    private String street;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "direction")
     @NotNull
@@ -304,5 +309,13 @@ public class RealEstatePost {
 
     public void setUpdateAt(Instant updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 }

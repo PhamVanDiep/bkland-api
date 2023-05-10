@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PlotRepository extends JpaRepository<Plot, Long> {
     Optional<Plot> findByRealEstatePostId(String realEstatePostId);
+    void deleteByRealEstatePostId(String realEstatePostId);
 }

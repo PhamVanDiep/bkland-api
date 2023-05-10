@@ -19,4 +19,8 @@ public class ApartmentService {
     public Apartment create(Apartment apartment) {
         return repository.save(apartment);
     }
+
+    public void deleteByRealEstatePostId(String realEstatePostId) {
+        repository.deleteByRealEstatePostId(realEstatePostId);
+    }
 }

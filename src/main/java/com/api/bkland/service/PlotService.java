@@ -19,4 +19,8 @@ public class PlotService {
     public Plot create(Plot plot) {
         return repository.save(plot);
     }
+
+    public void deleteByRealEstatePostId(String realEstatePostId) {
+        repository.deleteByRealEstatePostId(realEstatePostId);
+    }
 }

@@ -37,6 +37,7 @@ public class House {
     @NotBlank
     private String furniture;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "balcony_direction")
     @NotBlank
     private EDirection balconyDirection;

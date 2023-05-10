@@ -8,6 +8,8 @@ import com.api.bkland.payload.dto.DistrictDTO;
 import com.api.bkland.payload.dto.ProvinceDTO;
 import com.api.bkland.payload.dto.WardDTO;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
@@ -16,6 +18,7 @@ public class RealEstatePostDTO {
     @NotNull
     private String id;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     private EType type;
 
@@ -46,6 +49,7 @@ public class RealEstatePostDTO {
     @NotNull
     private WardDTO ward;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     private EStatus status;
 
@@ -64,11 +68,15 @@ public class RealEstatePostDTO {
     @NotNull
     private Integer period;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     private EDirection direction;
 
     @NotNull
     private boolean sell;
+
+    @NotNull
+    private String street;
 
     private String createBy;
 
@@ -261,5 +269,13 @@ public class RealEstatePostDTO {
 
     public void setUpdateAt(Instant updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 }
