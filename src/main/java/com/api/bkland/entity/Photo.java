@@ -5,6 +5,7 @@
 package com.api.bkland.entity;
 
 import org.bson.types.Binary;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -13,10 +14,10 @@ import javax.persistence.Id;
  *
  * @author dieppv
  */
-@Document(collation = "photos")
+@Document(collection = "photos")
 public class Photo {
     @Id
-    private String id;
+    private ObjectId id;
     
     private String title;
         
@@ -26,11 +27,11 @@ public class Photo {
         this.title = title;
     }
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

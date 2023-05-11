@@ -75,7 +75,7 @@ public class PhotoController {
     public ResponseEntity<BaseResponse> getPhoto(@PathVariable String id, Model model) {
         try {
             Photo photo = photoService.getPhoto(id);
-            MediaResponse response = new MediaResponse(photo.getId(),
+            MediaResponse response = new MediaResponse(photo.getId().toString(),
                     photo.getTitle(),
                     Base64.getEncoder().encodeToString(photo.getImage().getData()));
 //        model.addAttribute("title", photo.getTitle());

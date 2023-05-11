@@ -86,13 +86,10 @@ public class AuthService {
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-            UserDeviceToken userDeviceToken = userDeviceTokenRepository
-                    .findByUserIdAndDeviceInfo(userDetails.getId(), loginRequest.getDeviceInfo()).get();
-            if (userDeviceToken != null) {
-                userDeviceToken.setLogout(false);
-                userDeviceToken.setUpdateBy(userDetails.getId());
-                userDeviceToken.setUpdateAt(Instant.now());
-            } else {
+            Optional<UserDeviceToken> userDeviceTokenOptional = userDeviceTokenRepository
+                    .findByUserIdAndDeviceInfo(userDetails.getId(), loginRequest.getDeviceInfo());
+            if (userDeviceTokenOptional.isEmpty()) {
+                UserDeviceToken userDeviceToken = new UserDeviceToken();
                 userDeviceToken.setId(0);
                 userDeviceToken.setUserId(userDetails.getId());
                 userDeviceToken.setLogout(false);
@@ -102,7 +99,13 @@ public class AuthService {
                 userDeviceToken.setEnable(false);
                 userDeviceToken.setNotifyToken("");
                 userDeviceTokenRepository.save(userDeviceToken);
+            } else {
+                UserDeviceToken userDeviceToken = userDeviceTokenOptional.get();
+                userDeviceToken.setLogout(false);
+                userDeviceToken.setUpdateBy(userDetails.getId());
+                userDeviceToken.setUpdateAt(Instant.now());
             }
+
             return new BaseResponse(new JwtResponse(
                                             jwt,
                                             refreshToken.getToken(),
