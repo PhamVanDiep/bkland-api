@@ -5,11 +5,12 @@
 package com.api.bkland.repository;
 
 import com.api.bkland.entity.Photo;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author dieppv
  */
-public interface PhotoRepository extends MongoRepository<Photo, String>{
+public interface PhotoRepository extends MongoRepository<Photo, ObjectId>{
 }

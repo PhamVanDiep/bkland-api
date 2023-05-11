@@ -1,9 +1,11 @@
 package com.api.bkland.service;
 
+import com.api.bkland.entity.UserDeviceToken;
 import com.api.bkland.payload.dto.RoleDTO;
 import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.request.ForgotPassword;
 import com.api.bkland.repository.RoleRepository;
+import com.api.bkland.repository.UserDeviceTokenRepository;
 import com.api.bkland.repository.UserRepository;
 import com.api.bkland.security.jwt.JwtUtils;
 import com.api.bkland.security.services.UserDetailsImpl;
@@ -57,8 +59,19 @@ public class AuthService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private UserDeviceTokenRepository userDeviceTokenRepository;
+
     public BaseResponse authenticateUser(LoginRequest loginRequest) {
         try {
+            User user = userRepository.findByUsername(loginRequest.getUsername()).get();
+            if (user == null) {
+                return new BaseResponse(null, "Tài khoản không tồn tại", HttpStatus.NO_CONTENT);
+            } else {
+                if (!user.isEnable()) {
+                    return new BaseResponse(null, "Tài khoản đã bị khóa.", HttpStatus.NOT_ACCEPTABLE);
+                }
+            }
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -72,6 +85,26 @@ public class AuthService {
                     .collect(Collectors.toList());
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
+            Optional<UserDeviceToken> userDeviceTokenOptional = userDeviceTokenRepository
+                    .findByUserIdAndDeviceInfo(userDetails.getId(), loginRequest.getDeviceInfo());
+            if (userDeviceTokenOptional.isEmpty()) {
+                UserDeviceToken userDeviceToken = new UserDeviceToken();
+                userDeviceToken.setId(0);
+                userDeviceToken.setUserId(userDetails.getId());
+                userDeviceToken.setLogout(false);
+                userDeviceToken.setCreateAt(Instant.now());
+                userDeviceToken.setCreateBy(userDetails.getId());
+                userDeviceToken.setDeviceInfo(loginRequest.getDeviceInfo());
+                userDeviceToken.setEnable(false);
+                userDeviceToken.setNotifyToken("");
+                userDeviceTokenRepository.save(userDeviceToken);
+            } else {
+                UserDeviceToken userDeviceToken = userDeviceTokenOptional.get();
+                userDeviceToken.setLogout(false);
+                userDeviceToken.setUpdateBy(userDetails.getId());
+                userDeviceToken.setUpdateAt(Instant.now());
+            }
 
             return new BaseResponse(new JwtResponse(
                                             jwt,

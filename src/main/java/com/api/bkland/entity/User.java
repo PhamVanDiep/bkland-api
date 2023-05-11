@@ -49,6 +49,7 @@ public class User {
     @Column(name = "identification")
     private String identification;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private EGender gender;
 

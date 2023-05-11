@@ -1,129 +1,89 @@
-package com.api.bkland.entity;
+package com.api.bkland.payload.dto.post;
 
 import com.api.bkland.constant.enumeric.EDirection;
 import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
+import com.api.bkland.entity.User;
+import com.api.bkland.payload.dto.DistrictDTO;
+import com.api.bkland.payload.dto.ProvinceDTO;
+import com.api.bkland.payload.dto.WardDTO;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
-@Entity
-@Table(name = "real_estate_post")
-public class RealEstatePost {
-    @Id
-    @Column(name = "id")
+public class RealEstatePostDTO {
+
+    @NotNull
     private String id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
     @NotNull
-    @NotBlank
     private EType type;
 
-    @OneToOne
-    @JoinColumn(name = "owner_id")
+    @NotNull
     private User ownerId;
 
-    @Column(name = "title")
     @NotNull
-    @NotBlank
     private String title;
 
-    @Column(name = "description")
     @NotNull
-    @NotBlank
     private String description;
 
-    @Column(name = "address_show")
     @NotNull
-    @NotBlank
     private String addressShow;
 
-    @Column(name = "area")
     @NotNull
-    @NotBlank
     private Double area;
 
-    @Column(name = "price")
     @NotNull
-    @NotBlank
     private Double price;
 
-    @OneToOne
-    @JoinColumn(name = "province_code")
     @NotNull
-    @NotBlank
-    private Province province;
+    private ProvinceDTO province;
 
-    @OneToOne
-    @JoinColumn(name = "district_code")
     @NotNull
-    @NotBlank
-    private District district;
+    private DistrictDTO district;
 
-    @OneToOne
-    @JoinColumn(name = "ward_code")
     @NotNull
-    @NotBlank
-    private Ward ward;
+    private WardDTO ward;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
     @NotNull
-    @NotBlank
     private EStatus status;
 
-    @Column(name = "lat")
     @NotNull
-    @NotBlank
     private Double lat;
 
-    @Column(name = "lng")
     @NotNull
-    @NotBlank
     private Double lng;
 
-    @Column(name = "enable")
     @NotNull
-    @NotBlank
     private boolean enable;
 
-    @Column(name = "priority")
     @NotNull
-    @NotBlank
     private Integer priority;
 
-    @Column(name = "period")
     @NotNull
-    @NotBlank
     private Integer period;
 
-    @Column(name = "street")
-    @NotNull
-    @NotBlank
-    private String street;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "direction")
     @NotNull
-    @NotBlank
     private EDirection direction;
 
-    @Column(name = "is_sell")
+    @NotNull
     private boolean sell;
 
-    @Column(name = "create_by")
+    @NotNull
+    private String street;
+
     private String createBy;
 
-    @Column(name = "create_at")
     private Instant createAt;
 
-    @Column(name = "update_by")
     private String updateBy;
 
-    @Column(name = "update_at")
     private Instant updateAt;
 
 
@@ -191,27 +151,27 @@ public class RealEstatePost {
         this.price = price;
     }
 
-    public Province getProvince() {
+    public ProvinceDTO getProvince() {
         return province;
     }
 
-    public void setProvince(Province province) {
+    public void setProvince(ProvinceDTO province) {
         this.province = province;
     }
 
-    public District getDistrict() {
+    public DistrictDTO getDistrict() {
         return district;
     }
 
-    public void setDistrict(District district) {
+    public void setDistrict(DistrictDTO district) {
         this.district = district;
     }
 
-    public Ward getWard() {
+    public WardDTO getWard() {
         return ward;
     }
 
-    public void setWard(Ward ward) {
+    public void setWard(WardDTO ward) {
         this.ward = ward;
     }
 

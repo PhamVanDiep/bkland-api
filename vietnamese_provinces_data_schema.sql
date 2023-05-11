@@ -26,6 +26,7 @@ INSERT INTO administrative_units (id,full_name,full_name_en,short_name,short_nam
 
 -- DATA for provinces
 INSERT INTO provinces (code,name,name_en,full_name,full_name_en,code_name,administrative_unit_id,administrative_region_id) VALUES
+	('NOT_FOUND', '', '', '', '', '', 2, 3),
 	 ('01','Hà Nội','Ha Noi','Thành phố Hà Nội','Ha Noi City','ha_noi',1,3),
 	 ('26','Vĩnh Phúc','Vinh Phuc','Tỉnh Vĩnh Phúc','Vinh Phuc Province','vinh_phuc',2,3),
 	 ('27','Bắc Ninh','Bac Ninh','Tỉnh Bắc Ninh','Bac Ninh Province','bac_ninh',2,3),
@@ -98,6 +99,7 @@ INSERT INTO provinces (code,name,name_en,full_name,full_name_en,code_name,admini
 
 -- DATA for districts
 INSERT INTO districts (code,name,name_en,full_name,full_name_en,code_name,province_code,administrative_unit_id) VALUES
+	('NOT_FOUND', '', '', '', '', '', 'NOT_FOUND', 5),
 	 ('760','1','1','Quận 1','District 1','1','79',5),
 	 ('761','12','12','Quận 12','District 12','12','79',5),
 	 ('770','3','3','Quận 3','District 3','3','79',5),
@@ -878,6 +880,7 @@ INSERT INTO districts (code,name,name_en,full_name,full_name_en,code_name,provin
 
 -- DATA for wards table
 INSERT INTO wards (code,name,name_en,full_name,full_name_en,code_name,district_code,administrative_unit_id) VALUES
+	('NOT_FOUND', '', '', '', '', '', 'NOT_FOUND', 8),
 	 ('27337','06','06','Phường 06','Ward 06','06','774',8),
 	 ('27340','10','10','Phường 10','Ward 10','10','774',8),
 	 ('27259','13','13','Phường 13','Ward 13','13','773',8),

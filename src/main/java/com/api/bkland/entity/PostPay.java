@@ -3,27 +3,32 @@ package com.api.bkland.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 
 @Entity
-@Table(name = "plot")
-public class Plot {
+@Table(name = "post_pay")
+public class PostPay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @OneToOne
     @JoinColumn(name = "real_estate_post_id")
     private RealEstatePost realEstatePost;
 
-    @Column(name = "front_width")
     @NotNull
     @NotBlank
-    private Double frontWidth;
+    @Column(name = "price")
+    private Integer price;
 
-    @Column(name = "behind_width")
     @NotNull
     @NotBlank
-    private Double behindWidth;
+    @Column(name = "create_at")
+    private Instant createAt;
 
     public Long getId() {
         return id;
@@ -31,6 +36,14 @@ public class Plot {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public RealEstatePost getRealEstatePost() {
@@ -41,19 +54,19 @@ public class Plot {
         this.realEstatePost = realEstatePost;
     }
 
-    public Double getFrontWidth() {
-        return frontWidth;
+    public Integer getPrice() {
+        return price;
     }
 
-    public void setFrontWidth(Double frontWidth) {
-        this.frontWidth = frontWidth;
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
-    public Double getBehindWidth() {
-        return behindWidth;
+    public Instant getCreateAt() {
+        return createAt;
     }
 
-    public void setBehindWidth(Double behindWidth) {
-        this.behindWidth = behindWidth;
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
     }
 }
