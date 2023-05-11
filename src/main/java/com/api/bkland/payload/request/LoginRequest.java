@@ -9,6 +9,9 @@ public class LoginRequest {
     @NotBlank
     private String password;
 
+    @NotBlank
+    private String deviceInfo;
+
     public String getUsername() {
         return username;
     }
@@ -23,5 +26,13 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
     }
 }

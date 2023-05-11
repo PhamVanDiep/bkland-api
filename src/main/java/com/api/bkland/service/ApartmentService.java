@@ -20,6 +20,11 @@ public class ApartmentService {
         return repository.save(apartment);
     }
 
+    @Transactional
+    public Apartment update(Apartment apartment) {
+        return repository.save(apartment);
+    }
+
     public void deleteByRealEstatePostId(String realEstatePostId) {
         repository.deleteByRealEstatePostId(realEstatePostId);
     }

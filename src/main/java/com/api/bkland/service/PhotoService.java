@@ -23,7 +23,7 @@ public class PhotoService {
     
     @Autowired
     private PhotoRepository photoRepository;
-    
+
     public String addPhoto(String title, MultipartFile file) throws IOException { 
         Photo photo = new Photo(title);
         photo.setImage(
@@ -33,5 +33,9 @@ public class PhotoService {
 
     public Photo getPhoto(String id) { 
         return photoRepository.findById(id).get(); 
+    }
+
+    public void deletePhotoById(String id) {
+        photoRepository.deleteById(id);
     }
 }

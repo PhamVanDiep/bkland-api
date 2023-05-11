@@ -20,6 +20,11 @@ public class PlotService {
         return repository.save(plot);
     }
 
+    @Transactional
+    public Plot update(Plot plot) {
+        return repository.save(plot);
+    }
+
     public void deleteByRealEstatePostId(String realEstatePostId) {
         repository.deleteByRealEstatePostId(realEstatePostId);
     }

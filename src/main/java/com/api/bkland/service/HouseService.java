@@ -20,6 +20,11 @@ public class HouseService {
         return repository.save(house);
     }
 
+    @Transactional
+    public House update(House house) {
+        return repository.save(house);
+    }
+
     public void deleteByRealEstatePostId(String realEstatePostId) {
         repository.deleteByRealEstatePostId(realEstatePostId);
     }

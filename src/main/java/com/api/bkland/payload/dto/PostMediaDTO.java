@@ -20,6 +20,10 @@ public class PostMediaDTO {
     @NotBlank
     private String postType;
 
+    @NotNull
+    @NotBlank
+    private String name;
+
     public String getId() {
         return id;
     }
@@ -50,5 +54,13 @@ public class PostMediaDTO {
 
     public void setPostType(String postType) {
         this.postType = postType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

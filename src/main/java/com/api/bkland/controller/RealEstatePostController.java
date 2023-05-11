@@ -11,7 +11,6 @@ import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.RealEstatePostResponse;
 import com.api.bkland.service.*;
 import com.api.bkland.util.Util;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,9 +40,6 @@ public class RealEstatePostController {
 
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private PostMediaService postMediaService;
@@ -179,6 +175,45 @@ public class RealEstatePostController {
             service.deleteById(request.getRealEstatePost().getId());
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi tạo bài đăng " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/api/v1/real-estate-post")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> updatePost(@RequestBody RealEstatePostRequest request) {
+        try {
+            RealEstatePostDTO realEstatePostDTO = request.getRealEstatePost();
+            realEstatePostDTO.setUpdateAt(Instant.now());
+            RealEstatePost realEstatePost = modelMapper.map(realEstatePostDTO, RealEstatePost.class);
+            service.update(realEstatePost);
+            if (realEstatePostDTO.getType().equals(EType.PLOT)) {
+                Plot plotEntity = modelMapper.map(request.getPlot(), Plot.class);
+                plotEntity.setRealEstatePost(realEstatePost);
+                plotService.update(plotEntity);
+            } else if (realEstatePostDTO.getType().equals(EType.APARTMENT)) {
+                Apartment apartmentEntity = modelMapper.map(request.getApartment(), Apartment.class);
+                apartmentEntity.setRealEstatePost(realEstatePost);
+                apartmentService.update(apartmentEntity);
+            } else if (realEstatePostDTO.getType().equals(EType.HOUSE)) {
+                House houseEntity = modelMapper.map(request.getHouse(), House.class);
+                houseEntity.setRealEstatePost(realEstatePost);
+                houseService.update(houseEntity);
+            }
+            List<PostMediaDTO> postMediaDTOS = request.getImages();
+            if (!postMediaDTOS.isEmpty()) {
+                for (PostMediaDTO postMediaDTO :
+                        postMediaDTOS) {
+                    postMediaService.save(modelMapper.map(postMediaDTO, PostMedia.class));
+                }
+            }
+            return ResponseEntity.ok(new
+                    BaseResponse(null,
+                    "Đã cập nhật bài viết thành công.",
+                    HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi cập nhật bài đăng " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }

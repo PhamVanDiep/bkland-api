@@ -31,6 +31,11 @@ public class PostMedia {
     @NotBlank
     private String postType;
 
+    @Column(name = "name")
+    @NotNull
+    @NotBlank
+    private String name;
+
     public String getId() {
         return id;
     }
@@ -61,5 +66,13 @@ public class PostMedia {
 
     public void setPostType(String postType) {
         this.postType = postType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
