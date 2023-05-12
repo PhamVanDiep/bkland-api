@@ -2,6 +2,7 @@ package com.api.bkland.controller;
 
 import com.api.bkland.entity.UserDeviceToken;
 import com.api.bkland.payload.dto.UserDeviceTokenDTO;
+import com.api.bkland.payload.request.UserDeviceTokenRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.service.UserDeviceTokenService;
 import org.modelmapper.ModelMapper;
@@ -38,6 +39,32 @@ public class UserDeviceTokenController {
         }
     }
 
+    @PostMapping("/findByUserIdAndDeviceInfo")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> getUserDeviceToken(@RequestBody UserDeviceTokenRequest request) {
+        try {
+            UserDeviceToken userDeviceToken = service.findByUserIdAndDeviceInfo(request.getUserId(), request.getDeviceInfo());
+            return ResponseEntity.ok(new BaseResponse(modelMapper.map(userDeviceToken, UserDeviceTokenDTO.class), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin nhận thông báo trên thiết bị của người dùng." + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+    
+    @PutMapping
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> updateUserDeviceToken(@RequestBody UserDeviceTokenDTO body) {
+        try {
+            body.setUpdateAt(Instant.now());
+            service.update(modelMapper.map(body, UserDeviceToken.class));
+            return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin nhận thông báo trên thiết bị của người dùng." + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
     private UserDeviceToken convertToEntity(UserDeviceTokenDTO dto) {
         return modelMapper.map(dto, UserDeviceToken.class);
     }

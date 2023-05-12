@@ -17,11 +17,11 @@ public class WardService {
         return wardRepository.findAll();
     }
 
-//    public Ward findByCode(String code) {
-//        Optional<Ward> repoReturn = wardRepository.findByCode(code);
-//        if (repoReturn.isEmpty()) return null;
-//        return repoReturn.get();
-//    }
+    public Ward findByCode(String code) {
+        Optional<Ward> repoReturn = wardRepository.findByCode(code);
+        if (repoReturn.isEmpty()) return null;
+        return repoReturn.get();
+    }
 
     public List<Ward> getAllWardsOfDistrict(String districtCode) {
         return wardRepository.findByDistrictCode(districtCode);

@@ -159,13 +159,19 @@ public class RealEstatePostController {
                 postMediaService.save(modelMapper.map(postMediaDTO, PostMedia.class));
             }
             if (user.getRoles().contains(role)) {
+                int pay = Util.calculatePostPrice(realEstatePostDTO.getPriority(), realEstatePostDTO.getPeriod(), realEstatePostDTO.isSell());
                 PostPay postPay = new PostPay();
                 postPay.setId(0L);
                 postPay.setUser(user);
                 postPay.setRealEstatePost(realEstatePost);
-                postPay.setPrice(Util.calculatePostPrice(realEstatePostDTO.getPriority(), realEstatePostDTO.getPeriod(), realEstatePostDTO.isSell()));
+                postPay.setPrice(pay);
                 postPay.setCreateAt(Instant.now());
                 this.postPayService.createPostPay(postPay);
+
+                user.setAccountBalance(user.getAccountBalance() - pay);
+                user.setUpdateAt(Instant.now());
+                user.setUpdateBy(user.getId());
+                userService.updateUserInfo(user);
             }
             return ResponseEntity.ok(new
                     BaseResponse(null,

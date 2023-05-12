@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: localhost    Database: bkland
 -- ------------------------------------------------------
--- Server version	8.0.33-0ubuntu0.22.04.1
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,7 +33,7 @@ CREATE TABLE `about` (
   `create_at` varchar(255) DEFAULT NULL,
   `update_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +42,7 @@ CREATE TABLE `about` (
 
 LOCK TABLES `about` WRITE;
 /*!40000 ALTER TABLE `about` DISABLE KEYS */;
+INSERT INTO `about` VALUES (1,'Công ty cổ phần Bkland Việt Nam','số 1111, phố Đại Cồ Việt, phường Bách Khoa, quận Hai Bà Trưng, thành phố Hà Nội','0979797979','bkland.corp@gmail.com','admin','2023-05-12 08:23:38',NULL,NULL);
 /*!40000 ALTER TABLE `about` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -795,7 +796,7 @@ CREATE TABLE `refresh_token` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -804,7 +805,7 @@ CREATE TABLE `refresh_token` (
 
 LOCK TABLES `refresh_token` WRITE;
 /*!40000 ALTER TABLE `refresh_token` DISABLE KEYS */;
-INSERT INTO `refresh_token` VALUES (28,'2023-05-21 21:05:28','5de1b9d1-ee33-4e45-8aa7-c9285e1de775','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(29,'2023-05-21 21:05:52','f045f88b-a9bb-4e16-9b26-96d8398e525f','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(30,'2023-05-21 21:06:03','d7ce907e-13df-42f8-bf4a-1558837954c7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(31,'2023-05-21 21:08:50','449c1baa-ee94-4f71-be99-354c4f58de20','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(32,'2023-05-21 21:09:51','32ece767-0c9e-4d7a-828c-f661cf17fd6a','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(33,'2023-05-21 21:17:58','9fd0207c-ea6e-4ac7-a1dc-83085581b261','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(34,'2023-05-21 21:24:40','852892da-336f-4646-9c43-2383081725d2','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5');
+INSERT INTO `refresh_token` VALUES (28,'2023-05-21 21:05:28','5de1b9d1-ee33-4e45-8aa7-c9285e1de775','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(29,'2023-05-21 21:05:52','f045f88b-a9bb-4e16-9b26-96d8398e525f','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(30,'2023-05-21 21:06:03','d7ce907e-13df-42f8-bf4a-1558837954c7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(31,'2023-05-21 21:08:50','449c1baa-ee94-4f71-be99-354c4f58de20','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(32,'2023-05-21 21:09:51','32ece767-0c9e-4d7a-828c-f661cf17fd6a','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(33,'2023-05-21 21:17:58','9fd0207c-ea6e-4ac7-a1dc-83085581b261','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(34,'2023-05-21 21:24:40','852892da-336f-4646-9c43-2383081725d2','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(35,'2023-05-22 08:27:02','ada2f524-f1e0-4206-8cc7-a8bd572a69ff','cd766d98-dae3-4bbb-9356-07d362edfb66'),(36,'2023-05-22 08:30:54','8869063a-38cf-4049-939d-e230b8fc415f','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(37,'2023-05-22 09:48:38','4c66a5cb-558f-40c2-a7fd-d6869fa3025d','admin'),(38,'2023-05-22 09:49:38','91edb286-7718-49c0-b71c-a9f21e609afd','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(39,'2023-05-22 16:31:36','39975ca7-a436-4004-8506-86bda4a6c071','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5');
 /*!40000 ALTER TABLE `refresh_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -986,7 +987,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Văn Điệp','','Phạm','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Q8P/O8Pwf2WJktP8dZ06xuSPsVVfr8lBimW7jExjL2NavyYCIckbm','','NOT_FOUND','NOT_FOUND','NOT_FOUND','NOT_FOUND','','',NULL,1,100000000,'2023-05-11 14:05:28','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',NULL,'','https://lh3.googleusercontent.com/a/AGNmyxYq8IVJGDJc7ByX3QHk8jKZDn2NwKGVi-KjhadV=s96-c');
+INSERT INTO `user` VALUES ('admin','','','','admin','bkland.corp@gmail.com','$2a$10$TDN/UbuONi5u9U8Dv2EECeCdfc.Bo2pJk0dpt/dIu.Zjli9JxrrkK','','NOT_FOUND','NOT_FOUND','NOT_FOUND','NOT_FOUND','','','2023-05-12',1,0,NULL,NULL,NULL,NULL,''),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Phạm','Văn','Điệp','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Q8P/O8Pwf2WJktP8dZ06xuSPsVVfr8lBimW7jExjL2NavyYCIckbm','034201009053','MALE','34','341','12967','cửa hàng Dùng Quang, xóm 6, xã Thái Thọ','0362908968','2001-11-17',1,100000000,'2023-05-11 14:05:28','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 10:16:18','','https://lh3.googleusercontent.com/a/AGNmyxYq8IVJGDJc7ByX3QHk8jKZDn2NwKGVi-KjhadV=s96-c'),('cd766d98-dae3-4bbb-9356-07d362edfb66','Phạm','Văn','Điệp','dieppv','dieppv.work@gmail.com','$2a$10$TDN/UbuONi5u9U8Dv2EECeCdfc.Bo2pJk0dpt/dIu.Zjli9JxrrkK','034201009053','MALE','34','341','12967','xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,0,'2023-05-12 01:26:44','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-12 01:30:30','','');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1009,7 +1010,7 @@ CREATE TABLE `user_device_token` (
   `update_at` datetime DEFAULT NULL,
   `is_logout` tinyint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1018,7 +1019,7 @@ CREATE TABLE `user_device_token` (
 
 LOCK TABLES `user_device_token` WRITE;
 /*!40000 ALTER TABLE `user_device_token` DISABLE KEYS */;
-INSERT INTO `user_device_token` VALUES (7,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-11 21:24:40',NULL,'2023-05-11 21:24:40',0);
+INSERT INTO `user_device_token` VALUES (7,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-11 21:24:40',NULL,'2023-05-11 21:24:40',0),(8,'cd766d98-dae3-4bbb-9356-07d362edfb66','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-12 08:27:02','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-12 08:30:39',1),(9,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','fdVLdzaLmdhW9k3LYfVgKX:APA91bEdpzhpMrj08hoYzYENqKhdPwdDzoVAGCdEX4t3sr5hoEZpESW-47IC_EI8GJ5US6_Pqs4YfzcFazDZbhbmilzDYM3TU7vBtwvN1HMR1EOraRQM3WQ1NNPugChexcTS58zN16TN',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 08:30:54','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 16:39:34',0),(10,'admin','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'admin','2023-05-12 09:48:38','admin','2023-05-12 09:49:24',1),(11,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1','',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 16:31:36','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 16:31:57',0);
 /*!40000 ALTER TABLE `user_device_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1045,7 +1046,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES ('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',1);
+INSERT INTO `user_role` VALUES ('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',1),('cd766d98-dae3-4bbb-9356-07d362edfb66',1),('admin',4);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1092,4 +1093,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-11 22:48:22
+-- Dump completed on 2023-05-12 17:17:59
