@@ -8,9 +8,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,6 +34,20 @@ public class AboutController {
         }
     }
 
+    @PutMapping("/api/v1/about")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> updateAbout(@RequestBody AboutDTO aboutDTO) {
+        try {
+            aboutDTO.setUpdateBy("admin");
+            aboutDTO.setUpdateAt(Instant.now());
+            service.update(modelMapper.map(aboutDTO, About.class));
+            return ResponseEntity.ok(new BaseResponse(null, "Cập nhật thông tin thành công.", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi cập nhật thông tin. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
     private AboutDTO convertToDTO(About about) {
         return modelMapper.map(about, AboutDTO.class);
     }

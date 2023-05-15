@@ -4,7 +4,9 @@ import com.api.bkland.entity.User;
 import com.api.bkland.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -16,5 +18,11 @@ public class UserService {
         Optional<User> user = repository.findById(id);
         if (user.isEmpty()) return null;
         return user.get();
+    }
+
+    @Transactional
+    public User updateUserInfo(User user) {
+        user.setUpdateAt(Instant.now());
+        return repository.save(user);
     }
 }

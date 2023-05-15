@@ -13,13 +13,13 @@ public class DistrictService {
     @Autowired
     private DistrictRepository repository;
 
-//    public District findByCode(String code) {
-//        Optional<District> repoReturn = repository.findByCode(code);
-//        if (repoReturn.isEmpty()) {
-//            return null;
-//        }
-//        return repoReturn.get();
-//    }
+    public District findByCode(String code) {
+        Optional<District> repoReturn = repository.findByCode(code);
+        if (repoReturn.isEmpty()) {
+            return null;
+        }
+        return repoReturn.get();
+    }
 
     public List<District> findByProvinceCode(String provinceCode) {
         return repository.findByProvinceCode(provinceCode);
