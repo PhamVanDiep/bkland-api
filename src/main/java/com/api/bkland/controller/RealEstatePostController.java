@@ -349,4 +349,20 @@ public class RealEstatePostController {
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
+    @GetMapping("/api/v1/real-estate-post/user/{ownerId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> findByOwnerId(@PathVariable("ownerId") String ownerId) {
+        try {
+            List<RealEstatePost> realEstatePosts = service.findByOwnerId(ownerId);
+            return ResponseEntity.ok(new BaseResponse(
+                    realEstatePosts.stream().map(e -> modelMapper.map(e, RealEstatePostDTO.class)).collect(Collectors.toList()),
+                    "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng của người dùng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
 }

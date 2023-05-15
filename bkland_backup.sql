@@ -780,7 +780,7 @@ CREATE TABLE `real_estate_post` (
 
 LOCK TABLES `real_estate_post` WRITE;
 /*!40000 ALTER TABLE `real_estate_post` DISABLE KEYS */;
-INSERT INTO `real_estate_post` VALUES ('apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','APARTMENT','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Cần bán căn chung cư 3 ngủ ngõ 222 phố Đốc Ngữ','Nội thất đầy đủ, thuận tiện đi lại','ngõ 222, phố Đốc Ngữ',75,4.55,'01','001','00008','CHO_KIEM_DUYET',0,0,1,1,15,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','','2023-05-11 21:28:48','2023-05-11 22:23:34','DONG',1,'Đốc Ngữ');
+INSERT INTO `real_estate_post` VALUES ('apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','APARTMENT','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Cần bán căn chung cư 3 ngủ ngõ 222 phố Đốc Ngữ','Nội thất đầy đủ, thuận tiện đi lại, trong khu dân cư, gần các trường học, bệnh viện, gía cả phải chăng, phù hợp với các gia định có nhu cầu sinh sống lâu dài, nói chung là ok','ngõ 222, phố Đốc Ngữ',75,4.55,'01','001','00008','CHO_KIEM_DUYET',0,0,1,1,15,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','','2023-05-11 21:28:48','2023-05-15 16:45:24','DONG',1,'Đốc Ngữ');
 /*!40000 ALTER TABLE `real_estate_post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1123,4 +1123,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-15 11:13:12
+-- Dump completed on 2023-05-15 17:01:34
