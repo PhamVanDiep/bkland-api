@@ -14,6 +14,10 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
     @Query(value = "update real_estate_post set enable=0 where datediff(now(), create_at) > period;", nativeQuery = true)
     void disablePostExpire();
 
+    @Modifying
+    @Query(value = "update real_estate_post set enable=0 where id = :id", nativeQuery = true)
+    void disablePostById(String id);
+
     @Query(value = "select * from real_estate_post x where x.owner_id = :ownerId", nativeQuery = true)
     List<RealEstatePost> findByOwnerId(String ownerId);
 }

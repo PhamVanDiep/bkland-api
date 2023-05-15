@@ -365,4 +365,17 @@ public class RealEstatePostController {
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
+    @PutMapping("/api/v1/real-estate-post/disable/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> disablePostById(@PathVariable("id") String id) {
+        try {
+            service.disablePostById(id);
+            return ResponseEntity.ok(new BaseResponse(null, "Ẩn bài viết thành công", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi ẩn bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
 }

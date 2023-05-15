@@ -50,4 +50,9 @@ public class RealEstatePostService {
             logger.error(e.getMessage());
         }
     }
+
+    @Transactional
+    public void disablePostById(String id) {
+        repository.disablePostById(id);
+    }
 }
