@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
 -- Host: localhost    Database: bkland
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.33-0ubuntu0.22.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -333,7 +333,7 @@ CREATE TABLE `house` (
   PRIMARY KEY (`id`),
   KEY `house_ibfk_1` (`real_estate_post_id`),
   CONSTRAINT `house_ibfk_1` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,6 +342,7 @@ CREATE TABLE `house` (
 
 LOCK TABLES `house` WRITE;
 /*!40000 ALTER TABLE `house` DISABLE KEYS */;
+INSERT INTO `house` VALUES (3,'house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372',4,3,3,'Nội thất đầy đủ','DONG',6,6.5,4);
 /*!40000 ALTER TABLE `house` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -545,7 +546,7 @@ CREATE TABLE `post_media` (
 
 LOCK TABLES `post_media` WRITE;
 /*!40000 ALTER TABLE `post_media` DISABLE KEYS */;
-INSERT INTO `post_media` VALUES ('645d087573c9fe6770970d4f','image/jpeg','apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','REAL_ESTATE_POST','login-bgr.jpg'),('645d087573c9fe6770970d50','image/png','apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','REAL_ESTATE_POST','user.png');
+INSERT INTO `post_media` VALUES ('645d087573c9fe6770970d4f','image/jpeg','apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','REAL_ESTATE_POST','login-bgr.jpg'),('645d087573c9fe6770970d50','image/png','apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','REAL_ESTATE_POST','user.png'),('64638d703938236677acd882','image/jpeg','house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372','REAL_ESTATE_POST','login-bgr.jpg'),('64638d703938236677acd883','image/png','house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372','REAL_ESTATE_POST','Screenshot from 2023-02-15 08-28-21.png'),('64638d703938236677acd884','image/png','house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372','REAL_ESTATE_POST','Screenshot from 2023-02-15 08-23-30.png');
 /*!40000 ALTER TABLE `post_media` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -567,7 +568,7 @@ CREATE TABLE `post_pay` (
   KEY `real_estate_post_id` (`real_estate_post_id`),
   CONSTRAINT `post_pay_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `post_pay_ibfk_2` FOREIGN KEY (`real_estate_post_id`) REFERENCES `real_estate_post` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -576,7 +577,7 @@ CREATE TABLE `post_pay` (
 
 LOCK TABLES `post_pay` WRITE;
 /*!40000 ALTER TABLE `post_pay` DISABLE KEYS */;
-INSERT INTO `post_pay` VALUES (2,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',75000,'apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','2023-05-11 21:28:48');
+INSERT INTO `post_pay` VALUES (2,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',75000,'apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','2023-05-11 21:28:48'),(3,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',360000,'house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372','2023-05-16 21:04:32');
 /*!40000 ALTER TABLE `post_pay` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -780,7 +781,7 @@ CREATE TABLE `real_estate_post` (
 
 LOCK TABLES `real_estate_post` WRITE;
 /*!40000 ALTER TABLE `real_estate_post` DISABLE KEYS */;
-INSERT INTO `real_estate_post` VALUES ('apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','APARTMENT','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Cần bán căn chung cư 3 ngủ ngõ 222 phố Đốc Ngữ','Nội thất đầy đủ, thuận tiện đi lại, trong khu dân cư, gần các trường học, bệnh viện, gía cả phải chăng, phù hợp với các gia định có nhu cầu sinh sống lâu dài, nói chung là ok','ngõ 222, phố Đốc Ngữ',75,4.55,'01','001','00008','CHO_KIEM_DUYET',0,0,0,1,15,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','','2023-05-11 21:28:48','2023-05-15 16:45:24','DONG',1,'Đốc Ngữ');
+INSERT INTO `real_estate_post` VALUES ('apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','APARTMENT','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Cần bán căn chung cư 3 ngủ ngõ 222 phố Đốc Ngữ','Nội thất đầy đủ, thuận tiện đi lại, trong khu dân cư, gần các trường học, bệnh viện, gía cả phải chăng, phù hợp với các gia định có nhu cầu sinh sống lâu dài, nói chung là ok','ngõ 222, phố Đốc Ngữ',75,4.55,'01','001','00008','DA_KIEM_DUYET',0,0,1,1,15,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','','2023-05-11 21:28:48','2023-05-15 16:45:24','DONG',1,'Đốc Ngữ'),('house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372','HOUSE','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Cho thuê nhà nguyên căn ngõ 1234 phố Thanh Nhàn','Đầy đủ tiện nghi, điều hòa, nóng lạnh, phù hợp với các hộ gia đình','ngõ 1234, phố Thanh Nhàn',40,8,'01','007','00271','CHO_KIEM_DUYET',21.0277644,105.8341598,1,3,60,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','','2023-05-16 21:04:32','2023-05-16 21:20:33','DONG',0,'Thanh Nhàn');
 /*!40000 ALTER TABLE `real_estate_post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1017,7 +1018,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('admin','','','','admin','bkland.corp@gmail.com','$2a$10$y8ywuWSvnzIy/oFz1PNVeOVWrpVrk2ubDrp4hxb5QvXX/QMNwXqFm','','NOT_FOUND','NOT_FOUND','NOT_FOUND','NOT_FOUND','','','2023-05-12',1,0,NULL,NULL,'2023-05-14 03:23:17',NULL,''),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Phạm','Văn','Điệp','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Q8P/O8Pwf2WJktP8dZ06xuSPsVVfr8lBimW7jExjL2NavyYCIckbm','034201009053','MALE','34','341','12967','cửa hàng Dùng Quang, xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,1500000,'2023-05-11 14:05:28','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-15 01:56:46','','http://localhost:7979/api/no-auth/photos/6461915dd55a54030e38dd30'),('cd766d98-dae3-4bbb-9356-07d362edfb66','Phạm','Văn','Điệp','dieppv','dieppv.work@gmail.com','$2a$10$TDN/UbuONi5u9U8Dv2EECeCdfc.Bo2pJk0dpt/dIu.Zjli9JxrrkK','034201009053','MALE','34','341','12967','xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,250000,'2023-05-12 01:26:44','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-16 04:26:48','','');
+INSERT INTO `user` VALUES ('admin','','','','admin','bkland.corp@gmail.com','$2a$10$y8ywuWSvnzIy/oFz1PNVeOVWrpVrk2ubDrp4hxb5QvXX/QMNwXqFm','','NOT_FOUND','NOT_FOUND','NOT_FOUND','NOT_FOUND','','','2023-05-12',1,0,NULL,NULL,'2023-05-14 03:23:17',NULL,''),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Phạm','Văn','Điệp','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Q8P/O8Pwf2WJktP8dZ06xuSPsVVfr8lBimW7jExjL2NavyYCIckbm','034201009053','MALE','34','341','12967','cửa hàng Dùng Quang, xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,1140000,'2023-05-11 14:05:28','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-16 14:04:32','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','http://localhost:7979/api/no-auth/photos/6461915dd55a54030e38dd30'),('cd766d98-dae3-4bbb-9356-07d362edfb66','Phạm','Văn','Điệp','dieppv','dieppv.work@gmail.com','$2a$10$TDN/UbuONi5u9U8Dv2EECeCdfc.Bo2pJk0dpt/dIu.Zjli9JxrrkK','034201009053','MALE','34','341','12967','xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,250000,'2023-05-12 01:26:44','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-16 04:26:48','','');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1123,4 +1124,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-16 18:19:36
+-- Dump completed on 2023-05-16 21:27:40

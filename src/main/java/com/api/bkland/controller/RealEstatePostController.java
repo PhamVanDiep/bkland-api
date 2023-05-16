@@ -7,6 +7,7 @@ import com.api.bkland.payload.dto.PostMediaDTO;
 import com.api.bkland.payload.dto.post.*;
 import com.api.bkland.payload.request.ListImageUpload;
 import com.api.bkland.payload.request.RealEstatePostRequest;
+import com.api.bkland.payload.request.UpdatePostStatusRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.RealEstatePostResponse;
 import com.api.bkland.service.*;
@@ -414,6 +415,23 @@ public class RealEstatePostController {
                 service.update(realEstatePost);
                 return ResponseEntity.ok(new BaseResponse(1, "Hiện bài viết thành công", HttpStatus.OK));
             }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi ẩn / hiện bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/api/v1/real-estate-post/status")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> updateStatus(@RequestBody UpdatePostStatusRequest request) {
+        try {
+            service.updatePostStatus(request.getStatus().toString(), request.getPostId());
+            return ResponseEntity.ok(new BaseResponse(
+                    request.getStatus().toString(),
+                    "Cập nhật trạng thái bài viết thành công.",
+                    HttpStatus.OK
+            ));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi ẩn / hiện bài đăng. " + e.getMessage(),

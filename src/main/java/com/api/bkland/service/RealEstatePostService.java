@@ -59,4 +59,9 @@ public class RealEstatePostService {
     public List<RealEstatePost> findAll() {
         return repository.findAll();
     }
+
+    @Transactional
+    public void updatePostStatus(String status, String id) {
+        repository.updateStatus(status, id);
+    }
 }
