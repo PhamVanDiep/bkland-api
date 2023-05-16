@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -117,6 +118,55 @@ public class UserController {
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getAllUsers() {
+        try {
+            List<User> users = service.findAll();
+            if (users.isEmpty()) {
+                return ResponseEntity.ok(new BaseResponse(null,
+                        "Không có người dùng nào được tìm thấy.",
+                        HttpStatus.NO_CONTENT));
+            }
+            return ResponseEntity.ok(new BaseResponse(
+                    users.stream().map(e -> modelMapper.map(e, UserDTO.class)).collect(Collectors.toList()),
+                    "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy danh sách người dùng " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/lock/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> lockOrUnlock(@PathVariable("id") String id) {
+        try {
+            User user = service.findById(id);
+            if (user == null) {
+                return ResponseEntity.ok(new BaseResponse(null,
+                        "Không tìm thấy tài khoản trên hệ thống", HttpStatus.NOT_FOUND));
+            }
+            if (user.isEnable()) {
+                user.setEnable(false);
+                service.updateUserInfo(user);
+                return ResponseEntity.ok(new BaseResponse(0,
+                        "Khóa tài khoản thành công.", HttpStatus.OK));
+            } else {
+                user.setEnable(true);
+                service.updateUserInfo(user);
+                return ResponseEntity.ok(new BaseResponse(1,
+                        "Mở khóa tài khoản thành công.", HttpStatus.OK));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi cập nhật trạng thái tài khoản. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
     private UserDTO convertToDTO(User user) {
         return modelMapper.map(user, UserDTO.class);
     }

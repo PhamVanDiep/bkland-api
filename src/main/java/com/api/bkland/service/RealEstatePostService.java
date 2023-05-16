@@ -55,4 +55,8 @@ public class RealEstatePostService {
     public void disablePostById(String id) {
         repository.disablePostById(id);
     }
+
+    public List<RealEstatePost> findAll() {
+        return repository.findAll();
+    }
 }
