@@ -1,11 +1,14 @@
 package com.api.bkland.util;
 
+import com.api.bkland.payload.dto.DistrictDTO;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Random;
 
 public class Util {
@@ -78,5 +81,17 @@ public class Util {
             heSo = 6;
         }
         return Math.round(heSo * price);
+    }
+
+    public static int agencyMonthlyPaid(List<DistrictDTO> districtDTOS) {
+        int total = 0;
+        for (DistrictDTO districtDTO: districtDTOS) {
+            if (districtDTO.getAdministrativeUnitId().equals("7")) {
+                total += 30000;
+            } else {
+                total += 20000;
+            }
+        }
+        return total;
     }
 }

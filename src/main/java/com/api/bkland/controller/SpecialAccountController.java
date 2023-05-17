@@ -2,16 +2,14 @@ package com.api.bkland.controller;
 
 import com.api.bkland.entity.SpecialAccount;
 import com.api.bkland.payload.dto.SpecialAccountDTO;
+import com.api.bkland.payload.request.AgencyRegisterRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.service.SpecialAccountService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,6 +31,16 @@ public class SpecialAccountController {
                     "Đã xảy ra lỗi khi thực thi. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
+    }
+
+    @PostMapping("/api/v1/special-account/agency")
+    public ResponseEntity<BaseResponse> createAgency(@RequestBody AgencyRegisterRequest request) {
+        return ResponseEntity.ok(service.agencyRegister(request));
+    }
+
+    @PutMapping("/api/v1/special-account/agency")
+    public ResponseEntity<BaseResponse> updateAgency(@RequestBody AgencyRegisterRequest request) {
+        return ResponseEntity.ok(service.agencyUpdate(request));
     }
 
     private SpecialAccount convertToEntity(SpecialAccountDTO specialAccountDTO) {
