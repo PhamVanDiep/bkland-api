@@ -28,6 +28,16 @@ public class SpecialAccountPay {
 
     @NotNull
     @NotBlank
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "is_monthly_pay")
+    @NotNull
+    @NotBlank
+    private boolean monthlyPay;
+
+    @NotNull
+    @NotBlank
     @Column(name = "create_by")
     private String createBy;
 
@@ -58,6 +68,22 @@ public class SpecialAccountPay {
 
     public void setAmount(Integer amount) {
         this.amount = amount;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isMonthlyPay() {
+        return monthlyPay;
+    }
+
+    public void setMonthlyPay(boolean monthlyPay) {
+        this.monthlyPay = monthlyPay;
     }
 
     public Long getAccountBalance() {

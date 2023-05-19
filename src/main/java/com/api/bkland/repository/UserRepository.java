@@ -22,4 +22,8 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Modifying
     @Query(value = "insert into agency_district(user_id, district_code) values ( :userId, :districtCode );", nativeQuery = true)
     void agencyDistrictInsert(@PathVariable("userId") String userId, @PathVariable("districtCode") String districtCode);
+
+    @Modifying
+    @Query(value = "delete from agency_district where user_id = :userId ;", nativeQuery = true)
+    void agencyDistrictDeleteByUserId(@PathVariable("userId") String userId);
 }

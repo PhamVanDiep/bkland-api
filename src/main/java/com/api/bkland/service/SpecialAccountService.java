@@ -1,5 +1,6 @@
 package com.api.bkland.service;
 
+import com.api.bkland.constant.PayContent;
 import com.api.bkland.entity.SpecialAccount;
 import com.api.bkland.entity.SpecialAccountPay;
 import com.api.bkland.entity.User;
@@ -66,6 +67,8 @@ public class SpecialAccountService {
             specialAccountPay.setId(0L);
             specialAccountPay.setAmount(totalPaid);
             specialAccountPay.setAccountBalance(user.getAccountBalance() - totalPaid);
+            specialAccountPay.setContent(PayContent.MONTHLY_CHARGE);
+            specialAccountPay.setMonthlyPay(true);
             specialAccountPay.setCreateBy(userId);
             specialAccountPay.setCreateAt(Instant.now());
             specialAccountPayRepository.save(specialAccountPay);
@@ -73,6 +76,12 @@ public class SpecialAccountService {
             for (DistrictDTO districtDTO: districtDTOS) {
                 userRepository.agencyDistrictInsert(userId, districtDTO.getCode());
             }
+
+            user.setAccountBalance(user.getAccountBalance() - totalPaid);
+            user.setUpdateAt(Instant.now());
+            user.setUpdateBy(user.getId());
+            userRepository.save(user);
+
             return new BaseResponse(null, "Đăng ký tài khoản môi giới thành công.", HttpStatus.OK);
         } catch (Exception e) {
             return new BaseResponse(null,
@@ -95,27 +104,39 @@ public class SpecialAccountService {
             List<DistrictDTO> districtDTOS = request.getDistricts();
 
             int totalPaid = Util.agencyMonthlyPaid(districtDTOS);
-            if (totalPaid > user.getAccountBalance()) {
+
+            Optional<SpecialAccount> specialAccountOptional = repository.findByUserId(request.getUserId());
+            if (specialAccountOptional.isEmpty()) {
+                return new BaseResponse(null, "Không tìm thấy thông tin người dùng này.", HttpStatus.NO_CONTENT);
+            }
+            SpecialAccount specialAccount = specialAccountOptional.get();
+            if (totalPaid - specialAccount.getMonthlyCharge() > user.getAccountBalance()) {
                 return new BaseResponse(null, "Tài khoản của người dùng không đủ để đăng ký.", HttpStatus.NO_CONTENT);
             }
-            userRepository.agencyRegister(request.getUserId());
 
-            SpecialAccount specialAccount = new SpecialAccount();
-            specialAccount.setUserId(request.getUserId());
-            specialAccount.setAgency(true);
-            specialAccount.setLastPaid(Instant.now());
+            if (totalPaid > specialAccount.getMonthlyCharge()) {
+                int delta = totalPaid - specialAccount.getMonthlyCharge();
+                SpecialAccountPay specialAccountPay = new SpecialAccountPay();
+                specialAccountPay.setUser(user);
+                specialAccountPay.setId(0L);
+                specialAccountPay.setAmount(delta);
+                specialAccountPay.setAccountBalance(user.getAccountBalance() - delta);
+                specialAccountPay.setContent(PayContent.EXTRA_CHARGE);
+                specialAccountPay.setMonthlyPay(false);
+                specialAccountPay.setCreateBy(userId);
+                specialAccountPay.setCreateAt(Instant.now());
+                specialAccountPayRepository.save(specialAccountPay);
+
+                user.setAccountBalance(user.getAccountBalance() - delta);
+                user.setUpdateAt(Instant.now());
+                user.setUpdateBy(user.getId());
+                userRepository.save(user);
+            }
+
             specialAccount.setMonthlyCharge(totalPaid);
             repository.save(specialAccount);
 
-            SpecialAccountPay specialAccountPay = new SpecialAccountPay();
-            specialAccountPay.setUser(user);
-            specialAccountPay.setId(0L);
-            specialAccountPay.setAmount(totalPaid);
-            specialAccountPay.setAccountBalance(user.getAccountBalance() - totalPaid);
-            specialAccountPay.setCreateBy(userId);
-            specialAccountPay.setCreateAt(Instant.now());
-            specialAccountPayRepository.save(specialAccountPay);
-
+            userRepository.agencyDistrictDeleteByUserId(userId);
             for (DistrictDTO districtDTO: districtDTOS) {
                 userRepository.agencyDistrictInsert(userId, districtDTO.getCode());
             }
