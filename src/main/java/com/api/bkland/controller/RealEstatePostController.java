@@ -1,5 +1,6 @@
 package com.api.bkland.controller;
 
+import com.api.bkland.constant.PayContent;
 import com.api.bkland.constant.enumeric.ERole;
 import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.*;
@@ -166,6 +167,8 @@ public class RealEstatePostController {
                 postPay.setUser(user);
                 postPay.setRealEstatePost(realEstatePost);
                 postPay.setPrice(pay);
+                postPay.setContent(PayContent.POST_PAY);
+                postPay.setAccountBalance(user.getAccountBalance() - pay);
                 postPay.setCreateAt(Instant.now());
                 this.postPayService.createPostPay(postPay);
 

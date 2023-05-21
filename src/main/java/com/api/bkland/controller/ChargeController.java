@@ -127,7 +127,8 @@ public class ChargeController {
         try {
             return ResponseEntity.ok(
                     new BaseResponse(
-                            chargeService.findByUserId(userId).stream().map(e -> convertToDTO(e)).collect(Collectors.toList()),
+                            chargeService.findByUserId(userId)
+                                    .stream().map(e -> convertToDTO(e)).collect(Collectors.toList()),
                             "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
@@ -142,7 +143,10 @@ public class ChargeController {
         try {
             return ResponseEntity.ok(
                     new BaseResponse(
-                            chargeService.findAll().stream().map(e -> convertToDTO(e)).collect(Collectors.toList()),
+                            chargeService.findAll()
+                                    .stream()
+                                    .sorted(Comparator.comparing(Charge::getCreateAt).reversed())
+                                    .map(e -> convertToDTO(e)).collect(Collectors.toList()),
                             "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,

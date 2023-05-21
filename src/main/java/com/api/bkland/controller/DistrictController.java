@@ -23,23 +23,23 @@ public class DistrictController {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @GetMapping("/{code}")
-//    public ResponseEntity<BaseResponse> findByCode(@PathVariable("code") String code) {
-//        try {
-//            District district = districtService.findByCode(code);
-//            if (district == null) {
-//                return ResponseEntity.ok(new BaseResponse(null,
-//                        "Không tìm thấy thông tin phù hợp",
-//                        HttpStatus.NOT_FOUND));
-//            } else {
-//                return ResponseEntity.ok(new BaseResponse(convertToDTO(district), "", HttpStatus.OK));
-//            }
-//        } catch (Exception e) {
-//            return ResponseEntity.ok(new BaseResponse(null,
-//                    "Đã xảy ra lỗi khi thực thi. " + e.getMessage(),
-//                    HttpStatus.INTERNAL_SERVER_ERROR));
-//        }
-//    }
+    @GetMapping("/{code}")
+    public ResponseEntity<BaseResponse> findByCode(@PathVariable("code") String code) {
+        try {
+            District district = districtService.findByCode(code);
+            if (district == null) {
+                return ResponseEntity.ok(new BaseResponse(null,
+                        "Không tìm thấy thông tin phù hợp",
+                        HttpStatus.NOT_FOUND));
+            } else {
+                return ResponseEntity.ok(new BaseResponse(convertToDTO(district), "", HttpStatus.OK));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi thực thi. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
 
     @GetMapping("/province/{provinceCode}")
     public ResponseEntity<BaseResponse> findByProvinceCode(@PathVariable("provinceCode") String code) {

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
 -- Host: localhost    Database: bkland
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.33-0ubuntu0.22.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -125,6 +125,7 @@ CREATE TABLE `agency_district` (
 
 LOCK TABLES `agency_district` WRITE;
 /*!40000 ALTER TABLE `agency_district` DISABLE KEYS */;
+INSERT INTO `agency_district` VALUES ('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','001'),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','002'),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','003'),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','004'),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','009'),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','016');
 /*!40000 ALTER TABLE `agency_district` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -563,6 +564,8 @@ CREATE TABLE `post_pay` (
   `price` int NOT NULL,
   `real_estate_post_id` varchar(255) NOT NULL,
   `create_at` datetime NOT NULL,
+  `account_balance` int NOT NULL,
+  `content` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `real_estate_post_id` (`real_estate_post_id`),
@@ -577,7 +580,7 @@ CREATE TABLE `post_pay` (
 
 LOCK TABLES `post_pay` WRITE;
 /*!40000 ALTER TABLE `post_pay` DISABLE KEYS */;
-INSERT INTO `post_pay` VALUES (2,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',75000,'apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','2023-05-11 21:28:48'),(3,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',360000,'house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372','2023-05-16 21:04:32');
+INSERT INTO `post_pay` VALUES (2,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',75000,'apartment-4de5f2c2-99c9-4db6-89e5-b3285f223bb5','2023-05-11 21:28:48',1575000,'Phí đăng bài'),(3,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',360000,'house-083dc65b-7d61-4993-9a5e-e3e2dd4b5372','2023-05-16 21:04:32',1500000,'Phí đăng bài');
 /*!40000 ALTER TABLE `post_pay` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -800,7 +803,7 @@ CREATE TABLE `refresh_token` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `refresh_token_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -809,7 +812,7 @@ CREATE TABLE `refresh_token` (
 
 LOCK TABLES `refresh_token` WRITE;
 /*!40000 ALTER TABLE `refresh_token` DISABLE KEYS */;
-INSERT INTO `refresh_token` VALUES (28,'2023-05-21 21:05:28','5de1b9d1-ee33-4e45-8aa7-c9285e1de775','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(29,'2023-05-21 21:05:52','f045f88b-a9bb-4e16-9b26-96d8398e525f','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(30,'2023-05-21 21:06:03','d7ce907e-13df-42f8-bf4a-1558837954c7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(31,'2023-05-21 21:08:50','449c1baa-ee94-4f71-be99-354c4f58de20','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(32,'2023-05-21 21:09:51','32ece767-0c9e-4d7a-828c-f661cf17fd6a','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(33,'2023-05-21 21:17:58','9fd0207c-ea6e-4ac7-a1dc-83085581b261','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(34,'2023-05-21 21:24:40','852892da-336f-4646-9c43-2383081725d2','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(35,'2023-05-22 08:27:02','ada2f524-f1e0-4206-8cc7-a8bd572a69ff','cd766d98-dae3-4bbb-9356-07d362edfb66'),(36,'2023-05-22 08:30:54','8869063a-38cf-4049-939d-e230b8fc415f','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(37,'2023-05-22 09:48:38','4c66a5cb-558f-40c2-a7fd-d6869fa3025d','admin'),(38,'2023-05-22 09:49:38','91edb286-7718-49c0-b71c-a9f21e609afd','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(39,'2023-05-22 16:31:36','39975ca7-a436-4004-8506-86bda4a6c071','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(40,'2023-05-22 21:45:27','a9d52493-0d82-4c0b-9526-c05db18bf9b3','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(41,'2023-05-22 23:32:27','29dc3365-3f64-4e15-bbd5-e483fffa6473','admin'),(42,'2023-05-22 23:34:02','6de279a6-e10c-476b-9aa1-4ecc89093334','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(43,'2023-05-24 09:49:36','08aea2be-05b4-4fa9-94ad-0b4f232b3306','admin'),(44,'2023-05-24 18:10:49','495170e5-288a-4b72-abc5-a62c553a09dc','cd766d98-dae3-4bbb-9356-07d362edfb66'),(45,'2023-05-25 08:58:28','db2f974b-600d-4f48-aed5-620f7715bde7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(46,'2023-05-25 10:58:37','d0c9a62d-1699-4687-b652-c3d0c3c62e74','admin'),(47,'2023-05-25 21:09:10','99f56671-2c5d-4000-b4f7-fc02f8a052cd','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(48,'2023-05-25 22:08:58','63528994-6745-4eab-86d0-0ba590d801c7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(49,'2023-05-25 22:11:57','8020ba6f-389d-47be-bf90-20d8dc0c245a','admin'),(50,'2023-05-25 22:34:30','c795188d-90c0-4b76-8653-633b5863d244','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(51,'2023-05-26 11:04:24','0fe82f3c-cf30-4b81-8106-871f2d7d076b','cd766d98-dae3-4bbb-9356-07d362edfb66');
+INSERT INTO `refresh_token` VALUES (28,'2023-05-21 21:05:28','5de1b9d1-ee33-4e45-8aa7-c9285e1de775','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(29,'2023-05-21 21:05:52','f045f88b-a9bb-4e16-9b26-96d8398e525f','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(30,'2023-05-21 21:06:03','d7ce907e-13df-42f8-bf4a-1558837954c7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(31,'2023-05-21 21:08:50','449c1baa-ee94-4f71-be99-354c4f58de20','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(32,'2023-05-21 21:09:51','32ece767-0c9e-4d7a-828c-f661cf17fd6a','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(33,'2023-05-21 21:17:58','9fd0207c-ea6e-4ac7-a1dc-83085581b261','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(34,'2023-05-21 21:24:40','852892da-336f-4646-9c43-2383081725d2','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(35,'2023-05-22 08:27:02','ada2f524-f1e0-4206-8cc7-a8bd572a69ff','cd766d98-dae3-4bbb-9356-07d362edfb66'),(36,'2023-05-22 08:30:54','8869063a-38cf-4049-939d-e230b8fc415f','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(37,'2023-05-22 09:48:38','4c66a5cb-558f-40c2-a7fd-d6869fa3025d','admin'),(38,'2023-05-22 09:49:38','91edb286-7718-49c0-b71c-a9f21e609afd','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(39,'2023-05-22 16:31:36','39975ca7-a436-4004-8506-86bda4a6c071','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(40,'2023-05-22 21:45:27','a9d52493-0d82-4c0b-9526-c05db18bf9b3','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(41,'2023-05-22 23:32:27','29dc3365-3f64-4e15-bbd5-e483fffa6473','admin'),(42,'2023-05-22 23:34:02','6de279a6-e10c-476b-9aa1-4ecc89093334','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(43,'2023-05-24 09:49:36','08aea2be-05b4-4fa9-94ad-0b4f232b3306','admin'),(44,'2023-05-24 18:10:49','495170e5-288a-4b72-abc5-a62c553a09dc','cd766d98-dae3-4bbb-9356-07d362edfb66'),(45,'2023-05-25 08:58:28','db2f974b-600d-4f48-aed5-620f7715bde7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(46,'2023-05-25 10:58:37','d0c9a62d-1699-4687-b652-c3d0c3c62e74','admin'),(47,'2023-05-25 21:09:10','99f56671-2c5d-4000-b4f7-fc02f8a052cd','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(48,'2023-05-25 22:08:58','63528994-6745-4eab-86d0-0ba590d801c7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(49,'2023-05-25 22:11:57','8020ba6f-389d-47be-bf90-20d8dc0c245a','admin'),(50,'2023-05-25 22:34:30','c795188d-90c0-4b76-8653-633b5863d244','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(51,'2023-05-26 11:04:24','0fe82f3c-cf30-4b81-8106-871f2d7d076b','cd766d98-dae3-4bbb-9356-07d362edfb66'),(52,'2023-05-30 22:00:16','31822bc1-8349-4163-92d9-f7586c61e8b8','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(53,'2023-05-31 11:27:23','1dc74876-1405-413f-befc-fa1789cbc824','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(54,'2023-05-31 14:58:22','9a40c896-0b9a-4b21-8cc3-a4b421fa5b08','admin'),(55,'2023-05-31 14:58:46','f93f03d8-2e9a-4150-86b3-ab90e726dfbe','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(56,'2023-05-31 15:33:06','b5c868b5-5c70-4629-8d66-d82a18e70235','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(57,'2023-05-31 15:33:35','45d0e3b8-d050-4e16-b1d2-928a9ae07fb7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(58,'2023-05-31 15:34:18','9070b900-7524-4f91-aefd-6e2cb9b91a57','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(59,'2023-05-31 15:47:11','c7349387-8408-4fa0-8740-fd659ef3ee83','cd766d98-dae3-4bbb-9356-07d362edfb66'),(60,'2023-05-31 16:04:24','1e18eeb1-8fb7-41d3-ba56-88a549fe4a2a','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(61,'2023-05-31 20:05:13','08b465cc-8c74-48a5-a60e-ee1569aaee3c','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(62,'2023-05-31 20:05:43','96f47d7f-8313-4ba3-ae76-a444ac5734a1','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5'),(63,'2023-05-31 20:35:42','77d0897f-c770-463a-b5c8-12001c7d3150','admin'),(64,'2023-05-31 22:49:32','c5763520-95d5-4172-aae6-4a68e69893d7','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5');
 /*!40000 ALTER TABLE `refresh_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -888,6 +891,7 @@ CREATE TABLE `special_account` (
 
 LOCK TABLES `special_account` WRITE;
 /*!40000 ALTER TABLE `special_account` DISABLE KEYS */;
+INSERT INTO `special_account` VALUES ('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',170000,1,'2023-05-21 20:05:42');
 /*!40000 ALTER TABLE `special_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -910,7 +914,7 @@ CREATE TABLE `special_account_pay` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `special_account_pay_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -919,6 +923,7 @@ CREATE TABLE `special_account_pay` (
 
 LOCK TABLES `special_account_pay` WRITE;
 /*!40000 ALTER TABLE `special_account_pay` DISABLE KEYS */;
+INSERT INTO `special_account_pay` VALUES (1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',120000,1020000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-20 22:07:51','Thanh toán phí hàng tháng',1),(2,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',170000,850000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-20 23:03:21','Thanh toán phí hàng tháng',1),(3,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',30000,820000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-20 23:06:27','Thanh toán phí bổ sung khi cập nhật khu vực đăng ký môi giới',0),(4,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',170000,650000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 10:23:53','Thanh toán phí hàng tháng',1),(5,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',80000,570000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 15:28:41','Thanh toán phí hàng tháng',1),(6,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',100000,470000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 15:34:09','Thanh toán phí hàng tháng',1),(7,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',30000,440000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 15:38:07','Thanh toán phí bổ sung khi cập nhật khu vực đăng ký môi giới',0),(8,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',120000,320000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 20:05:42','Thanh toán phí hàng tháng',1),(9,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',50000,270000,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 22:50:11','Thanh toán phí bổ sung khi cập nhật khu vực đăng ký môi giới',0);
 /*!40000 ALTER TABLE `special_account_pay` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1022,7 +1027,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('admin','','','','admin','bkland.corp@gmail.com','$2a$10$y8ywuWSvnzIy/oFz1PNVeOVWrpVrk2ubDrp4hxb5QvXX/QMNwXqFm','','NOT_FOUND','NOT_FOUND','NOT_FOUND','NOT_FOUND','','','2023-05-12',1,0,NULL,NULL,'2023-05-14 03:23:17',NULL,''),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Phạm','Văn','Điệp','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Q8P/O8Pwf2WJktP8dZ06xuSPsVVfr8lBimW7jExjL2NavyYCIckbm','034201009053','MALE','34','341','12967','cửa hàng Dùng Quang, xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,1140000,'2023-05-11 14:05:28','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-16 14:04:32','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','http://localhost:7979/api/no-auth/photos/6461915dd55a54030e38dd30'),('cd766d98-dae3-4bbb-9356-07d362edfb66','Phạm','Văn','Điệp','dieppv','dieppv.work@gmail.com','$2a$10$TDN/UbuONi5u9U8Dv2EECeCdfc.Bo2pJk0dpt/dIu.Zjli9JxrrkK','034201009053','MALE','34','341','12967','xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,250000,'2023-05-12 01:26:44','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-16 04:26:48','','');
+INSERT INTO `user` VALUES ('admin','','','','admin','bkland.corp@gmail.com','$2a$10$y8ywuWSvnzIy/oFz1PNVeOVWrpVrk2ubDrp4hxb5QvXX/QMNwXqFm','','NOT_FOUND','NOT_FOUND','NOT_FOUND','NOT_FOUND','','','2023-05-12',1,0,NULL,NULL,'2023-05-14 03:23:17',NULL,''),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Phạm','Văn','Điệp','phamdiepa1k55@gmail.com_user_bkland','phamdiepa1k55@gmail.com','$2a$10$Q8P/O8Pwf2WJktP8dZ06xuSPsVVfr8lBimW7jExjL2NavyYCIckbm','034201009053','MALE','34','341','12967','cửa hàng Dùng Quang, xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,270000,'2023-05-11 14:05:28','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 15:50:11','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','http://localhost:7979/api/no-auth/photos/6461915dd55a54030e38dd30'),('cd766d98-dae3-4bbb-9356-07d362edfb66','Phạm','Văn','Điệp','dieppv','dieppv.work@gmail.com','$2a$10$TDN/UbuONi5u9U8Dv2EECeCdfc.Bo2pJk0dpt/dIu.Zjli9JxrrkK','034201009053','MALE','34','341','12967','xóm 6, thôn Hanh Lập','0362908968','2001-11-17',1,250000,'2023-05-12 01:26:44','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-16 04:26:48','','');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1045,7 +1050,7 @@ CREATE TABLE `user_device_token` (
   `update_at` datetime DEFAULT NULL,
   `is_logout` tinyint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1054,7 +1059,7 @@ CREATE TABLE `user_device_token` (
 
 LOCK TABLES `user_device_token` WRITE;
 /*!40000 ALTER TABLE `user_device_token` DISABLE KEYS */;
-INSERT INTO `user_device_token` VALUES (7,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','eGeuJCO5JhGNb5kDnipla8:APA91bGXsvOafOXDIrppEy2lhihQzwdiSm-99rNl_HM9xK1d-qbSmLLjUakoqH4aEzPmeA7_N3d42kG1w2_YIwe6pyqzrtJo5H9pMbyO5jj5syhtXErw5BZAw86MFLwKGJunlqvdJtch',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-11 21:24:40','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-15 22:34:30',0),(8,'cd766d98-dae3-4bbb-9356-07d362edfb66','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-12 08:27:02','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-16 11:04:24',0),(9,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','fdVLdzaLmdhW9k3LYfVgKX:APA91bEdpzhpMrj08hoYzYENqKhdPwdDzoVAGCdEX4t3sr5hoEZpESW-47IC_EI8GJ5US6_Pqs4YfzcFazDZbhbmilzDYM3TU7vBtwvN1HMR1EOraRQM3WQ1NNPugChexcTS58zN16TN',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 08:30:54','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-16 10:58:10',1),(10,'admin','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'admin','2023-05-12 09:48:38','admin','2023-05-12 09:49:24',1),(11,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1','',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 16:31:36','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 16:31:57',0),(12,'admin','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'admin','2023-05-12 23:32:27','admin','2023-05-15 22:34:24',1),(13,'admin','Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0','',0,'admin','2023-05-14 09:49:36',NULL,'2023-05-14 09:49:36',0),(14,'cd766d98-dae3-4bbb-9356-07d362edfb66','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-14 18:10:49','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-15 21:09:05',1),(15,'admin','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42','',0,'admin','2023-05-15 10:58:37',NULL,'2023-05-15 10:58:37',0);
+INSERT INTO `user_device_token` VALUES (7,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','eGeuJCO5JhGNb5kDnipla8:APA91bGXsvOafOXDIrppEy2lhihQzwdiSm-99rNl_HM9xK1d-qbSmLLjUakoqH4aEzPmeA7_N3d42kG1w2_YIwe6pyqzrtJo5H9pMbyO5jj5syhtXErw5BZAw86MFLwKGJunlqvdJtch',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-11 21:24:40','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 22:49:32',0),(8,'cd766d98-dae3-4bbb-9356-07d362edfb66','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-12 08:27:02','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-16 11:04:24',0),(9,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','fdVLdzaLmdhW9k3LYfVgKX:APA91bEdpzhpMrj08hoYzYENqKhdPwdDzoVAGCdEX4t3sr5hoEZpESW-47IC_EI8GJ5US6_Pqs4YfzcFazDZbhbmilzDYM3TU7vBtwvN1HMR1EOraRQM3WQ1NNPugChexcTS58zN16TN',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 08:30:54','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-16 10:58:10',1),(10,'admin','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'admin','2023-05-12 09:48:38','admin','2023-05-12 09:49:24',1),(11,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1','',1,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-12 16:31:36','c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-21 20:35:39',1),(12,'admin','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'admin','2023-05-12 23:32:27','admin','2023-05-21 22:49:27',1),(13,'admin','Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0','',0,'admin','2023-05-14 09:49:36',NULL,'2023-05-14 09:49:36',0),(14,'cd766d98-dae3-4bbb-9356-07d362edfb66','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36','',0,'cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-14 18:10:49','cd766d98-dae3-4bbb-9356-07d362edfb66','2023-05-21 16:04:20',1),(15,'admin','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42','',0,'admin','2023-05-15 10:58:37',NULL,'2023-05-15 10:58:37',0),(16,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',NULL,'',0,'c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5','2023-05-20 22:00:16',NULL,NULL,0),(17,'admin','Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1','',0,'admin','2023-05-21 20:35:42',NULL,'2023-05-21 20:35:42',0);
 /*!40000 ALTER TABLE `user_device_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1081,7 +1086,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES ('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',1),('cd766d98-dae3-4bbb-9356-07d362edfb66',1),('admin',4);
+INSERT INTO `user_role` VALUES ('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',1),('cd766d98-dae3-4bbb-9356-07d362edfb66',1),('c68ff9a8-2cd7-48a8-a66e-f5c95ebfaac5',2),('admin',4);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1128,4 +1133,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-19 16:53:36
+-- Dump completed on 2023-05-21 22:56:44

@@ -86,7 +86,7 @@ public class Util {
     public static int agencyMonthlyPaid(List<DistrictDTO> districtDTOS) {
         int total = 0;
         for (DistrictDTO districtDTO: districtDTOS) {
-            if (districtDTO.getAdministrativeUnitId().equals("7")) {
+            if (districtDTO.getAdministrativeUnitId() == 5) {
                 total += 30000;
             } else {
                 total += 20000;

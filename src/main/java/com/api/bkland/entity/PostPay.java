@@ -27,6 +27,16 @@ public class PostPay {
 
     @NotNull
     @NotBlank
+    @Column(name = "account_balance")
+    private Long accountBalance;
+
+    @NotNull
+    @NotBlank
+    @Column(name = "content")
+    private String content;
+
+    @NotNull
+    @NotBlank
     @Column(name = "create_at")
     private Instant createAt;
 
@@ -68,5 +78,21 @@ public class PostPay {
 
     public void setCreateAt(Instant createAt) {
         this.createAt = createAt;
+    }
+
+    public Long getAccountBalance() {
+        return accountBalance;
+    }
+
+    public void setAccountBalance(Long accountBalance) {
+        this.accountBalance = accountBalance;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
