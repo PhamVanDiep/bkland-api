@@ -1,5 +1,6 @@
 package com.api.bkland.controller;
 
+import com.api.bkland.constant.PayContent;
 import com.api.bkland.constant.enumeric.ERole;
 import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.*;
@@ -7,6 +8,7 @@ import com.api.bkland.payload.dto.PostMediaDTO;
 import com.api.bkland.payload.dto.post.*;
 import com.api.bkland.payload.request.ListImageUpload;
 import com.api.bkland.payload.request.RealEstatePostRequest;
+import com.api.bkland.payload.request.UpdatePostStatusRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.RealEstatePostResponse;
 import com.api.bkland.service.*;
@@ -165,6 +167,8 @@ public class RealEstatePostController {
                 postPay.setUser(user);
                 postPay.setRealEstatePost(realEstatePost);
                 postPay.setPrice(pay);
+                postPay.setContent(PayContent.POST_PAY);
+                postPay.setAccountBalance(user.getAccountBalance() - pay);
                 postPay.setCreateAt(Instant.now());
                 this.postPayService.createPostPay(postPay);
 
@@ -346,6 +350,94 @@ public class RealEstatePostController {
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi lưu ảnh. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/user/{ownerId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> findByOwnerId(@PathVariable("ownerId") String ownerId) {
+        try {
+            List<RealEstatePost> realEstatePosts = service.findByOwnerId(ownerId);
+            return ResponseEntity.ok(new BaseResponse(
+                    realEstatePosts.stream().map(e -> modelMapper.map(e, RealEstatePostDTO.class)).collect(Collectors.toList()),
+                    "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng của người dùng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> findAll() {
+        try {
+            List<RealEstatePost> realEstatePosts = this.service.findAll();
+            if (realEstatePosts.isEmpty()) {
+                return ResponseEntity.ok(new BaseResponse(null,
+                        "Không tìm thấy bài đăng nào.",
+                        HttpStatus.NO_CONTENT));
+            }
+            return ResponseEntity.ok(new BaseResponse(
+                    realEstatePosts.stream().map(e -> modelMapper.map(e, RealEstatePostDTO.class)).collect(Collectors.toList()),
+                    "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/api/v1/real-estate-post/disable/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> disablePostById(@PathVariable("id") String id) {
+        try {
+            service.disablePostById(id);
+            return ResponseEntity.ok(new BaseResponse(null, "Ẩn bài viết thành công", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi ẩn bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/api/v1/real-estate-post/enable/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> disableOrEnablePostById(@PathVariable("id") String id) {
+        try {
+            RealEstatePost realEstatePost = service.findById(id);
+            if (realEstatePost.isEnable()) {
+                realEstatePost.setEnable(false);
+                service.update(realEstatePost);
+                return ResponseEntity.ok(new BaseResponse(0, "Ẩn bài viết thành công", HttpStatus.OK));
+            } else {
+                realEstatePost.setEnable(true);
+                service.update(realEstatePost);
+                return ResponseEntity.ok(new BaseResponse(1, "Hiện bài viết thành công", HttpStatus.OK));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi ẩn / hiện bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/api/v1/real-estate-post/status")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> updateStatus(@RequestBody UpdatePostStatusRequest request) {
+        try {
+            service.updatePostStatus(request.getStatus().toString(), request.getPostId());
+            return ResponseEntity.ok(new BaseResponse(
+                    request.getStatus().toString(),
+                    "Cập nhật trạng thái bài viết thành công.",
+                    HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi ẩn / hiện bài đăng. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }

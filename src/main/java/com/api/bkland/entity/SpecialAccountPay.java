@@ -6,8 +6,8 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Entity
-@Table(name = "post_pay")
-public class PostPay {
+@Table(name = "special_account_pay")
+public class SpecialAccountPay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,14 +16,10 @@ public class PostPay {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "real_estate_post_id")
-    private RealEstatePost realEstatePost;
-
     @NotNull
     @NotBlank
-    @Column(name = "price")
-    private Integer price;
+    @Column(name = "amount")
+    private Integer amount;
 
     @NotNull
     @NotBlank
@@ -34,6 +30,16 @@ public class PostPay {
     @NotBlank
     @Column(name = "content")
     private String content;
+
+    @Column(name = "is_monthly_pay")
+    @NotNull
+    @NotBlank
+    private boolean monthlyPay;
+
+    @NotNull
+    @NotBlank
+    @Column(name = "create_by")
+    private String createBy;
 
     @NotNull
     @NotBlank
@@ -56,28 +62,28 @@ public class PostPay {
         this.user = user;
     }
 
-    public RealEstatePost getRealEstatePost() {
-        return realEstatePost;
+    public Integer getAmount() {
+        return amount;
     }
 
-    public void setRealEstatePost(RealEstatePost realEstatePost) {
-        this.realEstatePost = realEstatePost;
+    public void setAmount(Integer amount) {
+        this.amount = amount;
     }
 
-    public Integer getPrice() {
-        return price;
+    public String getContent() {
+        return content;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Instant getCreateAt() {
-        return createAt;
+    public boolean isMonthlyPay() {
+        return monthlyPay;
     }
 
-    public void setCreateAt(Instant createAt) {
-        this.createAt = createAt;
+    public void setMonthlyPay(boolean monthlyPay) {
+        this.monthlyPay = monthlyPay;
     }
 
     public Long getAccountBalance() {
@@ -88,11 +94,19 @@ public class PostPay {
         this.accountBalance = accountBalance;
     }
 
-    public String getContent() {
-        return content;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
     }
 }

@@ -6,6 +6,7 @@ import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.User;
 import com.api.bkland.payload.dto.DistrictDTO;
 import com.api.bkland.payload.dto.ProvinceDTO;
+import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.dto.WardDTO;
 
 import javax.persistence.EnumType;
@@ -23,7 +24,7 @@ public class RealEstatePostDTO {
     private EType type;
 
     @NotNull
-    private User ownerId;
+    private UserDTO ownerId;
 
     @NotNull
     private String title;
@@ -103,11 +104,11 @@ public class RealEstatePostDTO {
         this.type = type;
     }
 
-    public User getOwnerId() {
+    public UserDTO getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(User ownerId) {
+    public void setOwnerId(UserDTO ownerId) {
         this.ownerId = ownerId;
     }
 

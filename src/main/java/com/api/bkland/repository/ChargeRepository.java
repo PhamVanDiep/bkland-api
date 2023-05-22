@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ChargeRepository extends JpaRepository<Charge,Long> {
-    List<Charge> findByUserId(String userId);
+    List<Charge> findByUserIdOrderByCreateAtDesc(String userId);
 }

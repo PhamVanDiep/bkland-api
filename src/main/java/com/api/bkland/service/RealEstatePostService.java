@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +21,10 @@ public class RealEstatePostService {
     public RealEstatePost findById(String id) {
         Optional<RealEstatePost> realEstatePost = repository.findById(id);
         return realEstatePost.get();
+    }
+
+    public List<RealEstatePost> findByOwnerId(String ownerId) {
+        return repository.findByOwnerId(ownerId);
     }
 
     @Transactional
@@ -44,5 +49,19 @@ public class RealEstatePostService {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    @Transactional
+    public void disablePostById(String id) {
+        repository.disablePostById(id);
+    }
+
+    public List<RealEstatePost> findAll() {
+        return repository.findAll();
+    }
+
+    @Transactional
+    public void updatePostStatus(String status, String id) {
+        repository.updateStatus(status, id);
     }
 }

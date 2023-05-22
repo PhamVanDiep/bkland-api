@@ -28,6 +28,6 @@ public class ChargeService {
     }
 
     public List<Charge> findByUserId(String userId) {
-        return repository.findByUserId(userId);
+        return repository.findByUserIdOrderByCreateAtDesc(userId);
     }
 }

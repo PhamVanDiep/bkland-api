@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,5 +25,9 @@ public class UserService {
     public User updateUserInfo(User user) {
         user.setUpdateAt(Instant.now());
         return repository.save(user);
+    }
+
+    public List<User> findAll() {
+        return repository.findAll();
     }
 }
