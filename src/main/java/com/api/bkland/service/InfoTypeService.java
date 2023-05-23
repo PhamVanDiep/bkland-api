@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,5 +48,13 @@ public class InfoTypeService {
     @Transactional
     public void deleteInfoPostByInfoTypeId(Integer id) {
         infoPostRepository.deleteAllInfoPostByInfoTypeId(id);
+    }
+
+    public InfoType findById(Integer id) {
+        Optional<InfoType> infoTypeOptional = repository.findById(id);
+        if (infoTypeOptional.isEmpty()) {
+            return null;
+        }
+        return infoTypeOptional.get();
     }
 }

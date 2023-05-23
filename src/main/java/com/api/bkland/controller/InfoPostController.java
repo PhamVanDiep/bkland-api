@@ -1,9 +1,13 @@
 package com.api.bkland.controller;
 
 import com.api.bkland.entity.InfoPost;
+import com.api.bkland.entity.User;
 import com.api.bkland.payload.dto.InfoPostDTO;
+import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.response.BaseResponse;
+import com.api.bkland.payload.response.InfoPostResponse;
 import com.api.bkland.service.InfoPostService;
+import com.api.bkland.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,12 +28,16 @@ public class InfoPostController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/api/v1/info-post")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> getAll() {
         try {
             return ResponseEntity.ok(new BaseResponse(
-                    service.findAll(), "", HttpStatus.OK
+                    service.findAll().stream().map(this::getInfoPostResponse).collect(Collectors.toList()),
+                    "", HttpStatus.OK
             ));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
@@ -92,7 +100,7 @@ public class InfoPostController {
                 ));
             }
             return ResponseEntity.ok(new BaseResponse(
-                    convertToDTO(infoPost), "", HttpStatus.OK
+                    getInfoPostResponse(infoPost), "", HttpStatus.OK
             ));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
@@ -104,7 +112,7 @@ public class InfoPostController {
     }
 
     @DeleteMapping("/api/v1/info-post/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasROLE('ROLE_ENTERPRISE')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> deleteInfoPost(@PathVariable String id) {
         try {
             Long postId = Long.valueOf(id);
@@ -128,7 +136,7 @@ public class InfoPostController {
         try {
             List<InfoPost> infoPosts = service.findByUserId(userId);
             return ResponseEntity.ok(new BaseResponse(
-                    infoPosts.stream().map(this::convertToDTO).collect(Collectors.toList()),
+                    infoPosts.stream().map(this::getInfoPostResponse).collect(Collectors.toList()),
                     "", HttpStatus.OK
             ));
         } catch (Exception e) {
@@ -138,6 +146,25 @@ public class InfoPostController {
                     HttpStatus.INTERNAL_SERVER_ERROR
             ));
         }
+    }
+
+    private InfoPostResponse getInfoPostResponse(InfoPost infoPost) {
+        User user = userService.findById(infoPost.getCreateBy());
+        InfoPostDTO infoPostDTO = convertToDTO(infoPost);
+
+        InfoPostResponse infoPostResponse = new InfoPostResponse();
+        infoPostResponse.setInfoType(infoPostDTO.getInfoType());
+        infoPostResponse.setUser(modelMapper.map(user, UserDTO.class));
+        infoPostResponse.setContent(infoPostDTO.getContent());
+        infoPostResponse.setId(infoPostDTO.getId());
+        infoPostResponse.setCreateBy(infoPostDTO.getCreateBy());
+        infoPostResponse.setDescription(infoPostDTO.getDescription());
+        infoPostResponse.setTitle(infoPostDTO.getTitle());
+        infoPostResponse.setUpdateBy(infoPostDTO.getUpdateBy());
+        infoPostResponse.setCreateAt(infoPostDTO.getCreateAt());
+        infoPostResponse.setUpdateAt(infoPostDTO.getUpdateAt());
+
+        return infoPostResponse;
     }
 
     private InfoPostDTO convertToDTO(InfoPost infoPost) {
