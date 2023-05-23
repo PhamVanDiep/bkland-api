@@ -56,6 +56,30 @@ public class InfoTypeController {
         }
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> findById(@PathVariable("id") Integer id) {
+        try {
+            InfoType infoType = service.findById(id);
+            if (infoType == null) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Không tìm thấy thông tin danh mục.",
+                        HttpStatus.NO_CONTENT
+                ));
+            }
+            return ResponseEntity.ok(new BaseResponse(
+                    convertToDTO(infoType), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin danh mục. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> insert(@RequestBody InfoTypeDTO infoTypeDTO) {
@@ -89,6 +113,27 @@ public class InfoTypeController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi cập nhật danh mục tin tức. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> delete(@PathVariable("id") String id) {
+        try {
+            Integer infoTypeId = Integer.valueOf(id);
+            service.deleteInfoPostByInfoTypeId(infoTypeId);
+            service.deleteInfoType(infoTypeId);
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Xóa danh mục tin tức thành công.",
+                    HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi xóa danh mục tin tức. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR
             ));
         }
