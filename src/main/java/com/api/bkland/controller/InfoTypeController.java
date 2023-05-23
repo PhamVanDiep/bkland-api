@@ -94,6 +94,27 @@ public class InfoTypeController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> delete(@PathVariable("id") String id) {
+        try {
+            Integer infoTypeId = Integer.valueOf(id);
+            service.deleteInfoPostByInfoTypeId(infoTypeId);
+            service.deleteInfoType(infoTypeId);
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Xóa danh mục tin tức thành công.",
+                    HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi xóa danh mục tin tức. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     private InfoType convertToEntity(InfoTypeDTO infoTypeDTO) {
         return modelMapper.map(infoTypeDTO, InfoType.class);
     }
