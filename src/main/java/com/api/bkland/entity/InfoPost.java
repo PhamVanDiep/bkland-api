@@ -31,6 +31,9 @@ public class InfoPost {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "create_by")
     private String createBy;
 
@@ -81,6 +84,14 @@ public class InfoPost {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getCreateBy() {

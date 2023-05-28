@@ -57,4 +57,8 @@ public class InfoTypeService {
         }
         return infoTypeOptional.get();
     }
+
+    public List<InfoType> getTinTucInfoType(Integer id) {
+        return repository.findByIdGreaterThanEqual(id);
+    }
 }

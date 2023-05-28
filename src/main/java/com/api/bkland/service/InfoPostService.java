@@ -45,6 +45,10 @@ public class InfoPostService {
         return infoPosts;
     }
 
+    public List<InfoPost> findByTypeId(Integer typeId) {
+        return repository.findTop5ByInfoTypeIdOrderByCreateAtDesc(typeId);
+    }
+
     @Transactional
     public void deleteById(Long id) {
         repository.deleteById(id);

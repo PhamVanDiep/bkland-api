@@ -1,12 +1,16 @@
 package com.api.bkland.controller;
 
 import com.api.bkland.entity.InfoPost;
+import com.api.bkland.entity.InfoType;
 import com.api.bkland.entity.User;
 import com.api.bkland.payload.dto.InfoPostDTO;
+import com.api.bkland.payload.dto.InfoTypeDTO;
 import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.InfoPostResponse;
+import com.api.bkland.payload.response.TinTucResponse;
 import com.api.bkland.service.InfoPostService;
+import com.api.bkland.service.InfoTypeService;
 import com.api.bkland.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +35,9 @@ public class InfoPostController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private InfoTypeService infoTypeService;
 
     @GetMapping("/api/v1/info-post")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -143,6 +151,42 @@ public class InfoPostController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi lấy danh sách dự án." + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/info-post/info-type/{infoType}")
+    public ResponseEntity<BaseResponse> findByInfoType(@PathVariable("infoType") Integer infoType) {
+        try {
+            if (infoType == 2) {
+                List<InfoType> infoTypes = infoTypeService.getTinTucInfoType(6);
+                List<TinTucResponse> tinTucResponses = new ArrayList<>();
+                for (InfoType infoType1: infoTypes) {
+                    TinTucResponse tinTucResponse = new TinTucResponse();
+                    tinTucResponse.setInfoType(modelMapper.map(infoType1, InfoTypeDTO.class));
+                    List<InfoPostResponse> infoPostResponses = service.findByTypeId(infoType1.getId())
+                            .stream()
+                            .map(this::getInfoPostResponse)
+                            .collect(Collectors.toList());
+                    tinTucResponse.setInfoPosts(infoPostResponses);
+                    tinTucResponses.add(tinTucResponse);
+                }
+                return ResponseEntity.ok(new BaseResponse(tinTucResponses, "", HttpStatus.OK));
+            }
+            InfoType infoType1 = infoTypeService.findById(infoType);
+            List<InfoPost> infoPosts = service.findByTypeId(infoType);
+            TinTucResponse tinTucResponse = new TinTucResponse();
+            tinTucResponse.setInfoType(modelMapper.map(infoType1, InfoTypeDTO.class));
+            tinTucResponse.setInfoPosts(infoPosts
+                    .stream()
+                    .map(this::getInfoPostResponse)
+                    .collect(Collectors.toList()));
+            return ResponseEntity.ok(new BaseResponse(tinTucResponse, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng.",
                     HttpStatus.INTERNAL_SERVER_ERROR
             ));
         }
