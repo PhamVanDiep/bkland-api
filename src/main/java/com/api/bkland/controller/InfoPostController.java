@@ -159,9 +159,9 @@ public class InfoPostController {
     @GetMapping("/api/no-auth/info-post/info-type/{infoType}")
     public ResponseEntity<BaseResponse> findByInfoType(@PathVariable("infoType") Integer infoType) {
         try {
+            List<TinTucResponse> tinTucResponses = new ArrayList<>();
             if (infoType == 2) {
                 List<InfoType> infoTypes = infoTypeService.getTinTucInfoType(6);
-                List<TinTucResponse> tinTucResponses = new ArrayList<>();
                 for (InfoType infoType1: infoTypes) {
                     TinTucResponse tinTucResponse = new TinTucResponse();
                     tinTucResponse.setInfoType(modelMapper.map(infoType1, InfoTypeDTO.class));
@@ -172,7 +172,6 @@ public class InfoPostController {
                     tinTucResponse.setInfoPosts(infoPostResponses);
                     tinTucResponses.add(tinTucResponse);
                 }
-                return ResponseEntity.ok(new BaseResponse(tinTucResponses, "", HttpStatus.OK));
             }
             InfoType infoType1 = infoTypeService.findById(infoType);
             List<InfoPost> infoPosts = service.findByTypeId(infoType);
@@ -182,6 +181,10 @@ public class InfoPostController {
                     .stream()
                     .map(this::getInfoPostResponse)
                     .collect(Collectors.toList()));
+            if (infoType == 2) {
+                tinTucResponses.add(0, tinTucResponse);
+                return ResponseEntity.ok(new BaseResponse(tinTucResponses, "", HttpStatus.OK));
+            }
             return ResponseEntity.ok(new BaseResponse(tinTucResponse, "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
@@ -204,6 +207,7 @@ public class InfoPostController {
         infoPostResponse.setCreateBy(infoPostDTO.getCreateBy());
         infoPostResponse.setDescription(infoPostDTO.getDescription());
         infoPostResponse.setTitle(infoPostDTO.getTitle());
+        infoPostResponse.setImageUrl(infoPost.getImageUrl());
         infoPostResponse.setUpdateBy(infoPostDTO.getUpdateBy());
         infoPostResponse.setCreateAt(infoPostDTO.getCreateAt());
         infoPostResponse.setUpdateAt(infoPostDTO.getUpdateAt());
