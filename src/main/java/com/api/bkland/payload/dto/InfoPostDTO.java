@@ -9,6 +9,7 @@ public class InfoPostDTO {
     private String description;
     private String content;
     private String imageUrl;
+    private Integer view;
     private String createBy;
     private Instant createAt;
     private String updateBy;
@@ -92,5 +93,13 @@ public class InfoPostDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
     }
 }

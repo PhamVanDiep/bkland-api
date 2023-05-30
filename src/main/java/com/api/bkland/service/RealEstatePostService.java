@@ -64,4 +64,14 @@ public class RealEstatePostService {
     public void updatePostStatus(String status, String id) {
         repository.updateStatus(status, id);
     }
+
+    @Transactional
+    public void updateView(String realEstatePostId) {
+        repository.updateView(realEstatePostId);
+    }
+
+    @Transactional
+    public void updateClickedView(String realEstatePostId) {
+        repository.updateClickedView(realEstatePostId);
+    }
 }

@@ -111,6 +111,12 @@ public class RealEstatePost {
     @NotBlank
     private EDirection direction;
 
+    @Column(name = "view")
+    private Integer view;
+
+    @Column(name = "clicked_view")
+    private Integer clickedView;
+
     @Column(name = "is_sell")
     private boolean sell;
 
@@ -317,5 +323,21 @@ public class RealEstatePost {
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
+    }
+
+    public Integer getClickedView() {
+        return clickedView;
+    }
+
+    public void setClickedView(Integer clickedView) {
+        this.clickedView = clickedView;
     }
 }

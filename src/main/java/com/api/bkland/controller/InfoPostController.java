@@ -119,6 +119,31 @@ public class InfoPostController {
         }
     }
 
+    @GetMapping("/api/no-auth/info-post/user-view/{id}")
+    public ResponseEntity<BaseResponse> findByIdWithIncreaseView(@PathVariable("id") Long id) {
+        try {
+            InfoPost infoPost = service.findById(id);
+            if (infoPost == null) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Không tìm thấy bài viết tương ứng.",
+                        HttpStatus.NO_CONTENT
+                ));
+            }
+            infoPost.setView(infoPost.getView() + 1);
+            InfoPost infoPost1 = service.update(infoPost);
+            return ResponseEntity.ok(new BaseResponse(
+                    getInfoPostResponse(infoPost1), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi tìm kiếm bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     @DeleteMapping("/api/v1/info-post/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> deleteInfoPost(@PathVariable String id) {
@@ -207,7 +232,8 @@ public class InfoPostController {
         infoPostResponse.setCreateBy(infoPostDTO.getCreateBy());
         infoPostResponse.setDescription(infoPostDTO.getDescription());
         infoPostResponse.setTitle(infoPostDTO.getTitle());
-        infoPostResponse.setImageUrl(infoPost.getImageUrl());
+        infoPostResponse.setImageUrl(infoPostDTO.getImageUrl());
+        infoPostResponse.setView(infoPostDTO.getView());
         infoPostResponse.setUpdateBy(infoPostDTO.getUpdateBy());
         infoPostResponse.setCreateAt(infoPostDTO.getCreateAt());
         infoPostResponse.setUpdateAt(infoPostDTO.getUpdateAt());

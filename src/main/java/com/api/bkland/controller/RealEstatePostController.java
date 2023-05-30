@@ -6,6 +6,7 @@ import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.*;
 import com.api.bkland.payload.dto.PostMediaDTO;
 import com.api.bkland.payload.dto.post.*;
+import com.api.bkland.payload.request.ClickedUserInfo;
 import com.api.bkland.payload.request.ListImageUpload;
 import com.api.bkland.payload.request.RealEstatePostRequest;
 import com.api.bkland.payload.request.UpdatePostStatusRequest;
@@ -88,6 +89,58 @@ public class RealEstatePostController {
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi lấy thông tin bài đăng " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/no-auth/real-estate-post/user-view/{id}")
+    public ResponseEntity<BaseResponse> findByIdWithIncreaseView(@PathVariable("id") String id) {
+        try {
+            List<String> strings = Arrays.asList(id.split("-"));
+            String type = strings.get(0);
+            BasePost basePost = null;
+            if (type.equalsIgnoreCase(EType.PLOT.toString())) {
+                Plot plot = plotService.findByRealEstatePostId(id);
+                if (plot != null) {
+                    basePost = modelMapper.map(plot, PlotDTO.class);
+                }
+            } else if (type.equalsIgnoreCase(EType.APARTMENT.toString())) {
+                Apartment apartment = apartmentService.findByRealEstatePostId(id);
+                if (apartment != null) {
+                    basePost = modelMapper.map(apartment, ApartmentDTO.class);
+                }
+            } else if (type.equalsIgnoreCase(EType.HOUSE.toString())) {
+                House house = houseService.findByRealEstatePostId(id);
+                if (house != null) {
+                    basePost = modelMapper.map(house, HouseDTO.class);
+                }
+            }
+            if (basePost == null) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
+            List<PostMedia> postMedia = postMediaService.findByPostId(id);
+            service.updateView(id);
+            return ResponseEntity.ok(new BaseResponse(
+                    new RealEstatePostResponse(
+                            basePost,
+                            postMedia.stream().map(e -> modelMapper.map(e, PostMediaDTO.class)).collect(Collectors.toList())),
+                    "",
+                    HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin bài đăng " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PostMapping("/api/no-auth/real-estate-post/click-info")
+    public ResponseEntity<BaseResponse> clickUserDetail(@RequestBody ClickedUserInfo body) {
+        try {
+            service.updateClickedView(body.getPostId());
+            return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin người đăng bài. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }

@@ -4,6 +4,7 @@ import com.api.bkland.entity.RealEstatePost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -25,4 +26,12 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
     @Modifying
     @Query(value = "update real_estate_post set status = :status where id = :id ;", nativeQuery = true)
     void updateStatus(@PathVariable("status") String status, @PathVariable("id") String id);
+
+    @Modifying
+    @Query(value = "update real_estate_post rep set view = (rep.view + 1) where rep.id = :realEstatePostId", nativeQuery = true)
+    void updateView(@Param("realEstatePostId") String realEstatePostId);
+
+    @Modifying
+    @Query(value = "update real_estate_post rep set clicked_view = (rep.clicked_view + 1) where rep.id = :realEstatePostId", nativeQuery = true)
+    void updateClickedView(@Param("realEstatePostId") String realEstatePostId);
 }
