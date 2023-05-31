@@ -29,10 +29,10 @@ public class InfoTypeService {
         return repository.save(infoType);
     }
 
-    public List<InfoType> getAllSkip5() {
+    public List<InfoType> getAllSkip6() {
         return repository.findAll()
                 .stream()
-                .filter(e -> e.getId() > 5)
+                .filter(e -> e.getId() > 6)
                 .collect(Collectors.toList());
     }
 

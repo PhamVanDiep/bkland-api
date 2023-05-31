@@ -59,4 +59,24 @@ public class NotifyService {
             logger.info("response: {}", pushNotifyResponse.toString());
         }
     }
+
+    public void notifyPriceFluctuation(String message) {
+
+    }
+
+    private void sendNotify(List<String> tokens, String message) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(HttpHeaders.AUTHORIZATION, "key="+FCM_KEY);
+        for (String token : tokens) {
+            Notification notification = new Notification();
+            notification.setTitle("Bkland");
+            notification.setBody(message);
+            NotifyRequest notifyRequest = new NotifyRequest();
+            notifyRequest.setNotification(notification);
+            notifyRequest.setTo(token);
+            HttpEntity<?> request = new HttpEntity<>(notifyRequest, headers);
+            restTemplate.postForObject(FIREBASE_FCM, request, PushNotifyResponse.class);
+        }
+    }
 }
