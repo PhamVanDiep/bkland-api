@@ -210,4 +210,8 @@ public class SpecialAccountService {
         }
         return false;
     }
+
+    public List<String> getAllDistrictCodeOfAgency(String userId) {
+        return repository.getAllDistrictCodeOfAgency(userId);
+    }
 }
