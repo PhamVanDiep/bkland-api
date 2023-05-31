@@ -30,4 +30,7 @@ public interface SpecialAccountRepository extends JpaRepository<SpecialAccount, 
     @Modifying
     @Query(value = "delete from user_role where user_id=:userId and role_id=2", nativeQuery = true)
     void userRoleDeleteByUserId(@Param("userId") String userId);
+
+    @Query(value = "select district_code from agency_district where user_id = :userId", nativeQuery = true)
+    List<String> getAllDistrictCodeOfAgency(@Param("userId") String userId);
 }

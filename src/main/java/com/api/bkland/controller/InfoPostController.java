@@ -1,12 +1,16 @@
 package com.api.bkland.controller;
 
 import com.api.bkland.entity.InfoPost;
+import com.api.bkland.entity.InfoType;
 import com.api.bkland.entity.User;
 import com.api.bkland.payload.dto.InfoPostDTO;
+import com.api.bkland.payload.dto.InfoTypeDTO;
 import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.InfoPostResponse;
+import com.api.bkland.payload.response.TinTucResponse;
 import com.api.bkland.service.InfoPostService;
+import com.api.bkland.service.InfoTypeService;
 import com.api.bkland.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +35,9 @@ public class InfoPostController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private InfoTypeService infoTypeService;
 
     @GetMapping("/api/v1/info-post")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -111,6 +119,31 @@ public class InfoPostController {
         }
     }
 
+    @GetMapping("/api/no-auth/info-post/user-view/{id}")
+    public ResponseEntity<BaseResponse> findByIdWithIncreaseView(@PathVariable("id") Long id) {
+        try {
+            InfoPost infoPost = service.findById(id);
+            if (infoPost == null) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Không tìm thấy bài viết tương ứng.",
+                        HttpStatus.NO_CONTENT
+                ));
+            }
+            infoPost.setView(infoPost.getView() + 1);
+            InfoPost infoPost1 = service.update(infoPost);
+            return ResponseEntity.ok(new BaseResponse(
+                    getInfoPostResponse(infoPost1), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi tìm kiếm bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     @DeleteMapping("/api/v1/info-post/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> deleteInfoPost(@PathVariable String id) {
@@ -148,6 +181,45 @@ public class InfoPostController {
         }
     }
 
+    @GetMapping("/api/no-auth/info-post/info-type/{infoType}")
+    public ResponseEntity<BaseResponse> findByInfoType(@PathVariable("infoType") Integer infoType) {
+        try {
+            List<TinTucResponse> tinTucResponses = new ArrayList<>();
+            if (infoType == 2) {
+                List<InfoType> infoTypes = infoTypeService.getTinTucInfoType(6);
+                for (InfoType infoType1: infoTypes) {
+                    TinTucResponse tinTucResponse = new TinTucResponse();
+                    tinTucResponse.setInfoType(modelMapper.map(infoType1, InfoTypeDTO.class));
+                    List<InfoPostResponse> infoPostResponses = service.findByTypeId(infoType1.getId())
+                            .stream()
+                            .map(this::getInfoPostResponse)
+                            .collect(Collectors.toList());
+                    tinTucResponse.setInfoPosts(infoPostResponses);
+                    tinTucResponses.add(tinTucResponse);
+                }
+            }
+            InfoType infoType1 = infoTypeService.findById(infoType);
+            List<InfoPost> infoPosts = service.findByTypeId(infoType);
+            TinTucResponse tinTucResponse = new TinTucResponse();
+            tinTucResponse.setInfoType(modelMapper.map(infoType1, InfoTypeDTO.class));
+            tinTucResponse.setInfoPosts(infoPosts
+                    .stream()
+                    .map(this::getInfoPostResponse)
+                    .collect(Collectors.toList()));
+            if (infoType == 2) {
+                tinTucResponses.add(0, tinTucResponse);
+                return ResponseEntity.ok(new BaseResponse(tinTucResponses, "", HttpStatus.OK));
+            }
+            return ResponseEntity.ok(new BaseResponse(tinTucResponse, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     private InfoPostResponse getInfoPostResponse(InfoPost infoPost) {
         User user = userService.findById(infoPost.getCreateBy());
         InfoPostDTO infoPostDTO = convertToDTO(infoPost);
@@ -160,6 +232,8 @@ public class InfoPostController {
         infoPostResponse.setCreateBy(infoPostDTO.getCreateBy());
         infoPostResponse.setDescription(infoPostDTO.getDescription());
         infoPostResponse.setTitle(infoPostDTO.getTitle());
+        infoPostResponse.setImageUrl(infoPostDTO.getImageUrl());
+        infoPostResponse.setView(infoPostDTO.getView());
         infoPostResponse.setUpdateBy(infoPostDTO.getUpdateBy());
         infoPostResponse.setCreateAt(infoPostDTO.getCreateAt());
         infoPostResponse.setUpdateAt(infoPostDTO.getUpdateAt());

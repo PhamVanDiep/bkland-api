@@ -13,6 +13,8 @@ import java.util.List;
 public interface InfoPostRepository extends JpaRepository<InfoPost, Long> {
     List<InfoPost> findByCreateByOrderByCreateAtDesc(String createBy);
 
+    List<InfoPost> findTop5ByInfoTypeIdOrderByCreateAtDesc(Integer infoTypeId);
+
     @Modifying
     @Query(value = "delete from info_post where info_type_id = :infoTypeId", nativeQuery = true)
     void deleteAllInfoPostByInfoTypeId(@Param("infoTypeId") Integer infoTypeId);

@@ -79,6 +79,10 @@ public class RealEstatePostDTO {
     @NotNull
     private String street;
 
+    private Integer view;
+
+    private Integer clickedView;
+
     private String createBy;
 
     private Instant createAt;
@@ -278,5 +282,21 @@ public class RealEstatePostDTO {
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
+    }
+
+    public Integer getClickedView() {
+        return clickedView;
+    }
+
+    public void setClickedView(Integer clickedView) {
+        this.clickedView = clickedView;
     }
 }
