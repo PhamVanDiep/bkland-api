@@ -1,16 +1,19 @@
 package com.api.bkland.controller;
 
+import com.api.bkland.constant.PriceFluctuationMessage;
 import com.api.bkland.entity.InfoPost;
 import com.api.bkland.entity.InfoType;
 import com.api.bkland.entity.User;
 import com.api.bkland.payload.dto.InfoPostDTO;
 import com.api.bkland.payload.dto.InfoTypeDTO;
 import com.api.bkland.payload.dto.UserDTO;
+import com.api.bkland.payload.request.InfoPostRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.InfoPostResponse;
 import com.api.bkland.payload.response.TinTucResponse;
 import com.api.bkland.service.InfoPostService;
 import com.api.bkland.service.InfoTypeService;
+import com.api.bkland.service.NotifyService;
 import com.api.bkland.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,9 @@ public class InfoPostController {
     @Autowired
     private InfoTypeService infoTypeService;
 
+    @Autowired
+    private NotifyService notifyService;
+
     @GetMapping("/api/v1/info-post")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> getAll() {
@@ -58,10 +64,13 @@ public class InfoPostController {
 
     @PostMapping("/api/v1/info-post")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
-    public ResponseEntity<BaseResponse> create(@RequestBody InfoPostDTO infoPostDTO) {
+    public ResponseEntity<BaseResponse> create(@RequestBody InfoPostRequest request) {
         try {
-            infoPostDTO.setCreateAt(Instant.now());
-            InfoPost infoPost = service.create(convertToEntity(infoPostDTO));
+            request.getInfoPost().setCreateAt(Instant.now());
+            InfoPost infoPost = service.create(convertToEntity(request.getInfoPost()));
+            if (request.getInfoPost().getInfoType().getId() == 6) {
+                notifyService.notifyPriceFluctuation(PriceFluctuationMessage.TAO_BAI_DANG, request.getDistrictCode());
+            }
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),
                     "Tạo bài viết thành công.",
@@ -78,10 +87,13 @@ public class InfoPostController {
 
     @PutMapping("/api/v1/info-post")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
-    public ResponseEntity<BaseResponse> update(@RequestBody InfoPostDTO infoPostDTO) {
+    public ResponseEntity<BaseResponse> update(@RequestBody InfoPostRequest request) {
         try {
-            infoPostDTO.setUpdateAt(Instant.now());
-            InfoPost infoPost = service.update(convertToEntity(infoPostDTO));
+            request.getInfoPost().setUpdateAt(Instant.now());
+            InfoPost infoPost = service.update(convertToEntity(request.getInfoPost()));
+            if (request.getInfoPost().getInfoType().getId() == 6) {
+                notifyService.notifyPriceFluctuation(PriceFluctuationMessage.CAP_NHAT_BAI_DANG, request.getDistrictCode());
+            }
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),
                     "Cập nhật bài viết thành công.",

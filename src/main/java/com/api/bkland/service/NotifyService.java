@@ -5,6 +5,7 @@ import com.api.bkland.payload.request.notify.Notification;
 import com.api.bkland.payload.request.notify.NotifyRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.PushNotifyResponse;
+import com.api.bkland.repository.PriceFluctuationRepository;
 import com.api.bkland.repository.UserDeviceTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,9 @@ public class NotifyService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private PriceFluctuationRepository priceFluctuationRepository;
 
     private static final String FIREBASE_FCM = "https://fcm.googleapis.com/fcm/send";
 
@@ -60,8 +64,9 @@ public class NotifyService {
         }
     }
 
-    public void notifyPriceFluctuation(String message) {
-
+    public void notifyPriceFluctuation(String message, String districtCode) {
+        List<String> tokens = priceFluctuationRepository.getTokensByDistrict(districtCode);
+        sendNotify(tokens, message);
     }
 
     private void sendNotify(List<String> tokens, String message) {
