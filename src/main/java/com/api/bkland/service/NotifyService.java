@@ -30,8 +30,6 @@ public class NotifyService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private PriceFluctuationRepository priceFluctuationRepository;
 
     private static final String FIREBASE_FCM = "https://fcm.googleapis.com/fcm/send";
 
@@ -65,7 +63,22 @@ public class NotifyService {
     }
 
     public void notifyPriceFluctuation(String message, String districtCode) {
-        List<String> tokens = priceFluctuationRepository.getTokensByDistrict(districtCode);
+        List<String> tokens = userDeviceTokenRepository.getTokensByDistrict(districtCode);
+        sendNotify(tokens, message);
+    }
+
+    public void notifyAgencyREPUpdate(String message, String districtCode) {
+        List<String> tokens = userDeviceTokenRepository.notifyAgencyREPUpdate(districtCode);
+        sendNotify(tokens, message);
+    }
+
+    public void notifyAcceptRejectREP(String message, String userId) {
+        List<String> tokens = userDeviceTokenRepository.notifyAcceptRejectREP(userId);
+        sendNotify(tokens, message);
+    }
+
+    public void notifyInterested(String message, String postId) {
+        List<String> tokens = userDeviceTokenRepository.notifyInterested(postId);
         sendNotify(tokens, message);
     }
 

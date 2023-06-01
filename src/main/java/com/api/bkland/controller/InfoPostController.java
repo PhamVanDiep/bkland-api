@@ -1,6 +1,6 @@
 package com.api.bkland.controller;
 
-import com.api.bkland.constant.PriceFluctuationMessage;
+import com.api.bkland.constant.Message;
 import com.api.bkland.entity.InfoPost;
 import com.api.bkland.entity.InfoType;
 import com.api.bkland.entity.User;
@@ -69,7 +69,7 @@ public class InfoPostController {
             request.getInfoPost().setCreateAt(Instant.now());
             InfoPost infoPost = service.create(convertToEntity(request.getInfoPost()));
             if (request.getInfoPost().getInfoType().getId() == 6) {
-                notifyService.notifyPriceFluctuation(PriceFluctuationMessage.TAO_BAI_DANG, request.getDistrictCode());
+                notifyService.notifyPriceFluctuation(Message.TAO_BAI_DANG, request.getDistrictCode());
             }
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),
@@ -92,7 +92,7 @@ public class InfoPostController {
             request.getInfoPost().setUpdateAt(Instant.now());
             InfoPost infoPost = service.update(convertToEntity(request.getInfoPost()));
             if (request.getInfoPost().getInfoType().getId() == 6) {
-                notifyService.notifyPriceFluctuation(PriceFluctuationMessage.CAP_NHAT_BAI_DANG, request.getDistrictCode());
+                notifyService.notifyPriceFluctuation(Message.CAP_NHAT_BAI_DANG, request.getDistrictCode());
             }
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),
