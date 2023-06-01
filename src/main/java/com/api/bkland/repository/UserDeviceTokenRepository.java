@@ -51,4 +51,12 @@ public interface UserDeviceTokenRepository extends JpaRepository<UserDeviceToken
             "and i.real_estate_post_id = :repId " +
             "and udt.user_id != 'admin'", nativeQuery = true)
     List<String> notifyInterested(@Param("repId") String repId);
+
+    @Query(value = "select distinct udt.notify_token " +
+            "from user_device_token udt " +
+            "where udt.enable = 1 " +
+            "and udt.is_logout = 0 " +
+            "and length(udt.notify_token) > 0 " +
+            "and udt.user_id = 'admin'", nativeQuery = true)
+    List<String> getAllAdminToken();
 }

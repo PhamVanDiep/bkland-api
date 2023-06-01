@@ -69,7 +69,7 @@ public class InfoPostController {
             request.getInfoPost().setCreateAt(Instant.now());
             InfoPost infoPost = service.create(convertToEntity(request.getInfoPost()));
             if (request.getInfoPost().getInfoType().getId() == 6) {
-                notifyService.notifyPriceFluctuation(Message.TAO_BAI_DANG, request.getDistrictCode());
+                notifyService.notifyPriceFluctuation(Message.TAO_BAI_DANG, request.getDistrictCodes());
             }
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),
@@ -87,13 +87,10 @@ public class InfoPostController {
 
     @PutMapping("/api/v1/info-post")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
-    public ResponseEntity<BaseResponse> update(@RequestBody InfoPostRequest request) {
+    public ResponseEntity<BaseResponse> update(@RequestBody InfoPostDTO request) {
         try {
-            request.getInfoPost().setUpdateAt(Instant.now());
-            InfoPost infoPost = service.update(convertToEntity(request.getInfoPost()));
-            if (request.getInfoPost().getInfoType().getId() == 6) {
-                notifyService.notifyPriceFluctuation(Message.CAP_NHAT_BAI_DANG, request.getDistrictCode());
-            }
+            request.setUpdateAt(Instant.now());
+            InfoPost infoPost = service.update(convertToEntity(request));
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),
                     "Cập nhật bài viết thành công.",

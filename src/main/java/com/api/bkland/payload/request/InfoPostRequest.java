@@ -2,9 +2,11 @@ package com.api.bkland.payload.request;
 
 import com.api.bkland.payload.dto.InfoPostDTO;
 
+import java.util.List;
+
 public class InfoPostRequest {
     private InfoPostDTO infoPost;
-    private String districtCode;
+    private List<String> districtCodes;
 
     public InfoPostDTO getInfoPost() {
         return infoPost;
@@ -14,11 +16,11 @@ public class InfoPostRequest {
         this.infoPost = infoPost;
     }
 
-    public String getDistrictCode() {
-        return districtCode;
+    public List<String> getDistrictCodes() {
+        return districtCodes;
     }
 
-    public void setDistrictCode(String districtCode) {
-        this.districtCode = districtCode;
+    public void setDistrictCodes(List<String> districtCodes) {
+        this.districtCodes = districtCodes;
     }
 }

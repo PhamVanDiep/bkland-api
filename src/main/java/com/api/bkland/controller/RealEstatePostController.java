@@ -210,6 +210,7 @@ public class RealEstatePostController {
                 user.setUpdateBy(user.getId());
                 userService.updateUserInfo(user);
             }
+            notifyService.notifyToAdmin(Message.NEW_REP_ADMIN);
             return ResponseEntity.ok(new
                     BaseResponse(null,
                     "Đã tạo bài viết thành công. Chờ quản trị viên kiểm duyệt",
