@@ -1,7 +1,9 @@
 package com.api.bkland.controller;
 
+import com.api.bkland.constant.Message;
 import com.api.bkland.constant.PayContent;
 import com.api.bkland.constant.enumeric.ERole;
+import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.*;
 import com.api.bkland.payload.dto.PostMediaDTO;
@@ -55,6 +57,9 @@ public class RealEstatePostController {
 
     @Autowired
     private SpecialAccountService specialAccountService;
+
+    @Autowired
+    private NotifyService notifyService;
 
     @GetMapping("/api/no-auth/real-estate-post/{id}")
     public ResponseEntity<BaseResponse> findById(@PathVariable("id") String id) {
@@ -205,6 +210,7 @@ public class RealEstatePostController {
                 user.setUpdateBy(user.getId());
                 userService.updateUserInfo(user);
             }
+            notifyService.notifyToAdmin(Message.NEW_REP_ADMIN);
             return ResponseEntity.ok(new
                     BaseResponse(null,
                     "Đã tạo bài viết thành công. Chờ quản trị viên kiểm duyệt",
@@ -259,6 +265,8 @@ public class RealEstatePostController {
                     postMediaService.save(modelMapper.map(postMediaDTO, PostMedia.class));
                 }
             }
+            notifyService.notifyAgencyREPUpdate(Message.CAP_NHAT_REP, realEstatePostDTO.getDistrict().getCode());
+            notifyService.notifyInterested(Message.getCAP_NHAT_REP_INTERESTED(realEstatePostDTO.getTitle()), realEstatePostDTO.getId());
             return ResponseEntity.ok(new
                     BaseResponse(null,
                     "Đã cập nhật bài viết thành công.",
@@ -346,6 +354,17 @@ public class RealEstatePostController {
     public ResponseEntity<BaseResponse> updateStatus(@RequestBody UpdatePostStatusRequest request) {
         try {
             service.updatePostStatus(request.getStatus().toString(), request.getPostId());
+            RealEstatePost realEstatePost = service.findById(request.getPostId());
+            if (request.getStatus().equals(EStatus.BI_TU_CHOI)) {
+                notifyService.notifyAcceptRejectREP(
+                        "Bài viết " + realEstatePost.getTitle() + " đã bị quản trị viên từ chối",
+                        realEstatePost.getOwnerId().getId());
+            } else if (request.getStatus().equals(EStatus.DA_KIEM_DUYET)) {
+                notifyService.notifyAcceptRejectREP(
+                        "Bài viết " + realEstatePost.getTitle() + " đã được quản trị viên chấp nhận",
+                        realEstatePost.getOwnerId().getId());
+                notifyService.notifyAgencyREPUpdate(Message.TAO_REP, realEstatePost.getDistrict().getCode());
+            }
             return ResponseEntity.ok(new BaseResponse(
                     request.getStatus().toString(),
                     "Cập nhật trạng thái bài viết thành công.",

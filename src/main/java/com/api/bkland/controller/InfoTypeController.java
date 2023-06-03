@@ -29,7 +29,7 @@ public class InfoTypeController {
     public ResponseEntity<BaseResponse> getAllSkip() {
         try {
             return ResponseEntity.ok(new BaseResponse(
-                    service.getAllSkip5().stream().map(e -> convertToDTO(e)).collect(Collectors.toList()),
+                    service.getAllSkip6().stream().map(e -> convertToDTO(e)).collect(Collectors.toList()),
                     "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(

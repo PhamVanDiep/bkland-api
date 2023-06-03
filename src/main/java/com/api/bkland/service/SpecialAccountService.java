@@ -214,4 +214,17 @@ public class SpecialAccountService {
     public List<String> getAllDistrictCodeOfAgency(String userId) {
         return repository.getAllDistrictCodeOfAgency(userId);
     }
+
+    public SpecialAccount findById(String userId) {
+        Optional<SpecialAccount> specialAccount = repository.findByUserId(userId);
+        if (specialAccount.isEmpty()) {
+            return null;
+        }
+        return specialAccount.get();
+    }
+
+    @Transactional
+    public void update(SpecialAccount specialAccount) {
+        repository.save(specialAccount);
+    }
 }

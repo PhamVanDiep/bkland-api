@@ -11,6 +11,8 @@ public class SpecialAccountDTO {
 
     private Instant lastPaid;
 
+    private Integer notifyBefore;
+
     public String getUserId() {
         return userId;
     }
@@ -41,5 +43,13 @@ public class SpecialAccountDTO {
 
     public void setLastPaid(Instant lastPaid) {
         this.lastPaid = lastPaid;
+    }
+
+    public Integer getNotifyBefore() {
+        return notifyBefore;
+    }
+
+    public void setNotifyBefore(Integer notifyBefore) {
+        this.notifyBefore = notifyBefore;
     }
 }

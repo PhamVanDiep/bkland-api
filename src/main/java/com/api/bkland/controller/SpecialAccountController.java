@@ -2,6 +2,7 @@ package com.api.bkland.controller;
 
 import com.api.bkland.entity.SpecialAccount;
 import com.api.bkland.payload.dto.SpecialAccountDTO;
+import com.api.bkland.payload.dto.SpecialAccountPayDTO;
 import com.api.bkland.payload.request.AgencyRegisterRequest;
 import com.api.bkland.payload.response.AgencyInfoResponse;
 import com.api.bkland.payload.response.BaseResponse;
@@ -84,6 +85,43 @@ public class SpecialAccountController {
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi hủy đăng ký tài khoản môi giới. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/special-account/{userId}")
+    @PreAuthorize("hasRole('ROLE_ENTERPRISE') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> findById(@PathVariable("userId") String userId) {
+        try {
+            SpecialAccount specialAccount = service.findById(userId);
+            if (specialAccount == null) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Không tìm thấy thôn tin tài khoản",
+                        HttpStatus.NO_CONTENT));
+            }
+            return ResponseEntity.ok(new BaseResponse(
+                    modelMapper.map(specialAccount, SpecialAccountDTO.class),
+                    "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin người dùng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/api/v1/special-account")
+    @PreAuthorize("hasRole('ROLE_ENTERPRISE') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> update(@RequestBody SpecialAccountDTO specialAccountDTO) {
+        try {
+            service.update(modelMapper.map(specialAccountDTO, SpecialAccount.class));
+            return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi cập nhật thông tin người dùng. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
