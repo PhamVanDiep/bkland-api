@@ -1,5 +1,9 @@
 package com.api.bkland.payload.dto;
 
+import com.api.bkland.constant.enumeric.EPostType;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -18,7 +22,8 @@ public class PostMediaDTO {
 
     @NotNull
     @NotBlank
-    private String postType;
+    @Enumerated(EnumType.STRING)
+    private EPostType postType;
 
     @NotNull
     @NotBlank
@@ -48,11 +53,11 @@ public class PostMediaDTO {
         this.postId = postId;
     }
 
-    public String getPostType() {
+    public EPostType getPostType() {
         return postType;
     }
 
-    public void setPostType(String postType) {
+    public void setPostType(EPostType postType) {
         this.postType = postType;
     }
 

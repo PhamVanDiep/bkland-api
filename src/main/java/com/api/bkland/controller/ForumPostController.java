@@ -1,0 +1,214 @@
+package com.api.bkland.controller;
+
+import com.api.bkland.config.annotation.CurrentUser;
+import com.api.bkland.entity.ForumPost;
+import com.api.bkland.entity.PostMedia;
+import com.api.bkland.payload.dto.ForumPostDTO;
+import com.api.bkland.payload.dto.PostMediaDTO;
+import com.api.bkland.payload.request.LikeRequest;
+import com.api.bkland.payload.response.BaseResponse;
+import com.api.bkland.security.services.UserDetailsImpl;
+import com.api.bkland.service.ForumPostService;
+import com.api.bkland.service.PostMediaService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
+public class ForumPostController {
+    @Autowired
+    private ForumPostService service;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private PostMediaService postMediaService;
+
+    @PostMapping("/api/v1/forum-post")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> create(@RequestBody ForumPostDTO body, @CurrentUser UserDetailsImpl currentUser) {
+        try {
+            service.save(modelMapper.map(body, ForumPost.class), currentUser.getId(), false);
+            body.getPostMedia()
+                    .stream()
+                    .forEach(e -> {
+                        postMediaService.save(modelMapper.map(e, PostMedia.class));
+                    });
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đăng bài viết thành công.",
+                    HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi tạo bài viết mới.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/api/v1/forum-post")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> update(@RequestBody ForumPostDTO body, @CurrentUser UserDetailsImpl currentUser) {
+        try {
+            if (!currentUser.getId().equalsIgnoreCase(body.getCreateBy())) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Chỉ có chủ của bài viết mới có thể sửa bài viết.",
+                        HttpStatus.NOT_ACCEPTABLE
+                ));
+            }
+            service.save(modelMapper.map(body, ForumPost.class), currentUser.getId(), true);
+            body.getPostMedia()
+                    .stream()
+                    .forEach(e -> {
+                        postMediaService.save(modelMapper.map(e, PostMedia.class));
+                    });
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Cập nhật bài viết thành công.",
+                    HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi tạo bài viết mới.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/no-auth/forum-post/{id}")
+    public ResponseEntity<BaseResponse> findById(@PathVariable("id") String id) {
+        try {
+            ForumPost forumPost = service.findById(id);
+            if (forumPost == null) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Không tìm thấy bài viết. ",
+                        HttpStatus.NO_CONTENT
+                ));
+            }
+            List<PostMedia> postMediaList = postMediaService.findByPostId(id);
+            ForumPostDTO forumPostDTO = modelMapper.map(forumPost, ForumPostDTO.class);
+            forumPostDTO.setPostMedia(
+                    postMediaList.stream()
+                            .map(e -> modelMapper.map(e, PostMediaDTO.class))
+                            .collect(Collectors.toList()));
+            return ResponseEntity.ok(new BaseResponse(forumPostDTO, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/forum-post/createBy")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> findByUser(
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize,
+            @CurrentUser UserDetailsImpl userDetails) {
+        try {
+            Page<ForumPost> forumPosts = service.findByUser(userDetails.getId(), pageSize, page);
+            List<ForumPostDTO> forumPostDTOS = new ArrayList<>();
+            forumPosts.
+                    stream()
+                    .forEach(e -> {
+                        List<PostMedia> postMediaList = postMediaService.findByPostId(e.getId());
+                        ForumPostDTO forumPostDTO = modelMapper.map(e, ForumPostDTO.class);
+                        forumPostDTO.setPostMedia(
+                                postMediaList.stream()
+                                        .map(ee -> modelMapper.map(ee, PostMediaDTO.class))
+                                        .collect(Collectors.toList()));
+                        forumPostDTOS.add(forumPostDTO);
+                    });
+            return ResponseEntity.ok(new BaseResponse(forumPostDTOS, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết của người dùng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/forum-post")
+    public ResponseEntity<BaseResponse> getAllPageable(
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize) {
+        try {
+            Page<ForumPost> forumPosts = service.findAllWithPageable(pageSize, page);
+            List<ForumPostDTO> forumPostDTOS = new ArrayList<>();
+            forumPosts.
+                    stream()
+                    .forEach(e -> {
+                        List<PostMedia> postMediaList = postMediaService.findByPostId(e.getId());
+                        ForumPostDTO forumPostDTO = modelMapper.map(e, ForumPostDTO.class);
+                        forumPostDTO.setPostMedia(
+                                postMediaList.stream()
+                                        .map(ee -> modelMapper.map(ee, PostMediaDTO.class))
+                                        .collect(Collectors.toList()));
+                        forumPostDTOS.add(forumPostDTO);
+                    });
+            return ResponseEntity.ok(new BaseResponse(forumPostDTOS, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @PostMapping("/api/v1/forum-post/like")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> like(@RequestBody LikeRequest request, @CurrentUser UserDetailsImpl userDetails) {
+        try {
+            if (!service.existsById(request.getPostId())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Bài viết không tồn tại", HttpStatus.NO_CONTENT));
+            }
+            boolean response = service.like(request.getPostId(), userDetails.getId());
+            return ResponseEntity.ok(new BaseResponse(response, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi like bài viết.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/forum-post/liked/{postId}")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> isLiked(@PathVariable("postId") String postId, @CurrentUser UserDetailsImpl userDetails) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.isLiked(postId, userDetails.getId()), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin lượt thích.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+    @GetMapping("/api/no-auth/forum-post/log/{postId}")
+    public ResponseEntity<BaseResponse> getLog(@PathVariable("postId") String postId) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getLog(postId), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin bài viết." + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+}
