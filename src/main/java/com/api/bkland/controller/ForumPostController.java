@@ -9,6 +9,7 @@ import com.api.bkland.payload.request.LikeRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.ForumPostService;
+import com.api.bkland.service.PhotoService;
 import com.api.bkland.service.PostMediaService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class ForumPostController {
 
     @Autowired
     private PostMediaService postMediaService;
+
+    @Autowired
+    private PhotoService photoService;
 
     @PostMapping("/api/v1/forum-post")
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
@@ -208,6 +212,55 @@ public class ForumPostController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi lấy thông tin bài viết." + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @DeleteMapping("/api/v1/forum-post/{postId}")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> deletePost(@PathVariable String postId, @CurrentUser UserDetailsImpl userDetails) {
+        try {
+            ForumPost forumPost = service.findById(postId);
+            if (forumPost == null) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài viết.", HttpStatus.NO_CONTENT));
+            }
+            if (!userDetails.getId().equals("admin")) {
+                if (!forumPost.getCreateBy().equals(userDetails.getId())) {
+                    return ResponseEntity.ok(new BaseResponse(null, "Bạn không thể xóa bài viết này.", HttpStatus.NO_CONTENT));
+                }
+            }
+            List<PostMedia> postMediaList = postMediaService.findByPostId(postId);
+            postMediaList.stream().forEach(e -> {
+                photoService.deletePhotoById(e.getId());
+            });
+            postMediaService.deleteByPostId(postId);
+            service.deleteById(postId);
+            return ResponseEntity.ok(new BaseResponse(null, "Xóa bài viết thành công.", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi xóa bài viết." + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/forum-post/user")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> findAllOfUser() {
+        try {
+            List<ForumPostDTO> forumPostDTOS = service.findAllNotByAdmin()
+                    .stream()
+                    .map(e -> modelMapper.map(e, ForumPostDTO.class))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(new BaseResponse(
+                    forumPostDTOS,
+                    "",
+                    HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết của người dùng.",
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }

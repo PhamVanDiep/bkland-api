@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -93,5 +94,14 @@ public class ForumPostService {
         forumPostLog.setNoComments(postCommentRepository.countByPostId(postId));
         forumPostLog.setNoReports(postReportRepository.countByPostId(postId));
         return forumPostLog;
+    }
+
+    public List<ForumPost> findAllNotByAdmin() {
+        return repository.findByCreateByNot("admin");
+    }
+
+    @Transactional
+    public void deleteById(String postId) {
+        repository.deleteById(postId);
     }
 }

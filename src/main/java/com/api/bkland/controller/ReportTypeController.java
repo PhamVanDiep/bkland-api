@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/report-type")
@@ -83,6 +84,44 @@ public class ReportTypeController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi xóa danh mục báo cáo.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getAllReportType() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service
+                            .getAll()
+                            .stream()
+                            .map(e -> modelMapper.map(e, ReportTypeDTO.class))
+                            .collect(Collectors.toList()), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách danh mục báo cáo.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/fp")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> getAllReportTypeFP() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service
+                            .getAllByIsForum(true)
+                            .stream()
+                            .map(e -> modelMapper.map(e, ReportTypeDTO.class))
+                            .collect(Collectors.toList()), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách danh mục báo cáo của bài đăng trên diễn đàn." + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }

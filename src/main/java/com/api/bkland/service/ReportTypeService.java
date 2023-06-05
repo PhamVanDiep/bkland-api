@@ -18,6 +18,10 @@ public class ReportTypeService {
         return repository.save(reportType);
     }
 
+    public List<ReportType> getAllByIsForum(boolean isForum) {
+        return repository.findByIsForum(isForum);
+    }
+
     public List<ReportType> getAll() {
         return repository.findAll();
     }

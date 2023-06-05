@@ -10,5 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ForumPostRepository extends JpaRepository<ForumPost, String> {
+    List<ForumPost> findByCreateByNot(String createBy);
     Page<ForumPost> findByCreateBy(String createBy, Pageable pageable);
 }
