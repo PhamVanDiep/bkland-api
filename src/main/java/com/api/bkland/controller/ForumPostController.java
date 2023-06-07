@@ -71,6 +71,13 @@ public class ForumPostController {
                         HttpStatus.NOT_ACCEPTABLE
                 ));
             }
+            if (!service.existsById(body.getId())) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Bài viết không tồn tại.",
+                        HttpStatus.NOT_ACCEPTABLE
+                ));
+            }
             service.save(modelMapper.map(body, ForumPost.class), currentUser.getId(), true);
             body.getPostMedia()
                     .stream()
@@ -195,6 +202,9 @@ public class ForumPostController {
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> isLiked(@PathVariable("postId") String postId, @CurrentUser UserDetailsImpl userDetails) {
         try {
+            if (!service.existsById(postId)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Bài viết không tồn tại", HttpStatus.NO_CONTENT));
+            }
             return ResponseEntity.ok(new BaseResponse(service.isLiked(postId, userDetails.getId()), "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
@@ -207,6 +217,9 @@ public class ForumPostController {
     @GetMapping("/api/no-auth/forum-post/log/{postId}")
     public ResponseEntity<BaseResponse> getLog(@PathVariable("postId") String postId) {
         try {
+            if (!service.existsById(postId)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Bài viết không tồn tại", HttpStatus.NO_CONTENT));
+            }
             return ResponseEntity.ok(new BaseResponse(service.getLog(postId), "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
@@ -229,11 +242,11 @@ public class ForumPostController {
                     return ResponseEntity.ok(new BaseResponse(null, "Bạn không thể xóa bài viết này.", HttpStatus.NO_CONTENT));
                 }
             }
-            List<PostMedia> postMediaList = postMediaService.findByPostId(postId);
-            postMediaList.stream().forEach(e -> {
-                photoService.deletePhotoById(e.getId());
-            });
-            postMediaService.deleteByPostId(postId);
+//            List<PostMedia> postMediaList = postMediaService.findByPostId(postId);
+//            postMediaList.stream().forEach(e -> {
+//                photoService.deletePhotoById(e.getId());
+//            });
+//            postMediaService.deleteByPostId(postId);
             service.deleteById(postId);
             return ResponseEntity.ok(new BaseResponse(null, "Xóa bài viết thành công.", HttpStatus.OK));
         } catch (Exception e) {
@@ -248,12 +261,8 @@ public class ForumPostController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> findAllOfUser() {
         try {
-            List<ForumPostDTO> forumPostDTOS = service.findAllNotByAdmin()
-                    .stream()
-                    .map(e -> modelMapper.map(e, ForumPostDTO.class))
-                    .collect(Collectors.toList());
             return ResponseEntity.ok(new BaseResponse(
-                    forumPostDTOS,
+                    service.findAllNotByAdmin(),
                     "",
                     HttpStatus.OK
             ));

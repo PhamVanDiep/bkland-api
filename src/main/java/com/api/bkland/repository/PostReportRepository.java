@@ -25,6 +25,7 @@ public interface PostReportRepository extends JpaRepository<PostReport, Long> {
             "from forum_post fp, post_report pr, user u\n" +
             "where fp.id = pr.post_id\n" +
             "and fp.create_by = u.id \n" +
+            "and fp.enable = 1 \n" +
             "group by postId, postType, fullName, phoneNumber \n" +
             "order by count desc;", nativeQuery = true)
     List<IReportData> getListReportData();

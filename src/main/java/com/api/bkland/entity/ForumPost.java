@@ -17,6 +17,9 @@ public class ForumPost {
     @NotNull
     private String content;
 
+    @Column(name = "enable")
+    private boolean enable = true;
+
     @Column(name = "create_by")
     private String createBy;
 
@@ -43,6 +46,14 @@ public class ForumPost {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public String getCreateBy() {

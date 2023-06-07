@@ -45,8 +45,12 @@ public class ForumPostService {
         repository.save(forumPost);
     }
 
+    public boolean existsById(String id) {
+        return repository.existsByIdAndEnable(id, true);
+    }
+
     public ForumPost findById(String id) {
-        Optional<ForumPost> forumPost = repository.findById(id);
+        Optional<ForumPost> forumPost = repository.findByIdAndEnable(id, true);
         if (forumPost.isEmpty()) {
             return null;
         }
@@ -55,12 +59,12 @@ public class ForumPostService {
 
     public Page<ForumPost> findByUser(String userId, Integer pageSize, Integer page) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createAt").descending());
-        return repository.findByCreateBy(userId, pageable);
+        return repository.findByCreateByAndEnable(userId, true, pageable);
     }
 
     public Page<ForumPost> findAllWithPageable(Integer pageSize, Integer page) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createAt").descending());
-        return repository.findAll(pageable);
+        return repository.findByEnable(true, pageable);
     }
 
     @Transactional
@@ -80,9 +84,6 @@ public class ForumPostService {
         }
     }
 
-    public boolean existsById(String postId) {
-        return repository.existsById(postId);
-    }
 
     public boolean isLiked(String postId, String userId) {
         return forumPostLikeRepository.existsByForumPostIdAndUserId(postId, userId);
@@ -96,12 +97,12 @@ public class ForumPostService {
         return forumPostLog;
     }
 
-    public List<ForumPost> findAllNotByAdmin() {
-        return repository.findByCreateByNot("admin");
+    public Object findAllNotByAdmin() {
+        return repository.findAllByUser();
     }
 
     @Transactional
     public void deleteById(String postId) {
-        repository.deleteById(postId);
+        repository.deletePostById(postId);
     }
 }
