@@ -4,6 +4,7 @@ import com.api.bkland.config.annotation.CurrentUser;
 import com.api.bkland.entity.ReportType;
 import com.api.bkland.payload.dto.ReportTypeDTO;
 import com.api.bkland.payload.response.BaseResponse;
+import com.api.bkland.payload.response.ReportTypeResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.ReportTypeService;
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -92,13 +95,16 @@ public class ReportTypeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> getAllReportType() {
         try {
-            return ResponseEntity.ok(new BaseResponse(
-                    service
-                            .getAll()
-                            .stream()
-                            .map(e -> modelMapper.map(e, ReportTypeDTO.class))
-                            .collect(Collectors.toList()), "", HttpStatus.OK
-            ));
+            List<ReportTypeResponse> reportTypeResponses = new ArrayList<>();
+            service
+                .getAll()
+                .stream()
+                .forEach(e -> {
+                    ReportTypeResponse response = modelMapper.map(e, ReportTypeResponse.class);
+                    response.setCount(service.countByReportTypeId(e.getId()));
+                    reportTypeResponses.add(response);
+                });
+            return ResponseEntity.ok(new BaseResponse(reportTypeResponses, "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
                     null,

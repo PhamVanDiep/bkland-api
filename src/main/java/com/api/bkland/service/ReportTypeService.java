@@ -26,6 +26,10 @@ public class ReportTypeService {
         return repository.findAll();
     }
 
+    public Integer countByReportTypeId(Integer reportTypeId) {
+        return repository.countByRTId(reportTypeId);
+    }
+
     @Transactional
     public void deletePostReportTypeByReportTypeId(Integer reportTypeId) {
         repository.deletePostReportTypeByReportTypeId(reportTypeId);

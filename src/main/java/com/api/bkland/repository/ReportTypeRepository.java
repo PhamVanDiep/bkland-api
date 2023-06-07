@@ -16,4 +16,7 @@ public interface ReportTypeRepository extends JpaRepository<ReportType, Integer>
     @Modifying
     @Query(value = "delete from post_report_type where report_type_id = :reportTypeId ;", nativeQuery = true)
     void deletePostReportTypeByReportTypeId(@Param("reportTypeId") Integer reportTypeId);
+
+    @Query(value = "select count(*) from post_report_type where report_type_id = :reportTypeId", nativeQuery = true)
+    Integer countByRTId(@Param("reportTypeId") Integer reportTypeId);
 }
