@@ -1,9 +1,8 @@
 package com.api.bkland.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.api.bkland.constant.enumeric.EPostType;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -27,9 +26,10 @@ public class PostMedia {
     private String postId;
 
     @Column(name = "post_type")
+    @Enumerated(EnumType.STRING)
     @NotNull
     @NotBlank
-    private String postType;
+    private EPostType postType;
 
     @Column(name = "name")
     @NotNull
@@ -60,11 +60,11 @@ public class PostMedia {
         this.postId = postId;
     }
 
-    public String getPostType() {
+    public EPostType getPostType() {
         return postType;
     }
 
-    public void setPostType(String postType) {
+    public void setPostType(EPostType postType) {
         this.postType = postType;
     }
 

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/user")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
     @Autowired
@@ -37,7 +36,7 @@ public class UserController {
     @Autowired
     private WardService wardService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/api/v1/user/{userId}")
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> getUserById(@PathVariable("userId") String userId) {
         try {
@@ -57,7 +56,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/info/{userId}")
+    @GetMapping("/api/v1/user/info/{userId}")
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> getUserInfoById(@PathVariable("userId") String userId) {
         try {
@@ -106,7 +105,7 @@ public class UserController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/api/v1/user")
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> updateUserInfo(@RequestBody UserDTO userDTO) {
         try {
@@ -119,7 +118,7 @@ public class UserController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/api/v1/user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> getAllUsers() {
         try {
@@ -140,7 +139,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/lock/{id}")
+    @PutMapping("/api/v1/user/lock/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> lockOrUnlock(@PathVariable("id") String id) {
         try {
@@ -167,6 +166,24 @@ public class UserController {
         }
     }
 
+    @GetMapping("/api/no-auth/user/{userId}")
+    public ResponseEntity<BaseResponse> getUserNoAuthById(@PathVariable("userId") String userId) {
+        try {
+            User user = service.findById(userId);
+            if (user == null) {
+                return ResponseEntity.ok(new BaseResponse(null,
+                        "Không tìm thấy thông tin người dùng.",
+                        HttpStatus.NO_CONTENT));
+            } else {
+                return ResponseEntity.ok(new BaseResponse(convertToDTO(user),
+                        "", HttpStatus.OK));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin người dùng " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
     private UserDTO convertToDTO(User user) {
         return modelMapper.map(user, UserDTO.class);
     }

@@ -71,6 +71,22 @@ public class PhotoController {
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
+    @DeleteMapping("/api/v1/photos/photo/{id}")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> deletePhotoById(@PathVariable("id") String photoId) {
+        try {
+            photoService.deletePhotoById(photoId);
+            postMediaService.deleteById(photoId);
+            return ResponseEntity.ok(new BaseResponse(null, "Xóa ảnh thành công.", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi xóa ảnh.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
     @GetMapping("/api/no-auth/photos/{id}")
     public ResponseEntity<BaseResponse> getPhoto(@PathVariable String id, Model model) {
         try {

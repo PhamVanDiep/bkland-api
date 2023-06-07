@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
@@ -14,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     Boolean existsByUsername(String username);
     Boolean existsByEmail(String email);
     Optional<User> findByEmail(String email);
-
+    List<User> findByIdNot(String id);
     @Modifying
     @Query(value = "insert into user_role(user_id, role_id) values ( :userId , 2)", nativeQuery = true)
     void agencyRegister(@Param("userId") String userId);
