@@ -1,42 +1,15 @@
-package com.api.bkland.entity;
+package com.api.bkland.payload.dto;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
-@Entity
-@Table(name = "post_comment")
-public class PostComment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PostCommentDTO {
     private Long id;
-
-    @Column(name = "post_id")
-    @NotNull
-    @NotBlank
     private String postId;
-
-    @Column(name = "content")
-    @NotNull
-    @NotBlank
     private String content;
-
-    @Column(name = "is_forum_post")
-    @NotNull
-    @NotBlank
     private boolean isForumPost;
-
-    @Column(name = "create_by", updatable = false)
     private String createBy;
-
-    @Column(name = "create_at", updatable = false)
-    private Instant createAt;
-
-    @Column(name = "update_by")
     private String updateBy;
-
-    @Column(name = "update_at")
+    private Instant createAt;
     private Instant updateAt;
 
     public Long getId() {
@@ -79,20 +52,20 @@ public class PostComment {
         this.createBy = createBy;
     }
 
-    public Instant getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Instant createAt) {
-        this.createAt = createAt;
-    }
-
     public String getUpdateBy() {
         return updateBy;
     }
 
     public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
+    }
+
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
     }
 
     public Instant getUpdateAt() {
