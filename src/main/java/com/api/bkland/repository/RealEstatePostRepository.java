@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, String> {
@@ -34,4 +35,7 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
     @Modifying
     @Query(value = "update real_estate_post rep set clicked_view = (rep.clicked_view + 1) where rep.id = :realEstatePostId", nativeQuery = true)
     void updateClickedView(@Param("realEstatePostId") String realEstatePostId);
+
+    Optional<RealEstatePost> findByIdAndEnable(String id, boolean enable);
+    boolean existsByIdAndEnable(String id, boolean enable);
 }

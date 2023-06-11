@@ -74,4 +74,16 @@ public class RealEstatePostService {
     public void updateClickedView(String realEstatePostId) {
         repository.updateClickedView(realEstatePostId);
     }
+
+    public RealEstatePost findByIdAndEnable(String id) {
+        Optional<RealEstatePost> realEstatePost = repository.findByIdAndEnable(id, true);
+        if (realEstatePost.isEmpty()) {
+            return null;
+        }
+        return realEstatePost.get();
+    }
+
+    public boolean existsByIdAndEnable(String id) {
+        return repository.existsByIdAndEnable(id, true);
+    }
 }
