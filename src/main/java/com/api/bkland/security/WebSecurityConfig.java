@@ -88,7 +88,12 @@ public class WebSecurityConfig {
                         "/configuration/**",
                         "/swagger-ui.html",
                         "/webjars/**").permitAll()
+                .antMatchers(
+                        "/secured/**/**",
+                        "/secured/success",
+                        "/secured/socket").authenticated()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/ws/**").permitAll()
 //                .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/api/no-auth/**").permitAll()
                 .anyRequest().authenticated();
