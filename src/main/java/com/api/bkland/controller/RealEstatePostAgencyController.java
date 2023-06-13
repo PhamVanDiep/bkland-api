@@ -6,6 +6,7 @@ import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostAgency;
 import com.api.bkland.payload.dto.RealEstatePostAgencyDTO;
 import com.api.bkland.payload.dto.post.RealEstatePostDTO;
+import com.api.bkland.payload.request.RealEstatePostAgencyRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.REPAgencyResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
@@ -21,12 +22,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/real-estate-post-agency")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class RealEstatePostAgencyController {
     @Autowired
     private RealEstatePostAgencyService service;
@@ -95,27 +98,33 @@ public class RealEstatePostAgencyController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<BaseResponse> create(@RequestBody RealEstatePostAgencyDTO body, @CurrentUser UserDetailsImpl userDetails) {
+    public ResponseEntity<BaseResponse> create(@RequestBody RealEstatePostAgencyRequest body, @CurrentUser UserDetailsImpl userDetails) {
         try {
             if (!realEstatePostService.existsByIdAndEnable(body.getRealEstatePostId())) {
                 return ResponseEntity.ok(new BaseResponse(null, "Bài viết không tồn tại", HttpStatus.NO_CONTENT));
             }
-            if (!specialAccountService.isAgency(body.getAgencyId())) {
-                return ResponseEntity.ok(new BaseResponse(null, "Người được gửi yêu cầu không phải môi giới.", HttpStatus.NO_CONTENT));
-            } else {
-                if (service.inArea(body.getRealEstatePostId(), body.getAgencyId())) {
-                    return ResponseEntity.ok(new BaseResponse(null,
-                            "Bài viết không nằm trong khu vực đăng ký của môi giới.", HttpStatus.NOT_ACCEPTABLE));
+            List<RealEstatePostAgency> realEstatePostAgencies = new ArrayList<>();
+            for (String e: body.getAgencies()) {
+                if (!specialAccountService.isAgency(e)) {
+                    return ResponseEntity.ok(new BaseResponse(null, "Người được gửi yêu cầu không phải môi giới.", HttpStatus.NO_CONTENT));
+                } else {
+                    if (service.inArea(body.getRealEstatePostId(), e)) {
+                        return ResponseEntity.ok(new BaseResponse(null,
+                                "Bài viết không nằm trong khu vực đăng ký của môi giới.", HttpStatus.NOT_ACCEPTABLE));
+                    }
                 }
+                RealEstatePostAgency realEstatePostAgency = new RealEstatePostAgency();
+                realEstatePostAgency.setCreateBy(userDetails.getId());
+                realEstatePostAgency.setCreateAt(Instant.now());
+                realEstatePostAgency.setStatus(ERepAgencyStatus.DA_GUI_YEU_CAU);
+                realEstatePostAgency.setId(0L);
+                realEstatePostAgency.setAgencyId(e);
+                realEstatePostAgency.setRealEstatePostId(body.getRealEstatePostId());
+                realEstatePostAgencies.add(realEstatePostAgency);
             }
-            RealEstatePostAgency realEstatePostAgency = modelMapper.map(body, RealEstatePostAgency.class);
-            realEstatePostAgency.setCreateBy(userDetails.getId());
-            realEstatePostAgency.setCreateAt(Instant.now());
-            realEstatePostAgency.setStatus(ERepAgencyStatus.DA_GUI_YEU_CAU);
-            realEstatePostAgency.setId(0L);
-            RealEstatePostAgency response = service.save(realEstatePostAgency);
+            service.saveAll(realEstatePostAgencies);
 //            notifyService.noti
-            return ResponseEntity.ok(new BaseResponse(response, "Đã gửi yêu cầu nhờ giúp đỡ.", HttpStatus.OK));
+            return ResponseEntity.ok(new BaseResponse(null, "Đã gửi yêu cầu nhờ giúp đỡ.", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
                     null,

@@ -21,6 +21,11 @@ public class RealEstatePostAgencyService {
     }
 
     @Transactional
+    public void saveAll(List<RealEstatePostAgency> realEstatePostAgencies) {
+        repository.saveAll(realEstatePostAgencies);
+    }
+
+    @Transactional
     public Long updateStatus(RealEstatePostAgency realEstatePostAgency) {
         RealEstatePostAgency realEstatePostAgency1 = repository.save(realEstatePostAgency);
         if (realEstatePostAgency1.getStatus().equals(ERepAgencyStatus.DA_XAC_NHAN)) {

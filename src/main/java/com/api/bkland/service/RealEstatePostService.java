@@ -1,6 +1,8 @@
 package com.api.bkland.service;
 
 import com.api.bkland.entity.RealEstatePost;
+import com.api.bkland.entity.response.IRepEnableRequest;
+import com.api.bkland.entity.response.IRepRequested;
 import com.api.bkland.repository.RealEstatePostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,5 +87,17 @@ public class RealEstatePostService {
 
     public boolean existsByIdAndEnable(String id) {
         return repository.existsByIdAndEnable(id, true);
+    }
+
+    public List<IRepEnableRequest> enableRequestRep(String userId) {
+        return repository.enableRequest(userId);
+    }
+
+    public List<IRepRequested> repRequested(String userId) {
+        return repository.repRequested(userId);
+    }
+
+    public List<IRepRequested> requestedOfAgency(String agencyId) {
+        return repository.requestedOfAgency(agencyId);
     }
 }
