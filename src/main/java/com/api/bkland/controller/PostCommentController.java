@@ -116,7 +116,7 @@ public class PostCommentController {
             body.setUpdateBy(userDetails.getId());
             body.setUpdateAt(Instant.now());
             PostComment postComment = service.save(modelMapper.map(body, PostComment.class));
-            return ResponseEntity.ok(new BaseResponse(postComment.getPostId(), "", HttpStatus.OK));
+            return ResponseEntity.ok(new BaseResponse(postComment.getId(), "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
                     null,
