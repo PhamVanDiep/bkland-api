@@ -1,5 +1,7 @@
 package com.api.bkland.service;
 
+import com.api.bkland.constant.Message;
+import com.api.bkland.constant.enumeric.ERepAgencyStatus;
 import com.api.bkland.entity.UserDeviceToken;
 import com.api.bkland.payload.request.notify.Notification;
 import com.api.bkland.payload.request.notify.NotifyRequest;
@@ -90,6 +92,32 @@ public class NotifyService {
 
     public void notifyToAdmin(String message) {
         List<String> tokens = userDeviceTokenRepository.getAllAdminToken();
+        sendNotify(tokens, message);
+    }
+
+    public void thongBaoChuaDongTien() {
+        List<String> tokens = userDeviceTokenRepository.thongBaoChuaDongTien();
+        sendNotify(tokens, Message.THONG_BAO_CHUA_DONG_TIEN);
+    }
+
+    public void thongBaoDenHanDongTien() {
+        List<String> tokens = userDeviceTokenRepository.thongBaoDenHanDongTien();
+        sendNotify(tokens, Message.THONG_BAO_DEN_HAN_DONG_TIEN);
+    }
+
+    public void thongBaoCoBaiDangNhoGiup(String agencyId) {
+        List<String> tokens = userDeviceTokenRepository.thongBaoCoBaiDangNhoGiup(agencyId);
+        sendNotify(tokens, Message.CO_BAI_DANG_MOI_NHO_GIUP);
+    }
+
+    public void thongBaoCapNhatTrangThaiBaiDang(String realEstatePostId, ERepAgencyStatus status) {
+        String message;
+        if (status.equals(ERepAgencyStatus.DA_TU_CHOI)) {
+            message = "Bài viết bạn nhờ môi giới giúp đỡ đã bị từ chối";
+        } else {
+            message = "Bài viết bạn nhờ môi giới giúp đỡ đã được chấp nhận";
+        }
+        List<String> tokens = userDeviceTokenRepository.thongBaoCapNhatTrangThaiBaiDang(realEstatePostId);
         sendNotify(tokens, message);
     }
 

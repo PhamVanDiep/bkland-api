@@ -3,6 +3,7 @@ package com.api.bkland.service;
 import com.api.bkland.constant.PayContent;
 import com.api.bkland.constant.enumeric.ERole;
 import com.api.bkland.entity.*;
+import com.api.bkland.entity.response.IAgencyRep;
 import com.api.bkland.entity.response.IDistrict;
 import com.api.bkland.payload.dto.DistrictDTO;
 import com.api.bkland.payload.dto.SpecialAccountDTO;
@@ -203,7 +204,7 @@ public class SpecialAccountService {
             return false;
         }
         Role roleAgency = new Role();
-        roleAgency.setId(3);
+        roleAgency.setId(2);
         roleAgency.setName(ERole.ROLE_AGENCY);
         if (userOptional.get().getRoles().contains(roleAgency)) {
             return true;
@@ -226,5 +227,9 @@ public class SpecialAccountService {
     @Transactional
     public void update(SpecialAccount specialAccount) {
         repository.save(specialAccount);
+    }
+
+    public List<IAgencyRep> listAgencyByRepDistrict(String realEstatePostId) {
+        return repository.listAgencyByRepDistrict(realEstatePostId);
     }
 }

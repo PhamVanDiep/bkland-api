@@ -126,6 +126,20 @@ public class SpecialAccountController {
         }
     }
 
+    @GetMapping("/api/v1/special-account/rep/{repId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<BaseResponse> listAgencyByRepDistrict(@PathVariable String repId) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.listAgencyByRepDistrict(repId), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách môi giới hoạt động trong khu vực đăng bài.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     private SpecialAccount convertToEntity(SpecialAccountDTO specialAccountDTO) {
         return modelMapper.map(specialAccountDTO, SpecialAccount.class);
     }

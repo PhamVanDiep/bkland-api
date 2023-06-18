@@ -1,5 +1,6 @@
 package com.api.bkland.controller;
 
+import com.api.bkland.config.annotation.CurrentUser;
 import com.api.bkland.constant.Message;
 import com.api.bkland.constant.PayContent;
 import com.api.bkland.constant.enumeric.ERole;
@@ -14,6 +15,7 @@ import com.api.bkland.payload.request.RealEstatePostRequest;
 import com.api.bkland.payload.request.UpdatePostStatusRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.RealEstatePostResponse;
+import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.*;
 import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
@@ -373,6 +375,48 @@ public class RealEstatePostController {
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi ẩn / hiện bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/enable-request")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<BaseResponse> enableRequest(@CurrentUser UserDetailsImpl userDetails) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.enableRequestRep(userDetails.getId()), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng đủ điều kiện nhờ môi giới giúp đỡ.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/user-requested")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<BaseResponse> userRequested(@CurrentUser UserDetailsImpl userDetails) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.repRequested(userDetails.getId()), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng đã nhờ môi giới giúp đỡ của người dùng.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/agency-requested")
+    @PreAuthorize("hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> agencyRequested(@CurrentUser UserDetailsImpl userDetails) {
+        try {
+            if (!specialAccountService.isAgency(userDetails.getId())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Người dùng không phải là môi giới.", HttpStatus.NOT_ACCEPTABLE));
+            }
+            return ResponseEntity.ok(new BaseResponse(service.requestedOfAgency(userDetails.getId()), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng đã nhờ môi giới giúp đỡ.",
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
