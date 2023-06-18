@@ -23,4 +23,9 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Modifying
     @Query(value = "insert into agency_district(user_id, district_code) values ( :userId, :districtCode );", nativeQuery = true)
     void agencyDistrictInsert(@Param("userId") String userId, @Param("districtCode") String districtCode);
+
+    @Query(value = "select r.name\n" +
+            "from role r inner join user_role ur on ur.role_id = r.id\n" +
+            "where ur.user_id = :userId", nativeQuery = true)
+    List<String> findRolesByUserId(String userId);
 }

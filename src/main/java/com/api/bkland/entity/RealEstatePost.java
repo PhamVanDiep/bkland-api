@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "real_estate_post")
@@ -132,6 +133,16 @@ public class RealEstatePost {
     @Column(name = "update_at")
     private Instant updateAt;
 
+    @OneToMany(mappedBy = "realEstatePost")
+    private List<RealEstatePostPrice> realEstatePostPrices;
+
+    public List<RealEstatePostPrice> getRealEstatePostPrices() {
+        return realEstatePostPrices;
+    }
+
+    public void setRealEstatePostPrices(List<RealEstatePostPrice> realEstatePostPrices) {
+        this.realEstatePostPrices = realEstatePostPrices;
+    }
 
     public String getId() {
         return id;

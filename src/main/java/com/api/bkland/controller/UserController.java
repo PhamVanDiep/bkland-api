@@ -1,9 +1,11 @@
 package com.api.bkland.controller;
 
+import com.api.bkland.config.annotation.CurrentUser;
 import com.api.bkland.entity.User;
 import com.api.bkland.payload.dto.*;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.UserInfoResponse;
+import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.DistrictService;
 import com.api.bkland.service.ProvinceService;
 import com.api.bkland.service.UserService;
@@ -184,6 +186,19 @@ public class UserController {
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
+    @GetMapping("/api/v1/user/roles")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> getRolesOfUser(@CurrentUser UserDetailsImpl userDetails) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.listRoles(userDetails.getId()), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin quyền của người dùng " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
     private UserDTO convertToDTO(User user) {
         return modelMapper.map(user, UserDTO.class);
     }

@@ -66,6 +66,9 @@ public class RealEstatePostController {
     @GetMapping("/api/no-auth/real-estate-post/{id}")
     public ResponseEntity<BaseResponse> findById(@PathVariable("id") String id) {
         try {
+            if (!service.existsByIdAndEnable(id)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
             List<String> strings = Arrays.asList(id.split("-"));
             String type = strings.get(0);
             BasePost basePost = null;
@@ -106,6 +109,9 @@ public class RealEstatePostController {
     @GetMapping("/api/no-auth/real-estate-post/user-view/{id}")
     public ResponseEntity<BaseResponse> findByIdWithIncreaseView(@PathVariable("id") String id) {
         try {
+            if (!service.existsByIdAndEnable(id)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
             List<String> strings = Arrays.asList(id.split("-"));
             String type = strings.get(0);
             BasePost basePost = null;
@@ -146,6 +152,9 @@ public class RealEstatePostController {
     @PostMapping("/api/no-auth/real-estate-post/click-info")
     public ResponseEntity<BaseResponse> clickUserDetail(@RequestBody ClickedUserInfo body) {
         try {
+            if (!service.existsByIdAndEnable(body.getPostId())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
             service.updateClickedView(body.getPostId());
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
         } catch (Exception e) {
@@ -157,7 +166,7 @@ public class RealEstatePostController {
 
     @PostMapping("/api/v1/real-estate-post")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
-    public ResponseEntity<BaseResponse> createRealEstatePost(@RequestBody RealEstatePostRequest request) {
+    public ResponseEntity<BaseResponse> createRealEstatePost(@RequestBody RealEstatePostRequest request, @CurrentUser UserDetailsImpl userDetails) {
         try {
             RealEstatePostDTO realEstatePostDTO = request.getRealEstatePost();
             User user = userService.findById(realEstatePostDTO.getOwnerId().getId());
@@ -173,6 +182,7 @@ public class RealEstatePostController {
                 }
             }
             realEstatePostDTO.setCreateAt(Instant.now());
+            realEstatePostDTO.setCreateBy(userDetails.getId());
             RealEstatePost realEstatePost = modelMapper.map(realEstatePostDTO, RealEstatePost.class);
             service.create(realEstatePost);
 
@@ -197,20 +207,22 @@ public class RealEstatePostController {
             if (!agencyPeriodPriority(user, request.getRealEstatePost().getDistrict().getCode())
                 && user.getRoles().contains(role)) {
                 int pay = Util.calculatePostPrice(realEstatePostDTO.getPriority(), realEstatePostDTO.getPeriod(), realEstatePostDTO.isSell());
-                PostPay postPay = new PostPay();
-                postPay.setId(0L);
-                postPay.setUser(user);
-                postPay.setRealEstatePost(realEstatePost);
-                postPay.setPrice(pay);
-                postPay.setContent(PayContent.POST_PAY);
-                postPay.setAccountBalance(user.getAccountBalance() - pay);
-                postPay.setCreateAt(Instant.now());
-                this.postPayService.createPostPay(postPay);
+                if (pay > 0) {
+                    PostPay postPay = new PostPay();
+                    postPay.setId(0L);
+                    postPay.setUser(user);
+                    postPay.setRealEstatePost(realEstatePost);
+                    postPay.setPrice(pay);
+                    postPay.setContent(PayContent.POST_PAY);
+                    postPay.setAccountBalance(user.getAccountBalance() - pay);
+                    postPay.setCreateAt(Instant.now());
+                    this.postPayService.createPostPay(postPay);
 
-                user.setAccountBalance(user.getAccountBalance() - pay);
-                user.setUpdateAt(Instant.now());
-                user.setUpdateBy(user.getId());
-                userService.updateUserInfo(user);
+                    user.setAccountBalance(user.getAccountBalance() - pay);
+                    user.setUpdateAt(Instant.now());
+                    user.setUpdateBy(user.getId());
+                    userService.updateUserInfo(user);
+                }
             }
             notifyService.notifyToAdmin(Message.NEW_REP_ADMIN);
             return ResponseEntity.ok(new
@@ -241,10 +253,16 @@ public class RealEstatePostController {
     
     @PutMapping("/api/v1/real-estate-post")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<BaseResponse> updatePost(@RequestBody RealEstatePostRequest request) {
+    public ResponseEntity<BaseResponse> updatePost(@RequestBody RealEstatePostRequest request, @CurrentUser UserDetailsImpl userDetails) {
         try {
+            if (!service.existsByIdAndEnable(request.getRealEstatePost().getId())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
+            RealEstatePost realEstatePostDB = service.findByIdAndEnable(request.getRealEstatePost().getId());
+
             RealEstatePostDTO realEstatePostDTO = request.getRealEstatePost();
             realEstatePostDTO.setUpdateAt(Instant.now());
+            realEstatePostDTO.setUpdateBy(userDetails.getId());
             RealEstatePost realEstatePost = modelMapper.map(realEstatePostDTO, RealEstatePost.class);
             service.update(realEstatePost);
             if (realEstatePostDTO.getType().equals(EType.PLOT)) {
@@ -267,8 +285,13 @@ public class RealEstatePostController {
                     postMediaService.save(modelMapper.map(postMediaDTO, PostMedia.class));
                 }
             }
-            notifyService.notifyAgencyREPUpdate(Message.CAP_NHAT_REP, realEstatePostDTO.getDistrict().getCode());
-            notifyService.notifyInterested(Message.getCAP_NHAT_REP_INTERESTED(realEstatePostDTO.getTitle()), realEstatePostDTO.getId());
+
+            if (realEstatePostDB.getPrice() != request.getRealEstatePost().getPrice()) {
+                service.createRepPrice(request.getRealEstatePost().getPrice(), request.getRealEstatePost().getId(), userDetails.getId());
+                notifyService.notifyAgencyREPUpdate(Message.CAP_NHAT_REP, realEstatePostDTO.getDistrict().getCode());
+                notifyService.notifyInterested(Message.getCAP_NHAT_REP_INTERESTED(realEstatePostDTO.getTitle()), realEstatePostDTO.getId());
+            }
+
             return ResponseEntity.ok(new
                     BaseResponse(null,
                     "Đã cập nhật bài viết thành công.",
@@ -321,6 +344,9 @@ public class RealEstatePostController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> disablePostById(@PathVariable("id") String id) {
         try {
+            if (!service.existsByIdAndEnable(id)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
             service.disablePostById(id);
             return ResponseEntity.ok(new BaseResponse(null, "Ẩn bài viết thành công", HttpStatus.OK));
         } catch (Exception e) {
@@ -355,6 +381,9 @@ public class RealEstatePostController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> updateStatus(@RequestBody UpdatePostStatusRequest request) {
         try {
+            if (!service.existsByIdAndEnable(request.getPostId())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
             service.updatePostStatus(request.getStatus().toString(), request.getPostId());
             RealEstatePost realEstatePost = service.findById(request.getPostId());
             if (request.getStatus().equals(EStatus.BI_TU_CHOI)) {

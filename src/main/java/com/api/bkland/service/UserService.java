@@ -30,4 +30,8 @@ public class UserService {
     public List<User> findAll() {
         return repository.findByIdNot("anonymous");
     }
+
+    public List<String> listRoles(String userId) {
+        return repository.findRolesByUserId(userId);
+    }
 }
