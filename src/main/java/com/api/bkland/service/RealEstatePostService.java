@@ -1,15 +1,18 @@
 package com.api.bkland.service;
 
 import com.api.bkland.entity.RealEstatePost;
+import com.api.bkland.entity.RealEstatePostPrice;
 import com.api.bkland.entity.response.IRepEnableRequest;
 import com.api.bkland.entity.response.IRepRequested;
+import com.api.bkland.repository.RealEstatePostPriceRepository;
 import com.api.bkland.repository.RealEstatePostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +20,9 @@ import java.util.Optional;
 public class RealEstatePostService {
     @Autowired
     private RealEstatePostRepository repository;
+
+    @Autowired
+    private RealEstatePostPriceRepository realEstatePostPriceRepository;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -31,7 +37,26 @@ public class RealEstatePostService {
 
     @Transactional
     public RealEstatePost create(RealEstatePost realEstatePost) {
-        return repository.save(realEstatePost);
+        RealEstatePost saved = repository.save(realEstatePost);
+        RealEstatePostPrice realEstatePostPrice = new RealEstatePostPrice();
+        realEstatePostPrice.setId(0L);
+        realEstatePostPrice.setPrice(saved.getPrice());
+        realEstatePostPrice.setRealEstatePost(saved);
+        realEstatePostPrice.setCreateBy(saved.getCreateBy());
+        realEstatePostPrice.setCreateAt(Instant.now());
+        realEstatePostPriceRepository.save(realEstatePostPrice);
+        return saved;
+    }
+
+    @Transactional
+    public void createRepPrice(Double price, String repId, String userId) {
+        RealEstatePostPrice realEstatePostPrice = new RealEstatePostPrice();
+        realEstatePostPrice.setId(0L);
+        realEstatePostPrice.setRealEstatePost(findByIdAndEnable(repId));
+        realEstatePostPrice.setCreateAt(Instant.now());
+        realEstatePostPrice.setCreateBy(userId);
+        realEstatePostPrice.setPrice(price);
+        realEstatePostPriceRepository.save(realEstatePostPrice);
     }
 
     @Transactional

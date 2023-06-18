@@ -4,15 +4,13 @@ import com.api.bkland.constant.enumeric.EDirection;
 import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.User;
-import com.api.bkland.payload.dto.DistrictDTO;
-import com.api.bkland.payload.dto.ProvinceDTO;
-import com.api.bkland.payload.dto.UserDTO;
-import com.api.bkland.payload.dto.WardDTO;
+import com.api.bkland.payload.dto.*;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.List;
 
 public class RealEstatePostDTO {
 
@@ -91,6 +89,15 @@ public class RealEstatePostDTO {
 
     private Instant updateAt;
 
+    private List<RealEstatePostPriceDTO> realEstatePostPrices;
+
+    public List<RealEstatePostPriceDTO> getRealEstatePostPrices() {
+        return realEstatePostPrices;
+    }
+
+    public void setRealEstatePostPrices(List<RealEstatePostPriceDTO> realEstatePostPrices) {
+        this.realEstatePostPrices = realEstatePostPrices;
+    }
 
     public String getId() {
         return id;
