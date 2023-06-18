@@ -1,53 +1,32 @@
-package com.api.bkland.entity;
+package com.api.bkland.payload.dto;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "chat_room")
-public class ChatRoom {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ChatRoomDTO {
+    @NotBlank
+    @NotNull
     private Integer id;
-
-    @Column(name = "first_user_id")
     @NotBlank
     @NotNull
     private String firstUserId;
-
-    @Column(name = "second_user_id")
     @NotBlank
     @NotNull
     private String secondUserId;
-
-    @Column(name = "enable")
-    @NotNull
     @NotBlank
+    @NotNull
     private boolean enable;
-
-    @Column(name = "create_by", updatable = false)
-    private String createBy;
-
-    @Column(name = "create_at", updatable = false)
-    private Instant createAt;
-
-    @Column(name = "update_by")
-    private String updateBy;
-
-    @Column(name = "update_at")
-    private Instant updateAt;
-
-    @OneToMany(mappedBy = "chatRoom")
-    private List<Message> messages;
-
-    @Column(name = "anonymous")
     @NotNull
     @NotBlank
     private boolean anonymous;
+    private List<MessageDTO> messages;
+    private String createBy;
+    private Instant createAt;
+    private String updateBy;
+    private Instant updateAt;
 
     public Integer getId() {
         return id;
@@ -113,11 +92,11 @@ public class ChatRoom {
         this.updateAt = updateAt;
     }
 
-    public List<Message> getMessages() {
+    public List<MessageDTO> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public void setMessages(List<MessageDTO> messages) {
         this.messages = messages;
     }
 

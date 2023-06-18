@@ -1,39 +1,24 @@
-package com.api.bkland.entity;
+package com.api.bkland.payload.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.api.bkland.entity.ChatRoom;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
-@Entity
-@Table(name = "message")
-public class Message {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "message")
-    @NotBlank
+public class MessageDTO {
     @NotNull
+    @NotBlank
+    private Long id;
+    @NotNull
+    @NotBlank
     private String message;
-
-    @ManyToOne
-    @JoinColumn(name = "chat_room_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnore
-    private ChatRoom chatRoom;
-
-    @Column(name = "create_by", updatable = false)
+    @NotNull
+    @NotBlank
+    private Integer chatRoomId;
     private String createBy;
-
-    @Column(name = "create_at", updatable = false)
     private Instant createAt;
-
-    @Column(name = "update_by")
     private String updateBy;
-
-    @Column(name = "update_at")
     private Instant updateAt;
 
     public Long getId() {
@@ -52,12 +37,12 @@ public class Message {
         this.message = message;
     }
 
-    public ChatRoom getChatRoom() {
-        return chatRoom;
+    public Integer getChatRoomId() {
+        return chatRoomId;
     }
 
-    public void setChatRoom(ChatRoom chatRoom) {
-        this.chatRoom = chatRoom;
+    public void setChatRoomId(Integer chatRoomId) {
+        this.chatRoomId = chatRoomId;
     }
 
     public String getCreateBy() {
