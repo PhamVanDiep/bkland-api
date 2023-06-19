@@ -1,9 +1,11 @@
 package com.api.bkland.service;
 
+import com.api.bkland.entity.Interested;
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostPrice;
 import com.api.bkland.entity.response.IRepEnableRequest;
 import com.api.bkland.entity.response.IRepRequested;
+import com.api.bkland.repository.InterestedRepository;
 import com.api.bkland.repository.RealEstatePostPriceRepository;
 import com.api.bkland.repository.RealEstatePostRepository;
 import org.slf4j.Logger;
@@ -23,6 +25,9 @@ public class RealEstatePostService {
 
     @Autowired
     private RealEstatePostPriceRepository realEstatePostPriceRepository;
+
+    @Autowired
+    private InterestedRepository interestedRepository;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -124,5 +129,31 @@ public class RealEstatePostService {
 
     public List<IRepRequested> requestedOfAgency(String agencyId) {
         return repository.requestedOfAgency(agencyId);
+    }
+
+    @Transactional
+    public Interested saveInterested(Interested interested) {
+        return interestedRepository.save(interested);
+    }
+
+    public List<Interested> findByUserId(String userId) {
+        return interestedRepository.findByUserId(userId);
+    }
+
+    public List<Interested> findByAnonymousAndDeviceInfo(String deviceInfo) {
+        return interestedRepository.findByUserIdAndDeviceInfo("anonymous", deviceInfo);
+    }
+
+    @Transactional
+    public void deleteInterested(Long id) {
+        interestedRepository.deleteById(id);
+    }
+
+    public Optional<Interested> findByDeviceInfoAndRealEstatePostId(String deviceInfo, String realEstatePostId) {
+        return interestedRepository.findByDeviceInfoAndRealEstatePostId(deviceInfo, realEstatePostId);
+    }
+
+    public Optional<Interested> findByUserIdAndRealEstatePostId(String userId, String realEstatePostId) {
+        return interestedRepository.findByUserIdAndRealEstatePostId(userId, realEstatePostId);
     }
 }

@@ -7,6 +7,7 @@ import com.api.bkland.constant.enumeric.ERole;
 import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.*;
+import com.api.bkland.payload.dto.InterestedDTO;
 import com.api.bkland.payload.dto.PostMediaDTO;
 import com.api.bkland.payload.dto.post.*;
 import com.api.bkland.payload.request.ClickedUserInfo;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -447,6 +449,93 @@ public class RealEstatePostController {
                     null,
                     "Đã xảy ra lỗi khi lấy danh sách bài đăng đã nhờ môi giới giúp đỡ.",
                     HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PostMapping("/api/no-auth/real-estate-post/interested")
+    public ResponseEntity<BaseResponse> anonymousInterested(@RequestBody InterestedDTO body) {
+        try {
+            if (!service.existsByIdAndEnable(body.getRealEstatePostId())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
+            Optional<Interested> interestedOptional = service.findByDeviceInfoAndRealEstatePostId(body.getDeviceInfo(), body.getRealEstatePostId());
+            if (interestedOptional.isEmpty()) {
+                body.setCreateBy("anonymous");
+                body.setCreateAt(Instant.now());
+                body.setId(0L);
+                body.setUserId("anonymous");
+                Interested interested = modelMapper.map(body, Interested.class);
+                return ResponseEntity.ok(new BaseResponse(
+                        modelMapper.map(service.saveInterested(interested), InterestedDTO.class),
+                        "", HttpStatus.OK
+                ));
+            } else {
+                service.deleteInterested(interestedOptional.get().getId());
+                return ResponseEntity.ok(new BaseResponse(interestedOptional.get().getId(), "DELETED", HttpStatus.OK));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lưu thông tin quan tâm bài đăng.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @PostMapping("/api/v1/real-estate-post/interested")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> userInterested(@RequestBody InterestedDTO body, @CurrentUser UserDetailsImpl userDetails) {
+        try {
+            if (!service.existsByIdAndEnable(body.getRealEstatePostId())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
+            Optional<Interested> interestedOptional = service.findByUserIdAndRealEstatePostId(userDetails.getId(), body.getRealEstatePostId());
+            if (interestedOptional.isEmpty()) {
+                body.setCreateBy(userDetails.getId());
+                body.setCreateAt(Instant.now());
+                body.setId(0L);
+                body.setUserId(userDetails.getId());
+                Interested interested = modelMapper.map(body, Interested.class);
+                return ResponseEntity.ok(new BaseResponse(
+                        modelMapper.map(service.saveInterested(interested), InterestedDTO.class),
+                        "", HttpStatus.OK
+                ));
+            } else {
+                service.deleteInterested(interestedOptional.get().getId());
+                return ResponseEntity.ok(new BaseResponse(interestedOptional.get().getId(), "DELETED", HttpStatus.OK));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lưu thông tin quan tâm bài đăng.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/real-estate-post/interested")
+    public ResponseEntity<BaseResponse> findByUserIdAndDeviceInfo(@RequestParam("userId") String userId, @RequestParam("deviceInfo") String deviceInfo) {
+        try {
+            if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
+                return ResponseEntity.ok(new BaseResponse(
+                        service.findByAnonymousAndDeviceInfo(deviceInfo)
+                                .stream()
+                                .map(e -> modelMapper.map(e, InterestedDTO.class))
+                                .collect(Collectors.toList()), "", HttpStatus.OK
+                ));
+            }
+            return ResponseEntity.ok(new BaseResponse(
+                    service.findByUserId(userId)
+                            .stream()
+                            .map(e -> modelMapper.map(e, InterestedDTO.class))
+                            .collect(Collectors.toList()), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng đã quan tâm của người dùng.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
         }
     }
 }

@@ -1,0 +1,103 @@
+package com.api.bkland.entity;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
+
+@Entity
+@Table(name = "interested")
+public class Interested {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_id")
+    @NotBlank
+    @NotNull
+    private String userId;
+
+    @Column(name = "device_info")
+    private String deviceInfo;
+
+    @Column(name = "real_estate_post_id")
+    @NotNull
+    @NotBlank
+    private String realEstatePostId;
+
+    @Column(name = "create_by")
+    private String createBy;
+
+    @Column(name = "create_at")
+    private Instant createAt;
+
+    @Column(name = "update_by")
+    private String updateBy;
+
+    @Column(name = "update_at")
+    private Instant updateAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    public String getRealEstatePostId() {
+        return realEstatePostId;
+    }
+
+    public void setRealEstatePostId(String realEstatePostId) {
+        this.realEstatePostId = realEstatePostId;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Instant getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Instant updateAt) {
+        this.updateAt = updateAt;
+    }
+}
