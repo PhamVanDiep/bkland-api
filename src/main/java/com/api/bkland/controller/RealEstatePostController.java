@@ -538,4 +538,25 @@ public class RealEstatePostController {
             ));
         }
     }
+
+    @GetMapping("/api/no-auth/real-estate-post/contact")
+    public ResponseEntity<BaseResponse> findContactOfPost(@RequestParam String id) {
+        try {
+            Object response = service.findContact(id);
+            if (response == null) {
+                return ResponseEntity.ok(new BaseResponse(
+                        null,
+                        "Không tìm thấy thông tin liên lạc của bài viết.",
+                        HttpStatus.NO_CONTENT
+                ));
+            }
+            return ResponseEntity.ok(new BaseResponse(response, "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin liên lạc của bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
 }

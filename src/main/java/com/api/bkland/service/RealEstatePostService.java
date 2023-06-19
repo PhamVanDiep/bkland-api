@@ -3,6 +3,7 @@ package com.api.bkland.service;
 import com.api.bkland.entity.Interested;
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostPrice;
+import com.api.bkland.entity.response.IEnableUserChat;
 import com.api.bkland.entity.response.IRepEnableRequest;
 import com.api.bkland.entity.response.IRepRequested;
 import com.api.bkland.repository.InterestedRepository;
@@ -155,5 +156,18 @@ public class RealEstatePostService {
 
     public Optional<Interested> findByUserIdAndRealEstatePostId(String userId, String realEstatePostId) {
         return interestedRepository.findByUserIdAndRealEstatePostId(userId, realEstatePostId);
+    }
+
+    public Object findContact(String id) {
+        Optional<IEnableUserChat> optional = repository.findContact(id);
+        if (optional.isEmpty()) {
+            Optional<IEnableUserChat> ownerOptional = repository.findOwnerContact(id);
+            if (ownerOptional.isEmpty()) {
+                return null;
+            }
+            return ownerOptional.get();
+        } else {
+            return optional.get();
+        }
     }
 }
