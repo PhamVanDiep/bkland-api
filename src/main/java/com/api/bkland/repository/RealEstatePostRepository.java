@@ -1,6 +1,7 @@
 package com.api.bkland.repository;
 
 import com.api.bkland.entity.RealEstatePost;
+import com.api.bkland.entity.response.IEnableUserChat;
 import com.api.bkland.entity.response.IRepEnableRequest;
 import com.api.bkland.entity.response.IRepRequested;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -69,4 +70,21 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "and rep.status = 'DA_KIEM_DUYET'\n" +
             "and repa.agency_id = :agencyId", nativeQuery = true)
     List<IRepRequested> requestedOfAgency(@Param("agencyId") String agencyId);
+
+    @Query(value = "select u.id, u.phone_number as phoneNumber, u.avatar_url as avatarUrl,\n" +
+            "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName\n" +
+            "from user u inner join real_estate_post_agency repa\n" +
+            "on u.id = repa.agency_id\n" +
+            "where repa.status = 'DA_XAC_NHAN'\n" +
+            "and repa.real_estate_post_id = :id", nativeQuery = true)
+    Optional<IEnableUserChat> findContact(String id);
+
+    @Query(value = "select u.id, u.phone_number as phoneNumber, u.avatar_url as avatarUrl,\n" +
+            "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName\n" +
+            "from user u inner join real_estate_post rep\n" +
+            "on u.id = rep.owner_id\n" +
+            "where rep.status = 'DA_KIEM_DUYET'\n" +
+            "and rep.enable = 1\n" +
+            "and rep.id = :id", nativeQuery = true)
+    Optional<IEnableUserChat> findOwnerContact(String id);
 }

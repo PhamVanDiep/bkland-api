@@ -1,20 +1,29 @@
 package com.api.bkland.service;
 
+import com.api.bkland.entity.Interested;
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostPrice;
+import com.api.bkland.entity.response.IEnableUserChat;
+import com.api.bkland.entity.response.IPostInterested;
 import com.api.bkland.entity.response.IRepEnableRequest;
 import com.api.bkland.entity.response.IRepRequested;
+import com.api.bkland.payload.dto.InterestedDTO;
+import com.api.bkland.payload.response.BaseResponse;
+import com.api.bkland.repository.InterestedRepository;
 import com.api.bkland.repository.RealEstatePostPriceRepository;
 import com.api.bkland.repository.RealEstatePostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RealEstatePostService {
@@ -23,6 +32,9 @@ public class RealEstatePostService {
 
     @Autowired
     private RealEstatePostPriceRepository realEstatePostPriceRepository;
+
+    @Autowired
+    private InterestedRepository interestedRepository;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -124,5 +136,57 @@ public class RealEstatePostService {
 
     public List<IRepRequested> requestedOfAgency(String agencyId) {
         return repository.requestedOfAgency(agencyId);
+    }
+
+    @Transactional
+    public Interested saveInterested(Interested interested) {
+        return interestedRepository.save(interested);
+    }
+
+    public List<IPostInterested> findListInterestPostsOfUser(String userId, String deviceInfo) {
+        if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
+            return interestedRepository.findRepDetailByDeviceInfo(deviceInfo);
+        }
+        return interestedRepository.findRepDetailByUserId(userId);
+    }
+
+    @Transactional
+    public void deleteInterested(Long id) {
+        interestedRepository.deleteById(id);
+    }
+
+    public Optional<Interested> findByDeviceInfoAndRealEstatePostId(String deviceInfo, String realEstatePostId) {
+        return interestedRepository.findByDeviceInfoAndRealEstatePostId(deviceInfo, realEstatePostId);
+    }
+
+    public Optional<Interested> findByUserIdAndRealEstatePostId(String userId, String realEstatePostId) {
+        return interestedRepository.findByUserIdAndRealEstatePostId(userId, realEstatePostId);
+    }
+
+    public Object findContact(String id) {
+        Optional<IEnableUserChat> optional = repository.findContact(id);
+        if (optional.isEmpty()) {
+            Optional<IEnableUserChat> ownerOptional = repository.findOwnerContact(id);
+            if (ownerOptional.isEmpty()) {
+                return null;
+            }
+            return ownerOptional.get();
+        } else {
+            return optional.get();
+        }
+    }
+
+    public boolean isInterested(String userId, String realEstatePostId, String deviceInfo) {
+        if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
+            return interestedRepository.existsByDeviceInfoAndRealEstatePostId(deviceInfo, realEstatePostId);
+        }
+        return interestedRepository.existsByUserIdAndRealEstatePostId(userId, realEstatePostId);
+    }
+
+    public Integer countInterested(String userId, String deviceInfo) {
+        if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
+            return interestedRepository.countByUserIdAndDeviceInfo("anonymous", deviceInfo);
+        }
+        return interestedRepository.countByUserId(userId);
     }
 }
