@@ -516,20 +516,22 @@ public class RealEstatePostController {
     @GetMapping("/api/no-auth/real-estate-post/interested")
     public ResponseEntity<BaseResponse> findByUserIdAndDeviceInfo(@RequestParam("userId") String userId, @RequestParam("deviceInfo") String deviceInfo) {
         try {
-            if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
-                return ResponseEntity.ok(new BaseResponse(
-                        service.findByAnonymousAndDeviceInfo(deviceInfo)
-                                .stream()
-                                .map(e -> modelMapper.map(e, InterestedDTO.class))
-                                .collect(Collectors.toList()), "", HttpStatus.OK
-                ));
-            }
             return ResponseEntity.ok(new BaseResponse(
-                    service.findByUserId(userId)
-                            .stream()
-                            .map(e -> modelMapper.map(e, InterestedDTO.class))
-                            .collect(Collectors.toList()), "", HttpStatus.OK
+                    service.findListInterestPostsOfUser(userId, deviceInfo), "", HttpStatus.OK
             ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng đã quan tâm của người dùng.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/real-estate-post/interested/count")
+    public ResponseEntity<BaseResponse> countByUserIdAndDeviceInfo(@RequestParam("userId") String userId, @RequestParam("deviceInfo") String deviceInfo) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.countInterested(userId, deviceInfo), "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
                     null,
@@ -555,6 +557,23 @@ public class RealEstatePostController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi lấy thông tin liên lạc của bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/real-estate-post/isInterested")
+    public ResponseEntity<BaseResponse> isInterested(@RequestParam("userId") String userId,
+                                                     @RequestParam("deviceInfo") String deviceInfo,
+                                                     @RequestParam("realEstatePostId") String realEstatePostId) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service.isInterested(userId, realEstatePostId, deviceInfo), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin người dùng quan tâm của bài viết.",
                     HttpStatus.INTERNAL_SERVER_ERROR
             ));
         }

@@ -4,20 +4,26 @@ import com.api.bkland.entity.Interested;
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostPrice;
 import com.api.bkland.entity.response.IEnableUserChat;
+import com.api.bkland.entity.response.IPostInterested;
 import com.api.bkland.entity.response.IRepEnableRequest;
 import com.api.bkland.entity.response.IRepRequested;
+import com.api.bkland.payload.dto.InterestedDTO;
+import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.repository.InterestedRepository;
 import com.api.bkland.repository.RealEstatePostPriceRepository;
 import com.api.bkland.repository.RealEstatePostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RealEstatePostService {
@@ -137,12 +143,11 @@ public class RealEstatePostService {
         return interestedRepository.save(interested);
     }
 
-    public List<Interested> findByUserId(String userId) {
-        return interestedRepository.findByUserId(userId);
-    }
-
-    public List<Interested> findByAnonymousAndDeviceInfo(String deviceInfo) {
-        return interestedRepository.findByUserIdAndDeviceInfo("anonymous", deviceInfo);
+    public List<IPostInterested> findListInterestPostsOfUser(String userId, String deviceInfo) {
+        if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
+            return interestedRepository.findRepDetailByDeviceInfo(deviceInfo);
+        }
+        return interestedRepository.findRepDetailByUserId(userId);
     }
 
     @Transactional
@@ -169,5 +174,19 @@ public class RealEstatePostService {
         } else {
             return optional.get();
         }
+    }
+
+    public boolean isInterested(String userId, String realEstatePostId, String deviceInfo) {
+        if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
+            return interestedRepository.existsByDeviceInfoAndRealEstatePostId(deviceInfo, realEstatePostId);
+        }
+        return interestedRepository.existsByUserIdAndRealEstatePostId(userId, realEstatePostId);
+    }
+
+    public Integer countInterested(String userId, String deviceInfo) {
+        if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
+            return interestedRepository.countByUserIdAndDeviceInfo("anonymous", deviceInfo);
+        }
+        return interestedRepository.countByUserId(userId);
     }
 }
