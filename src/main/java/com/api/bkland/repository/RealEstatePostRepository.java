@@ -2,6 +2,7 @@ package com.api.bkland.repository;
 
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.response.IEnableUserChat;
+import com.api.bkland.entity.response.IRepAdmin;
 import com.api.bkland.entity.response.IRepEnableRequest;
 import com.api.bkland.entity.response.IRepRequested;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -87,4 +88,10 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "and rep.enable = 1\n" +
             "and rep.id = :id", nativeQuery = true)
     Optional<IEnableUserChat> findOwnerContact(String id);
+
+    @Query(value = "select rep.id, rep.type, rep.is_sell as sell, rep.status, rep.enable, rep.price, rep.area, rep.create_at as createAt, " +
+            "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName, u.phone_number as phoneNumber " +
+            "from real_estate_post rep inner join user u on rep.owner_id = u.id " +
+            "order by rep.create_at desc", nativeQuery = true)
+    List<IRepAdmin> findAllByAdmin();
 }

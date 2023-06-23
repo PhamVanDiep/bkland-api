@@ -18,13 +18,13 @@ public class RealEstatePost {
     private String id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
+    @Column(name = "type", updatable = false)
     @NotNull
     @NotBlank
     private EType type;
 
     @OneToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", updatable = false)
     private User ownerId;
 
     @Column(name = "title")
@@ -118,13 +118,13 @@ public class RealEstatePost {
     @Column(name = "clicked_view")
     private Integer clickedView;
 
-    @Column(name = "is_sell")
+    @Column(name = "is_sell", updatable = false)
     private boolean sell;
 
-    @Column(name = "create_by")
+    @Column(name = "create_by", updatable = false)
     private String createBy;
 
-    @Column(name = "create_at")
+    @Column(name = "create_at", updatable = false)
     private Instant createAt;
 
     @Column(name = "update_by")

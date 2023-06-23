@@ -268,15 +268,15 @@ public class RealEstatePostController {
             RealEstatePost realEstatePost = convertToEntity(realEstatePostDTO);
             service.update(realEstatePost);
             if (realEstatePostDTO.getType().equals(EType.PLOT)) {
-                Plot plotEntity = modelMapper.map(request.getPlot(), Plot.class);
+                Plot plotEntity = convertToPlotEntity(request.getPlot());
                 plotEntity.setRealEstatePost(realEstatePost);
                 plotService.update(plotEntity);
             } else if (realEstatePostDTO.getType().equals(EType.APARTMENT)) {
-                Apartment apartmentEntity = modelMapper.map(request.getApartment(), Apartment.class);
+                Apartment apartmentEntity = convertToApartmentEntity(request.getApartment());
                 apartmentEntity.setRealEstatePost(realEstatePost);
                 apartmentService.update(apartmentEntity);
             } else if (realEstatePostDTO.getType().equals(EType.HOUSE)) {
-                House houseEntity = modelMapper.map(request.getHouse(), House.class);
+                House houseEntity = convertToHouseEntity(request.getHouse());
                 houseEntity.setRealEstatePost(realEstatePost);
                 houseService.update(houseEntity);
             }
@@ -295,7 +295,7 @@ public class RealEstatePostController {
             }
 
             return ResponseEntity.ok(new
-                    BaseResponse(null,
+                    BaseResponse(realEstatePost.getId(),
                     "Đã cập nhật bài viết thành công.",
                     HttpStatus.OK));
         } catch (Exception e) {
@@ -337,6 +337,39 @@ public class RealEstatePostController {
         return realEstatePost;
     }
 
+    private Plot convertToPlotEntity(PlotDTO plotDTO) {
+        Plot plot = new Plot();
+        plot.setId(plotDTO.getId());
+        plot.setBehindWidth(plotDTO.getBehindWidth());
+        plot.setFrontWidth(plotDTO.getFrontWidth());
+        return plot;
+    }
+
+    private Apartment convertToApartmentEntity(ApartmentDTO apartmentDTO) {
+        Apartment apartment = new Apartment();
+        apartment.setConstruction(apartmentDTO.getConstruction());
+        apartment.setFurniture(apartmentDTO.getFurniture());
+        apartment.setId(apartmentDTO.getId());
+        apartment.setFloorNo(apartmentDTO.getFloorNo());
+        apartment.setNoBathroom(apartmentDTO.getNoBathroom());
+        apartment.setNoBedroom(apartmentDTO.getNoBedroom());
+        apartment.setBalconyDirection(apartmentDTO.getBalconyDirection());
+        return apartment;
+    }
+
+    private House convertToHouseEntity(HouseDTO houseDTO) {
+        House house = new House();
+        house.setFrontWidth(houseDTO.getFrontWidth());
+        house.setId(houseDTO.getId());
+        house.setFurniture(houseDTO.getFurniture());
+        house.setBehindWidth(houseDTO.getBehindWidth());
+        house.setBalconyDirection(houseDTO.getBalconyDirection());
+        house.setNoBathroom(houseDTO.getNoBathroom());
+        house.setNoBedroom(houseDTO.getNoBedroom());
+        house.setNoFloor(houseDTO.getNoFloor());
+        house.setStreetWidth(houseDTO.getStreetWidth());
+        return house;
+    }
     @GetMapping("/api/v1/real-estate-post/user/{ownerId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
     public ResponseEntity<BaseResponse> findByOwnerId(@PathVariable("ownerId") String ownerId) {
@@ -357,16 +390,7 @@ public class RealEstatePostController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse> findAll() {
         try {
-            List<RealEstatePost> realEstatePosts = this.service.findAll();
-            if (realEstatePosts.isEmpty()) {
-                return ResponseEntity.ok(new BaseResponse(null,
-                        "Không tìm thấy bài đăng nào.",
-                        HttpStatus.NO_CONTENT));
-            }
-            return ResponseEntity.ok(new BaseResponse(
-                    realEstatePosts.stream().map(e -> modelMapper.map(e, RealEstatePostDTO.class)).collect(Collectors.toList()),
-                    "", HttpStatus.OK
-            ));
+            return ResponseEntity.ok(new BaseResponse(service.findAll(), "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi lấy danh sách bài đăng. " + e.getMessage(),

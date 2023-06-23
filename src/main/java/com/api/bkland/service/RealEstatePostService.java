@@ -3,10 +3,7 @@ package com.api.bkland.service;
 import com.api.bkland.entity.Interested;
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostPrice;
-import com.api.bkland.entity.response.IEnableUserChat;
-import com.api.bkland.entity.response.IPostInterested;
-import com.api.bkland.entity.response.IRepEnableRequest;
-import com.api.bkland.entity.response.IRepRequested;
+import com.api.bkland.entity.response.*;
 import com.api.bkland.payload.dto.InterestedDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.repository.InterestedRepository;
@@ -96,8 +93,8 @@ public class RealEstatePostService {
         repository.disablePostById(id);
     }
 
-    public List<RealEstatePost> findAll() {
-        return repository.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
+    public List<IRepAdmin> findAll() {
+        return repository.findAllByAdmin();
     }
 
     @Transactional
