@@ -265,7 +265,7 @@ public class RealEstatePostController {
             RealEstatePostDTO realEstatePostDTO = request.getRealEstatePost();
             realEstatePostDTO.setUpdateAt(Instant.now());
             realEstatePostDTO.setUpdateBy(userDetails.getId());
-            RealEstatePost realEstatePost = modelMapper.map(realEstatePostDTO, RealEstatePost.class);
+            RealEstatePost realEstatePost = convertToEntity(realEstatePostDTO);
             service.update(realEstatePost);
             if (realEstatePostDTO.getType().equals(EType.PLOT)) {
                 Plot plotEntity = modelMapper.map(request.getPlot(), Plot.class);
@@ -299,10 +299,42 @@ public class RealEstatePostController {
                     "Đã cập nhật bài viết thành công.",
                     HttpStatus.OK));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi cập nhật bài đăng " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
+    }
+
+    private RealEstatePost convertToEntity(RealEstatePostDTO realEstatePostDTO) {
+        RealEstatePost realEstatePost = new RealEstatePost();
+        realEstatePost.setArea(realEstatePostDTO.getArea());
+        realEstatePost.setAddressShow(realEstatePostDTO.getAddressShow());
+        realEstatePost.setDescription(realEstatePostDTO.getDescription());
+        realEstatePost.setClickedView(realEstatePostDTO.getClickedView());
+        realEstatePost.setEnable(realEstatePostDTO.isEnable());
+        realEstatePost.setDistrict(modelMapper.map(realEstatePostDTO.getDistrict(), District.class));
+        realEstatePost.setDirection(realEstatePostDTO.getDirection());
+        realEstatePost.setLat(realEstatePostDTO.getLat());
+        realEstatePost.setLng(realEstatePostDTO.getLng());
+        realEstatePost.setPrice(realEstatePostDTO.getPrice());
+        realEstatePost.setCreateAt(realEstatePostDTO.getCreateAt());
+        realEstatePost.setCreateBy(realEstatePostDTO.getCreateBy());
+        realEstatePost.setId(realEstatePostDTO.getId());
+        realEstatePost.setOwnerId(modelMapper.map(realEstatePostDTO.getOwnerId(), User.class));
+        realEstatePost.setPeriod(realEstatePostDTO.getPeriod());
+        realEstatePost.setPriority(realEstatePostDTO.getPriority());
+        realEstatePost.setProvince(modelMapper.map(realEstatePostDTO.getProvince(), Province.class));
+        realEstatePost.setSell(realEstatePostDTO.isSell());
+        realEstatePost.setStatus(realEstatePostDTO.getStatus());
+        realEstatePost.setStreet(realEstatePostDTO.getStreet());
+        realEstatePost.setTitle(realEstatePostDTO.getTitle());
+        realEstatePost.setType(realEstatePostDTO.getType());
+        realEstatePost.setUpdateAt(realEstatePostDTO.getUpdateAt());
+        realEstatePost.setUpdateBy(realEstatePostDTO.getUpdateBy());
+        realEstatePost.setView(realEstatePostDTO.getView());
+        realEstatePost.setWard(modelMapper.map(realEstatePostDTO.getWard(), Ward.class));
+        return realEstatePost;
     }
 
     @GetMapping("/api/v1/real-estate-post/user/{ownerId}")

@@ -14,7 +14,7 @@ public class Apartment {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "real_estate_post_id")
+    @JoinColumn(name = "real_estate_post_id", updatable = false)
     private RealEstatePost realEstatePost;
 
     @Column(name = "floor_no")
