@@ -654,4 +654,20 @@ public class RealEstatePostController {
             ));
         }
     }
+
+    @GetMapping("/api/no-auth/real-estate-post/countTotalBySellAndTypeClient")
+    public ResponseEntity<BaseResponse> detailPageData(@RequestParam("sell") Byte sell,
+                                                       @RequestParam("type") String type) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service.countTotalBySellAndTypeClient(sell, type), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy số lượng bài viết hợp lệ.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
 }

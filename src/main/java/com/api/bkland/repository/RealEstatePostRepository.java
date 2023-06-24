@@ -104,4 +104,13 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "order by rep.priority, count(i.real_estate_post_id) desc " +
             "limit :limit offset :offset" ,nativeQuery = true)
     List<String> getRepIdDetailPage(Byte sell, String type, Integer limit, Integer offset);
+
+    @Query(value = "select count(*)\n" +
+            "from real_estate_post rep\n" +
+            "where rep.enable = 1\n" +
+            "and rep.status = 'DA_KIEM_DUYET'\n" +
+            "and rep.is_sell = :sell " +
+            "and rep.type = :type " +
+            "and datediff(now(), rep.create_at) <= rep.period", nativeQuery = true)
+    Integer countTotalBySellAndTypeClient(Byte sell, String type);
 }

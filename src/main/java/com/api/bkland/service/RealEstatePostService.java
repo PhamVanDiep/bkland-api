@@ -225,4 +225,8 @@ public class RealEstatePostService {
                 });
         return responses;
     }
+
+    public Integer countTotalBySellAndTypeClient(Byte sell, String type) {
+        return repository.countTotalBySellAndTypeClient(sell, type);
+    }
 }
