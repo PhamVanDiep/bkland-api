@@ -1,6 +1,7 @@
 package com.api.bkland.service;
 
 import com.api.bkland.entity.Interested;
+import com.api.bkland.entity.PostMedia;
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostPrice;
 import com.api.bkland.entity.response.*;
@@ -214,7 +215,10 @@ public class RealEstatePostService {
                                 + realEstatePost.getOwnerId().getLastName()
                         );
                         response.setPhoneNumber(realEstatePost.getOwnerId().getPhoneNumber());
-                        response.setImageUrl(postMediaRepository.findByPostId(e).get(0).getId());
+                        List<PostMedia> postMedias = postMediaRepository.findByPostId(e);
+                        if (!postMedias.isEmpty()) {
+                            response.setImageUrl(postMedias.get(0).getId());
+                        }
                         response.setInterested(isInterested(userId, e, deviceInfo));
                         responses.add(response);
                     }
