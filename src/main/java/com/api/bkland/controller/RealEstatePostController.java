@@ -634,4 +634,24 @@ public class RealEstatePostController {
             ));
         }
     }
+
+    @GetMapping("/api/no-auth/real-estate-post/detailPageData")
+    public ResponseEntity<BaseResponse> detailPageData(@RequestParam("userId") String userId,
+                                                       @RequestParam("deviceInfo") String deviceInfo,
+                                                       @RequestParam("sell") Byte sell,
+                                                       @RequestParam("type") String type,
+                                                       @RequestParam("limit") Integer limit,
+                                                       @RequestParam("offset") Integer offset) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service.detailPageData(sell, type, limit, offset, userId, deviceInfo), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
 }

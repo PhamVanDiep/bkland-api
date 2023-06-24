@@ -4,24 +4,21 @@ import com.api.bkland.entity.Interested;
 import com.api.bkland.entity.RealEstatePost;
 import com.api.bkland.entity.RealEstatePostPrice;
 import com.api.bkland.entity.response.*;
-import com.api.bkland.payload.dto.InterestedDTO;
-import com.api.bkland.payload.response.BaseResponse;
+import com.api.bkland.payload.response.RepDetailPageResponse;
 import com.api.bkland.repository.InterestedRepository;
+import com.api.bkland.repository.PostMediaRepository;
 import com.api.bkland.repository.RealEstatePostPriceRepository;
 import com.api.bkland.repository.RealEstatePostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RealEstatePostService {
@@ -33,6 +30,9 @@ public class RealEstatePostService {
 
     @Autowired
     private InterestedRepository interestedRepository;
+
+    @Autowired
+    private PostMediaRepository postMediaRepository;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -186,5 +186,39 @@ public class RealEstatePostService {
             return interestedRepository.countByUserIdAndDeviceInfo("anonymous", deviceInfo);
         }
         return interestedRepository.countByUserId(userId);
+    }
+
+    public List<RepDetailPageResponse> detailPageData(Byte sell, String type, Integer limit, Integer offset, String userId, String deviceInfo) {
+        List<RepDetailPageResponse> responses = new ArrayList<>();
+        List<String> repIds = repository.getRepIdDetailPage(sell, type, limit, offset);
+        if (repIds.isEmpty()) {
+            return responses;
+        }
+        repIds
+                .stream()
+                .forEach(e -> {
+                    RepDetailPageResponse response = new RepDetailPageResponse();
+                    Optional<RealEstatePost> realEstatePostOptional = repository.findById(e);
+                    if (!realEstatePostOptional.isEmpty()) {
+                        RealEstatePost realEstatePost = realEstatePostOptional.get();
+                        response.setArea(realEstatePost.getArea());
+                        response.setAddressShow(realEstatePost.getAddressShow());
+                        response.setDescription(realEstatePost.getDescription());
+                        response.setId(e);
+                        response.setTitle(realEstatePost.getTitle());
+                        response.setPrice(realEstatePost.getPrice());
+                        response.setCreateAt(realEstatePost.getCreateAt());
+                        response.setAvatarUrl(realEstatePost.getOwnerId().getAvatarUrl());
+                        response.setFullName(realEstatePost.getOwnerId().getFirstName() + " "
+                                + realEstatePost.getOwnerId().getMiddleName() + " "
+                                + realEstatePost.getOwnerId().getLastName()
+                        );
+                        response.setPhoneNumber(realEstatePost.getOwnerId().getPhoneNumber());
+                        response.setImageUrl(postMediaRepository.findByPostId(e).get(0).getId());
+                        response.setInterested(isInterested(userId, e, deviceInfo));
+                        responses.add(response);
+                    }
+                });
+        return responses;
     }
 }

@@ -84,9 +84,7 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName\n" +
             "from user u inner join real_estate_post rep\n" +
             "on u.id = rep.owner_id\n" +
-            "where rep.status = 'DA_KIEM_DUYET'\n" +
-            "and rep.enable = 1\n" +
-            "and rep.id = :id", nativeQuery = true)
+            "where rep.id = :id", nativeQuery = true)
     Optional<IEnableUserChat> findOwnerContact(String id);
 
     @Query(value = "select rep.id, rep.type, rep.is_sell as sell, rep.status, rep.enable, rep.price, rep.area, rep.create_at as createAt, " +
@@ -94,4 +92,16 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "from real_estate_post rep inner join user u on rep.owner_id = u.id " +
             "order by rep.create_at desc", nativeQuery = true)
     List<IRepAdmin> findAllByAdmin();
+
+    @Query(value = "select rep.id\n" +
+            "from real_estate_post rep left join interested i on rep.id = i.real_estate_post_id\n" +
+            "where rep.enable = 1\n" +
+            "and rep.status = 'DA_KIEM_DUYET'\n" +
+            "and datediff(now(), rep.create_at) <= rep.period\n" +
+            "and rep.is_sell = :sell " +
+            "and rep.type = :type " +
+            "group by rep.id\n" +
+            "order by rep.priority, count(i.real_estate_post_id) desc " +
+            "limit :limit offset :offset" ,nativeQuery = true)
+    List<String> getRepIdDetailPage(Byte sell, String type, Integer limit, Integer offset);
 }
