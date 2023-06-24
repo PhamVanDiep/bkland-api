@@ -288,7 +288,7 @@ public class RealEstatePostController {
                 }
             }
 
-            if (realEstatePostDB.getPrice() != request.getRealEstatePost().getPrice()) {
+            if (realEstatePostDB.getPrice().doubleValue() != request.getRealEstatePost().getPrice().doubleValue()) {
                 service.createRepPrice(request.getRealEstatePost().getPrice(), request.getRealEstatePost().getId(), userDetails.getId());
                 notifyService.notifyAgencyREPUpdate(Message.CAP_NHAT_REP, realEstatePostDTO.getDistrict().getCode());
                 notifyService.notifyInterested(Message.getCAP_NHAT_REP_INTERESTED(realEstatePostDTO.getTitle()), realEstatePostDTO.getId());

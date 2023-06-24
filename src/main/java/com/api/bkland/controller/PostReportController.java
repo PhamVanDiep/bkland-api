@@ -2,7 +2,7 @@ package com.api.bkland.controller;
 
 import com.api.bkland.config.annotation.CurrentUser;
 import com.api.bkland.entity.PostReport;
-import com.api.bkland.payload.PostReportDTO;
+import com.api.bkland.payload.dto.PostReportDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.PostReportService;

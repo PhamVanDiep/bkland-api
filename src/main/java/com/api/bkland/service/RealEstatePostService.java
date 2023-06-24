@@ -1,15 +1,9 @@
 package com.api.bkland.service;
 
-import com.api.bkland.entity.Interested;
-import com.api.bkland.entity.PostMedia;
-import com.api.bkland.entity.RealEstatePost;
-import com.api.bkland.entity.RealEstatePostPrice;
+import com.api.bkland.entity.*;
 import com.api.bkland.entity.response.*;
 import com.api.bkland.payload.response.RepDetailPageResponse;
-import com.api.bkland.repository.InterestedRepository;
-import com.api.bkland.repository.PostMediaRepository;
-import com.api.bkland.repository.RealEstatePostPriceRepository;
-import com.api.bkland.repository.RealEstatePostRepository;
+import com.api.bkland.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +28,12 @@ public class RealEstatePostService {
 
     @Autowired
     private PostMediaRepository postMediaRepository;
+
+    @Autowired
+    private PostViewRepository postViewRepository;
+
+    @Autowired
+    private ClickedInfoViewRepository clickedInfoViewRepository;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -106,11 +106,23 @@ public class RealEstatePostService {
     @Transactional
     public void updateView(String realEstatePostId) {
         repository.updateView(realEstatePostId);
+        PostView postView= new PostView();
+        postView.setId(0L);
+        postView.setRealEstatePostId(realEstatePostId);
+        postView.setCreateBy("undefined");
+        postView.setCreateAt(Instant.now());
+        postViewRepository.save(postView);
     }
 
     @Transactional
     public void updateClickedView(String realEstatePostId) {
         repository.updateClickedView(realEstatePostId);
+        ClickedInfoView clickedInfoView = new ClickedInfoView();
+        clickedInfoView.setId(0L);
+        clickedInfoView.setRealEstatePostId(realEstatePostId);
+        clickedInfoView.setCreateBy("undefined");
+        clickedInfoView.setCreateAt(Instant.now());
+        clickedInfoViewRepository.save(clickedInfoView);
     }
 
     public RealEstatePost findByIdAndEnable(String id) {

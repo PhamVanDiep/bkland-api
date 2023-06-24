@@ -1,4 +1,4 @@
-package com.api.bkland.payload;
+package com.api.bkland.payload.dto;
 
 import com.api.bkland.payload.dto.ReportTypeDTO;
 
