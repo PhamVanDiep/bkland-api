@@ -30,4 +30,5 @@ public interface InterestedRepository extends JpaRepository<Interested, Long> {
     Optional<Interested> findByUserIdAndRealEstatePostId(String userId, String realEstatePostId);
     Integer countByUserIdAndDeviceInfo(String userId, String deviceInfo);
     Integer countByUserId(String userId);
+    long countByRealEstatePostId(String realEstatePostId);
 }

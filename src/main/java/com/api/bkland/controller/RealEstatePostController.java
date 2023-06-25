@@ -671,4 +671,19 @@ public class RealEstatePostController {
             ));
         }
     }
+
+    @GetMapping("/api/no-auth/real-estate-post/interestAndComment")
+    public ResponseEntity<BaseResponse> countNoOfInterestAndComment(@RequestParam("postId") String postId) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service.countNoOfInterestAndComment(postId), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê của bài viết.",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
 }

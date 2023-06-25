@@ -2,6 +2,7 @@ package com.api.bkland.service;
 
 import com.api.bkland.entity.*;
 import com.api.bkland.entity.response.*;
+import com.api.bkland.payload.response.CountInterestAndCommentResponse;
 import com.api.bkland.payload.response.RepDetailPageResponse;
 import com.api.bkland.repository.*;
 import org.slf4j.Logger;
@@ -34,6 +35,9 @@ public class RealEstatePostService {
 
     @Autowired
     private ClickedInfoViewRepository clickedInfoViewRepository;
+
+    @Autowired
+    private PostCommentRepository postCommentRepository;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -240,5 +244,12 @@ public class RealEstatePostService {
 
     public Integer countTotalBySellAndTypeClient(Byte sell, String type) {
         return repository.countTotalBySellAndTypeClient(sell, type);
+    }
+
+    public CountInterestAndCommentResponse countNoOfInterestAndComment(String postId) {
+        CountInterestAndCommentResponse response = new CountInterestAndCommentResponse();
+        response.setNoOfComment(postCommentRepository.countByPostId(postId));
+        response.setNoOfInterest(interestedRepository.countByRealEstatePostId(postId));
+        return response;
     }
 }
