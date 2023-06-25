@@ -261,6 +261,7 @@ public class RealEstatePostController {
                 return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
             }
             RealEstatePost realEstatePostDB = service.findByIdAndEnable(request.getRealEstatePost().getId());
+            Double currPrice = realEstatePostDB.getPrice();
 
             RealEstatePostDTO realEstatePostDTO = request.getRealEstatePost();
             realEstatePostDTO.setUpdateAt(Instant.now());
@@ -288,7 +289,7 @@ public class RealEstatePostController {
                 }
             }
 
-            if (realEstatePostDB.getPrice().doubleValue() != request.getRealEstatePost().getPrice().doubleValue()) {
+            if (currPrice.doubleValue() != request.getRealEstatePost().getPrice().doubleValue()) {
                 service.createRepPrice(request.getRealEstatePost().getPrice(), request.getRealEstatePost().getId(), userDetails.getId());
                 notifyService.notifyAgencyREPUpdate(Message.CAP_NHAT_REP, realEstatePostDTO.getDistrict().getCode());
                 notifyService.notifyInterested(Message.getCAP_NHAT_REP_INTERESTED(realEstatePostDTO.getTitle()), realEstatePostDTO.getId());

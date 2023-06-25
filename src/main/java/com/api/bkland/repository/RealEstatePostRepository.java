@@ -25,7 +25,7 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
     @Query(value = "update real_estate_post set enable=0 where id = :id", nativeQuery = true)
     void disablePostById(String id);
 
-    @Query(value = "select * from real_estate_post x where x.owner_id = :ownerId", nativeQuery = true)
+    @Query(value = "select * from real_estate_post x where x.owner_id = :ownerId order by x.create_at desc", nativeQuery = true)
     List<RealEstatePost> findByOwnerId(String ownerId);
 
     @Modifying
@@ -96,7 +96,6 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
     @Query(value = "select rep.id\n" +
             "from real_estate_post rep left join interested i on rep.id = i.real_estate_post_id\n" +
             "where rep.enable = 1\n" +
-            "and rep.status = 'DA_KIEM_DUYET'\n" +
             "and datediff(now(), rep.create_at) <= rep.period\n" +
             "and rep.is_sell = :sell " +
             "and rep.type = :type " +
