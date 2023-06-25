@@ -229,6 +229,62 @@ public class InfoPostController {
         }
     }
 
+    @GetMapping("/api/no-auth/info-post/countByInfoType")
+    public ResponseEntity<BaseResponse> countByInfoType(@RequestParam("infoTypeId") Integer infoTypeId) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.countByInfoTypeId(infoTypeId), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy số lượng bài viết của danh mục. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/info-post/load-more")
+    public ResponseEntity<BaseResponse> loadMore(
+            @RequestParam("infoTypeId") Integer infoTypeId,
+            @RequestParam("limit") Integer limit,
+            @RequestParam("page") Integer page
+    ) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.loadMore(infoTypeId, limit, page), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/info-post/homepage")
+    public ResponseEntity<BaseResponse> getHomePagePosts() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getHomePagePosts(), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/info-post/homepage-du-an")
+    public ResponseEntity<BaseResponse> getHomePageDuAnPosts() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getHomePageDuAnPosts(), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     private InfoPostResponse getInfoPostResponse(InfoPost infoPost) {
         User user = userService.findById(infoPost.getCreateBy());
         InfoPostDTO infoPostDTO = convertToDTO(infoPost);

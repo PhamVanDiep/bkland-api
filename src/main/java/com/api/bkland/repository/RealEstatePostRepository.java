@@ -1,10 +1,7 @@
 package com.api.bkland.repository;
 
 import com.api.bkland.entity.RealEstatePost;
-import com.api.bkland.entity.response.IEnableUserChat;
-import com.api.bkland.entity.response.IRepAdmin;
-import com.api.bkland.entity.response.IRepEnableRequest;
-import com.api.bkland.entity.response.IRepRequested;
+import com.api.bkland.entity.response.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -112,4 +109,24 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "and rep.type = :type " +
             "and datediff(now(), rep.create_at) <= rep.period", nativeQuery = true)
     Integer countTotalBySellAndTypeClient(Byte sell, String type);
+
+    @Query(value = "select rep.id, rep.title, rep.price, rep.area, rep.is_sell as sell, rep.address_show as addressShow, rep.create_at as createAt\n" +
+            "from real_estate_post rep left join interested i on i.real_estate_post_id = rep.id\n" +
+            "inner join user u on rep.owner_id = u.id\n" +
+            "where rep.enable = 1\n" +
+            "and rep.status = 'DA_KIEM_DUYET'\n" +
+            "and datediff(now(), rep.create_at) <= period\n" +
+            "and u.enable = 1\n" +
+            "group by rep.id\n" +
+            "order by count(i.real_estate_post_id) and rep.priority desc limit 10;", nativeQuery = true)
+    List<IRepClient> getLstMostInterested();
+
+    @Query(value = "select rep.id, rep.title, rep.price, rep.area, rep.is_sell as sell, rep.address_show as addressShow, rep.create_at as createAt\n" +
+            "from real_estate_post rep inner join user u on rep.owner_id = u.id\n" +
+            "where rep.enable = 1\n" +
+            "and rep.status = 'DA_KIEM_DUYET'\n" +
+            "and datediff(now(), rep.create_at) <= period\n" +
+            "and u.enable = 1\n" +
+            "order by rep.view and rep.priority desc limit 10;", nativeQuery = true)
+    List<IRepClient> getLstMostView();
 }

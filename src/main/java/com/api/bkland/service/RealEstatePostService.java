@@ -3,6 +3,7 @@ package com.api.bkland.service;
 import com.api.bkland.entity.*;
 import com.api.bkland.entity.response.*;
 import com.api.bkland.payload.response.CountInterestAndCommentResponse;
+import com.api.bkland.payload.response.RepClientResponse;
 import com.api.bkland.payload.response.RepDetailPageResponse;
 import com.api.bkland.repository.*;
 import org.slf4j.Logger;
@@ -238,6 +239,46 @@ public class RealEstatePostService {
                         response.setInterested(isInterested(userId, e, deviceInfo));
                         responses.add(response);
                     }
+                });
+        return responses;
+    }
+
+    public List<RepClientResponse> findByMostInterested() {
+        List<RepClientResponse> responses = new ArrayList<>();
+        List<IRepClient> repClients = repository.getLstMostInterested();
+        repClients
+                .stream()
+                .forEach(e -> {
+                    Optional<String> imageUrlOptional = postMediaRepository.getOneImageOfPost(e.getId());
+                    RepClientResponse response = new RepClientResponse(e.getId(),
+                            e.getTitle(),
+                            e.getPrice(),
+                            e.getArea(),
+                            e.getSell(),
+                            e.getAddressShow(),
+                            e.getCreateAt(),
+                            imageUrlOptional.isEmpty() ? "" : imageUrlOptional.get());
+                    responses.add(response);
+                });
+        return responses;
+    }
+
+    public List<RepClientResponse> findByMostView() {
+        List<RepClientResponse> responses = new ArrayList<>();
+        List<IRepClient> repClients = repository.getLstMostView();
+        repClients
+                .stream()
+                .forEach(e -> {
+                    Optional<String> imageUrlOptional = postMediaRepository.getOneImageOfPost(e.getId());
+                    RepClientResponse response = new RepClientResponse(e.getId(),
+                            e.getTitle(),
+                            e.getPrice(),
+                            e.getArea(),
+                            e.getSell(),
+                            e.getAddressShow(),
+                            e.getCreateAt(),
+                            imageUrlOptional.isEmpty() ? "" : imageUrlOptional.get());
+                    responses.add(response);
                 });
         return responses;
     }

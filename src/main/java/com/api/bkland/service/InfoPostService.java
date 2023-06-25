@@ -1,12 +1,16 @@
 package com.api.bkland.service;
 
 import com.api.bkland.entity.InfoPost;
+import com.api.bkland.entity.response.IInfoPost;
 import com.api.bkland.repository.InfoPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,9 +53,29 @@ public class InfoPostService {
         return repository.findTop5ByInfoTypeIdOrderByCreateAtDesc(typeId);
     }
 
+    public List<InfoPost> loadMore(Integer typeId, Integer limit, Integer page) {
+        Pageable pageable = PageRequest.of(page, limit);
+        return repository.findByInfoTypeIdOrderByCreateAtDesc(typeId, pageable);
+    }
+
+    public Long countByInfoTypeId(Integer infoTypeId) {
+        return repository.countByInfoTypeId(infoTypeId);
+    }
+
     @Transactional
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
 
+    public Object getHomePagePosts() {
+//        List<IInfoPost> iInfoPosts = new ArrayList<>();
+//        iInfoPosts.addAll(repository.getTop3OrderByView());
+//        iInfoPosts.addAll(repository.getTop2InfoPostNewest());
+//        return iInfoPosts;
+        return repository.getTop5InfoPostNewest();
+    }
+
+    public Object getHomePageDuAnPosts() {
+        return repository.bestProjects();
+    }
 }

@@ -686,4 +686,34 @@ public class RealEstatePostController {
             ));
         }
     }
+
+    @GetMapping("/api/no-auth/real-estate-post/mostInterested")
+    public ResponseEntity<BaseResponse> getPostsByMostInterested() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service.findByMostInterested(), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết được quan tâm nhiều nhất. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/no-auth/real-estate-post/mostView")
+    public ResponseEntity<BaseResponse> getPostsByMostView() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service.findByMostView(), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết được xem nhiều nhất. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
 }

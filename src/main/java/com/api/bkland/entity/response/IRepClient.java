@@ -1,0 +1,13 @@
+package com.api.bkland.entity.response;
+
+import java.time.Instant;
+
+public interface IRepClient {
+    String getId();
+    String getTitle();
+    String getAddressShow();
+    Double getPrice();
+    Double getArea();
+    Byte getSell();
+    Instant getCreateAt();
+}
