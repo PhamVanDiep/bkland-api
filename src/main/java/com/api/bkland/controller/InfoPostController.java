@@ -249,7 +249,13 @@ public class InfoPostController {
             @RequestParam("page") Integer page
     ) {
         try {
-            return ResponseEntity.ok(new BaseResponse(service.loadMore(infoTypeId, limit, page), "", HttpStatus.OK));
+            return ResponseEntity.ok(new BaseResponse(
+                    service.loadMore(infoTypeId, limit, page)
+                            .stream()
+                            .map(e -> getInfoPostResponse(e))
+                            .collect(Collectors.toList()),
+                    "",
+                    HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
                     null,
