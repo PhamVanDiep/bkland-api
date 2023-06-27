@@ -110,7 +110,8 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "and datediff(now(), rep.create_at) <= rep.period", nativeQuery = true)
     Integer countTotalBySellAndTypeClient(Byte sell, String type);
 
-    @Query(value = "select rep.id, rep.title, rep.price, rep.area, rep.is_sell as sell, rep.address_show as addressShow, rep.create_at as createAt\n" +
+    @Query(value = "select rep.id, rep.title, rep.price, rep.area, rep.is_sell as sell, rep.address_show as addressShow, rep.create_at as createAt, " +
+            "(select id from post_media where post_id = rep.id limit 1) as imageUrl\n" +
             "from real_estate_post rep left join interested i on i.real_estate_post_id = rep.id\n" +
             "inner join user u on rep.owner_id = u.id\n" +
             "where rep.enable = 1\n" +
@@ -121,7 +122,8 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "order by count(i.real_estate_post_id) and rep.priority desc limit 10;", nativeQuery = true)
     List<IRepClient> getLstMostInterested();
 
-    @Query(value = "select rep.id, rep.title, rep.price, rep.area, rep.is_sell as sell, rep.address_show as addressShow, rep.create_at as createAt\n" +
+    @Query(value = "select rep.id, rep.title, rep.price, rep.area, rep.is_sell as sell, rep.address_show as addressShow, rep.create_at as createAt, " +
+            "(select id from post_media where post_id = rep.id limit 1) as imageUrl\n" +
             "from real_estate_post rep inner join user u on rep.owner_id = u.id\n" +
             "where rep.enable = 1\n" +
             "and rep.status = 'DA_KIEM_DUYET'\n" +

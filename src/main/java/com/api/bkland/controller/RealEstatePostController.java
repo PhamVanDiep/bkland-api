@@ -3,6 +3,7 @@ package com.api.bkland.controller;
 import com.api.bkland.config.annotation.CurrentUser;
 import com.api.bkland.constant.Message;
 import com.api.bkland.constant.PayContent;
+import com.api.bkland.constant.enumeric.EDirection;
 import com.api.bkland.constant.enumeric.ERole;
 import com.api.bkland.constant.enumeric.EStatus;
 import com.api.bkland.constant.enumeric.EType;
@@ -10,10 +11,7 @@ import com.api.bkland.entity.*;
 import com.api.bkland.payload.dto.InterestedDTO;
 import com.api.bkland.payload.dto.PostMediaDTO;
 import com.api.bkland.payload.dto.post.*;
-import com.api.bkland.payload.request.ClickedUserInfo;
-import com.api.bkland.payload.request.ListImageUpload;
-import com.api.bkland.payload.request.RealEstatePostRequest;
-import com.api.bkland.payload.request.UpdatePostStatusRequest;
+import com.api.bkland.payload.request.*;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.RealEstatePostResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
@@ -712,6 +710,62 @@ public class RealEstatePostController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi lấy danh sách bài viết được xem nhiều nhất. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @PostMapping("/api/no-auth/real-estate-post/search")
+    public ResponseEntity<BaseResponse> search(@RequestBody SearchRequest request) {
+        try {
+            if (request.getType() != null
+                    && !request.getType().equals(EType.HOUSE.toString())
+                    && !request.getType().equals(EType.APARTMENT.toString())
+                    && !request.getType().equals(EType.PLOT.toString())) {
+                return ResponseEntity.ok(new BaseResponse(null, "Kiểu bất động sản không hợp lệ", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getStartPrice() != null && request.getEndPrice() != null && request.getStartPrice() > request.getEndPrice()) {
+                return ResponseEntity.ok(new BaseResponse(null, "Khoảng giá không hợp lệ", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getStartPrice() != null && request.getStartPrice() < 0) {
+                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của giá bắt đầu phải lớn hoặc bằng 0", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getEndPrice() != null && request.getEndPrice() <= 0) {
+                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của giá kết thúc phải lớn hơn 0", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getStartArea() != null && request.getEndArea() != null && request.getStartArea() > request.getEndArea()) {
+                return ResponseEntity.ok(new BaseResponse(null, "Khoảng diện tích không hợp lệ", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getStartArea() != null && request.getStartArea() < 0) {
+                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của diện tích bắt đầu phải lớn hơn hoặc bằng 0", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getEndArea() != null && request.getEndArea() <= 0) {
+                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của diện tích kết thúc phải lớn hơn 0", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getLimit() <= 0) {
+                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của limit phải lớn hơn hoặc bằng 0", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getOffset() < 0) {
+                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của offset phải lớn hơn hoặc bằng 0", HttpStatus.NOT_ACCEPTABLE));
+            }
+            if (request.getDirection() != null
+                    && !request.getDirection().equals(EDirection.DONG.toString())
+                    && !request.getDirection().equals(EDirection.TAY.toString())
+                    && !request.getDirection().equals(EDirection.NAM.toString())
+                    && !request.getDirection().equals(EDirection.BAC.toString())
+                    && !request.getDirection().equals(EDirection.DONG_NAM.toString())
+                    && !request.getDirection().equals(EDirection.TAY_NAM.toString())
+                    && !request.getDirection().equals(EDirection.DONG_BAC.toString())
+                    && !request.getDirection().equals(EDirection.TAY_BAC.toString())
+            ) {
+                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của hướng không hợp lệ", HttpStatus.NOT_ACCEPTABLE));
+            }
+            return ResponseEntity.ok(new BaseResponse(service.search(request), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi tìm kiếm bài viết. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR
             ));
         }

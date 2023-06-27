@@ -1,21 +1,25 @@
 package com.api.bkland.service;
 
+import com.api.bkland.constant.enumeric.EType;
 import com.api.bkland.entity.*;
 import com.api.bkland.entity.response.*;
+import com.api.bkland.payload.request.SearchRequest;
 import com.api.bkland.payload.response.CountInterestAndCommentResponse;
-import com.api.bkland.payload.response.RepClientResponse;
 import com.api.bkland.payload.response.RepDetailPageResponse;
 import com.api.bkland.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class RealEstatePostService {
@@ -39,6 +43,9 @@ public class RealEstatePostService {
 
     @Autowired
     private PostCommentRepository postCommentRepository;
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -243,44 +250,46 @@ public class RealEstatePostService {
         return responses;
     }
 
-    public List<RepClientResponse> findByMostInterested() {
-        List<RepClientResponse> responses = new ArrayList<>();
-        List<IRepClient> repClients = repository.getLstMostInterested();
-        repClients
-                .stream()
-                .forEach(e -> {
-                    Optional<String> imageUrlOptional = postMediaRepository.getOneImageOfPost(e.getId());
-                    RepClientResponse response = new RepClientResponse(e.getId(),
-                            e.getTitle(),
-                            e.getPrice(),
-                            e.getArea(),
-                            e.getSell(),
-                            e.getAddressShow(),
-                            e.getCreateAt(),
-                            imageUrlOptional.isEmpty() ? "" : imageUrlOptional.get());
-                    responses.add(response);
-                });
-        return responses;
+    public Object findByMostInterested() {
+//        List<RepClientResponse> responses = new ArrayList<>();
+//        List<IRepClient> repClients = repository.getLstMostInterested();
+//        repClients
+//                .stream()
+//                .forEach(e -> {
+//                    Optional<String> imageUrlOptional = postMediaRepository.getOneImageOfPost(e.getId());
+//                    RepClientResponse response = new RepClientResponse(e.getId(),
+//                            e.getTitle(),
+//                            e.getPrice(),
+//                            e.getArea(),
+//                            e.getSell(),
+//                            e.getAddressShow(),
+//                            e.getCreateAt(),
+//                            imageUrlOptional.isEmpty() ? "" : imageUrlOptional.get());
+//                    responses.add(response);
+//                });
+//        return responses;
+        return repository.getLstMostInterested();
     }
 
-    public List<RepClientResponse> findByMostView() {
-        List<RepClientResponse> responses = new ArrayList<>();
-        List<IRepClient> repClients = repository.getLstMostView();
-        repClients
-                .stream()
-                .forEach(e -> {
-                    Optional<String> imageUrlOptional = postMediaRepository.getOneImageOfPost(e.getId());
-                    RepClientResponse response = new RepClientResponse(e.getId(),
-                            e.getTitle(),
-                            e.getPrice(),
-                            e.getArea(),
-                            e.getSell(),
-                            e.getAddressShow(),
-                            e.getCreateAt(),
-                            imageUrlOptional.isEmpty() ? "" : imageUrlOptional.get());
-                    responses.add(response);
-                });
-        return responses;
+    public Object findByMostView() {
+//        List<RepClientResponse> responses = new ArrayList<>();
+//        List<IRepClient> repClients = repository.getLstMostView();
+//        repClients
+//                .stream()
+//                .forEach(e -> {
+//                    Optional<String> imageUrlOptional = postMediaRepository.getOneImageOfPost(e.getId());
+//                    RepClientResponse response = new RepClientResponse(e.getId(),
+//                            e.getTitle(),
+//                            e.getPrice(),
+//                            e.getArea(),
+//                            e.getSell(),
+//                            e.getAddressShow(),
+//                            e.getCreateAt(),
+//                            imageUrlOptional.isEmpty() ? "" : imageUrlOptional.get());
+//                    responses.add(response);
+//                });
+//        return responses;
+        return repository.getLstMostView();
     }
 
     public Integer countTotalBySellAndTypeClient(Byte sell, String type) {
@@ -291,6 +300,98 @@ public class RealEstatePostService {
         CountInterestAndCommentResponse response = new CountInterestAndCommentResponse();
         response.setNoOfComment(postCommentRepository.countByPostId(postId));
         response.setNoOfInterest(interestedRepository.countByRealEstatePostId(postId));
+        return response;
+    }
+
+    public Object search(SearchRequest request) {
+        String query = "select rep.id, rep.title, rep.address_show as addressShow, rep.price, rep.area, rep.is_sell as sell, rep.create_at as createAt, rep.description, " +
+                "(select id from post_media where post_id = rep.id limit 1) as imageUrl\n" +
+                "from real_estate_post rep inner join user u on u.id = rep.owner_id ";
+        if (request.getType() != null) {
+            if (request.getType().equals(EType.APARTMENT.toString())) {
+                query += "inner join apartment spc on spc.real_estate_post_id = rep.id ";
+            } else if (request.getType().equals(EType.HOUSE.toString())) {
+                query += "inner join house spc on spc.real_estate_post_id = rep.id ";
+            }
+        }
+        query += "where u.enable = 1 " +
+                "and rep.enable = 1 " +
+                "and rep.status = 'DA_KIEM_DUYET' " +
+                "and datediff(now(), rep.create_at) <= rep.period ";
+        if (request.getSell() != null) {
+            if (request.getSell()) {
+                query += "and rep.is_sell = 1 ";
+            } else {
+                query += "and rep.is_sell = 0 ";
+            }
+        }
+        if (request.getType() != null) {
+            query += "and rep.type = '" + request.getType().replaceAll("\\s+", "") + "' ";
+            if (!request.getType().equals(EType.PLOT.toString()) && request.getNoOfBedrooms() != null) {
+                if (request.getNoOfBedrooms() > 5) {
+                    query += "and spc.no_bedroom >= " + request.getNoOfBedrooms() + " ";
+                } else {
+                    query += "and spc.no_bedroom = " + request.getNoOfBedrooms() + " ";
+                }
+            }
+        }
+        if (request.getProvinceCode() != null) {
+            query += "and rep.province_code = '" + request.getProvinceCode().replaceAll("\\s+", "") + "' ";
+        }
+        if (request.getDistrictCode() != null) {
+            query += "and rep.district_code = '" + request.getDistrictCode().replaceAll("\\s+", "") + "' ";
+        }
+        if (request.getWardCode() != null) {
+            query += "and rep.ward_code = '" + request.getWardCode().replaceAll("\\s+", "") + "' ";
+        }
+        if (request.getStartPrice() != null) {
+            if (request.getEndPrice() != null) {
+                query += "and rep.price >= " + request.getStartPrice() + " and rep.price <= " + request.getEndPrice() + " ";
+            } else {
+                query += "and rep.price >= " + request.getStartPrice() + " ";
+            }
+        } else {
+            if (request.getEndPrice() != null) {
+                query += "and rep.price <= " + request.getEndPrice() + " ";
+            }
+        }
+        if (request.getStartArea() != null) {
+            if (request.getEndArea() != null) {
+                query += "and rep.area >= " + request.getStartArea() + " and rep.area <= " + request.getEndArea() + " ";
+            } else {
+                query += "and rep.area >= " + request.getStartArea() + " ";
+            }
+        } else {
+            if (request.getEndArea() != null) {
+                query += "and rep.area <= " + request.getEndArea() + " ";
+            }
+        }
+        if (request.getDirection() != null) {
+            query += "and rep.direction = '" + request.getDirection().replaceAll("\\s+", "") + "' ";
+        }
+        if (request.getKeyword() != null && request.getKeyword().replaceAll("\\s", "").length() > 0) {
+            String[] words = request.getKeyword().split("\\s+");
+            int noOfWords = 0;
+            for (String item: words) {
+                String word = item.toUpperCase();
+                if (noOfWords == 0) {
+                    query += "and (UPPER(rep.title) like '%" + word + "%' or UPPER(rep.description) like '%" + word + "%' ";
+                } else {
+                    query += "or UPPER(rep.title) like '%" + word + "%' or UPPER(rep.description) like '%" + word + "%' ";
+                }
+                noOfWords ++;
+            }
+            query += ") ";
+        }
+        query += "order by rep.priority desc limit :limit offset :offset";
+
+        // parameters
+        Map<String, Object> params = new HashMap<>();
+        params.put("limit", request.getLimit());
+        params.put("offset", request.getOffset());
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(params);
+
+        List<Map<String, Object>> response = jdbcTemplate.queryForList(query, sqlParameterSource);
         return response;
     }
 }

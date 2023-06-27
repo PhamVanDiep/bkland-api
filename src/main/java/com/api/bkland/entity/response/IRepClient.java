@@ -10,4 +10,5 @@ public interface IRepClient {
     Double getArea();
     Byte getSell();
     Instant getCreateAt();
+    String getImageUrl();
 }
