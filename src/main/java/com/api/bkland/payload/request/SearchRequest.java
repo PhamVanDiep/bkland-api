@@ -1,5 +1,7 @@
 package com.api.bkland.payload.request;
 
+import com.sun.source.doctree.SeeTree;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -10,14 +12,17 @@ public class SearchRequest {
     private String type;
     private String keyword;
     private String provinceCode;
-    private String districtCode;
-    private String wardCode;
+    private String[] districtCode;
+    private String[] wardCode;
     private Double startPrice;
     private Double endPrice;
     private Double startArea;
     private Double endArea;
-    private Integer noOfBedrooms;
-    private String direction;
+    private Integer[] noOfBedrooms;
+    private String[] direction;
+    private String userId;
+    private String deviceInfo;
+
     @NotBlank
     @NotNull
     private Integer limit;
@@ -58,22 +63,6 @@ public class SearchRequest {
         this.provinceCode = provinceCode;
     }
 
-    public String getDistrictCode() {
-        return districtCode;
-    }
-
-    public void setDistrictCode(String districtCode) {
-        this.districtCode = districtCode;
-    }
-
-    public String getWardCode() {
-        return wardCode;
-    }
-
-    public void setWardCode(String wardCode) {
-        this.wardCode = wardCode;
-    }
-
     public Double getStartPrice() {
         return startPrice;
     }
@@ -106,22 +95,6 @@ public class SearchRequest {
         this.endArea = endArea;
     }
 
-    public Integer getNoOfBedrooms() {
-        return noOfBedrooms;
-    }
-
-    public void setNoOfBedrooms(Integer noOfBedrooms) {
-        this.noOfBedrooms = noOfBedrooms;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
     public Integer getLimit() {
         return limit;
     }
@@ -136,5 +109,53 @@ public class SearchRequest {
 
     public void setOffset(Integer offset) {
         this.offset = offset;
+    }
+
+    public String[] getDistrictCode() {
+        return districtCode;
+    }
+
+    public void setDistrictCode(String[] districtCode) {
+        this.districtCode = districtCode;
+    }
+
+    public String[] getWardCode() {
+        return wardCode;
+    }
+
+    public void setWardCode(String[] wardCode) {
+        this.wardCode = wardCode;
+    }
+
+    public Integer[] getNoOfBedrooms() {
+        return noOfBedrooms;
+    }
+
+    public void setNoOfBedrooms(Integer[] noOfBedrooms) {
+        this.noOfBedrooms = noOfBedrooms;
+    }
+
+    public String[] getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String[] direction) {
+        this.direction = direction;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
     }
 }

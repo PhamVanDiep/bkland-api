@@ -748,18 +748,6 @@ public class RealEstatePostController {
             if (request.getOffset() < 0) {
                 return ResponseEntity.ok(new BaseResponse(null, "Giá trị của offset phải lớn hơn hoặc bằng 0", HttpStatus.NOT_ACCEPTABLE));
             }
-            if (request.getDirection() != null
-                    && !request.getDirection().equals(EDirection.DONG.toString())
-                    && !request.getDirection().equals(EDirection.TAY.toString())
-                    && !request.getDirection().equals(EDirection.NAM.toString())
-                    && !request.getDirection().equals(EDirection.BAC.toString())
-                    && !request.getDirection().equals(EDirection.DONG_NAM.toString())
-                    && !request.getDirection().equals(EDirection.TAY_NAM.toString())
-                    && !request.getDirection().equals(EDirection.DONG_BAC.toString())
-                    && !request.getDirection().equals(EDirection.TAY_BAC.toString())
-            ) {
-                return ResponseEntity.ok(new BaseResponse(null, "Giá trị của hướng không hợp lệ", HttpStatus.NOT_ACCEPTABLE));
-            }
             return ResponseEntity.ok(new BaseResponse(service.search(request), "", HttpStatus.OK));
         } catch (Exception e) {
             e.printStackTrace();

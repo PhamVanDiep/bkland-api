@@ -304,8 +304,16 @@ public class RealEstatePostService {
     }
 
     public Object search(SearchRequest request) {
-        String query = "select rep.id, rep.title, rep.address_show as addressShow, rep.price, rep.area, rep.is_sell as sell, rep.create_at as createAt, rep.description, " +
-                "(select id from post_media where post_id = rep.id limit 1) as imageUrl\n" +
+        String query = "select rep.id, rep.title, rep.address_show as addressShow, " +
+                "rep.price, rep.area, rep.is_sell as sell, rep.create_at as createAt, rep.description, " +
+                "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName, " +
+                "u.phone_number as phoneNumber, u.avatar_url as avatarUrl, ";
+        if (request.getDeviceInfo() != null && request.getDeviceInfo().length() > 0) {
+            query += "(select count(*) > 0 from interested where user_id = :userId and device_info = :deviceInfo and real_estate_post_id = rep.id ) as interested, ";
+        } else {
+            query += "(select count(*) > 0 from interested where user_id = :userId and real_estate_post_id = rep.id ) as interested, ";
+        }
+        query += "(select id from post_media where post_id = rep.id limit 1) as imageUrl\n" +
                 "from real_estate_post rep inner join user u on u.id = rep.owner_id ";
         if (request.getType() != null) {
             if (request.getType().equals(EType.APARTMENT.toString())) {
@@ -327,22 +335,53 @@ public class RealEstatePostService {
         }
         if (request.getType() != null) {
             query += "and rep.type = '" + request.getType().replaceAll("\\s+", "") + "' ";
-            if (!request.getType().equals(EType.PLOT.toString()) && request.getNoOfBedrooms() != null) {
-                if (request.getNoOfBedrooms() > 5) {
-                    query += "and spc.no_bedroom >= " + request.getNoOfBedrooms() + " ";
-                } else {
-                    query += "and spc.no_bedroom = " + request.getNoOfBedrooms() + " ";
+            if (!request.getType().equals(EType.PLOT.toString()) && request.getNoOfBedrooms() != null && request.getNoOfBedrooms().length > 0) {
+                int index = 0;
+                for (Integer noOfBedroom: request.getNoOfBedrooms()) {
+                    if (index == 0) {
+                        if (noOfBedroom > 5) {
+                            query += "and ( spc.no_bedroom >= " + noOfBedroom + " ";
+                        } else {
+                            query += "and ( spc.no_bedroom = " + noOfBedroom + " ";
+                        }
+                    } else {
+                        if (noOfBedroom > 5) {
+                            query += "or spc.no_bedroom >= " + noOfBedroom + " ";
+                        } else {
+                            query += "or spc.no_bedroom = " + noOfBedroom + " ";
+                        }
+                    }
+                    index ++;
                 }
+                query += " ) ";
             }
         }
         if (request.getProvinceCode() != null) {
             query += "and rep.province_code = '" + request.getProvinceCode().replaceAll("\\s+", "") + "' ";
         }
-        if (request.getDistrictCode() != null) {
-            query += "and rep.district_code = '" + request.getDistrictCode().replaceAll("\\s+", "") + "' ";
+        if (request.getDistrictCode() != null && request.getDistrictCode().length > 0) {
+            int index = 0;
+            for (String districtCode: request.getDistrictCode()) {
+                if (index == 0) {
+                    query += "and ( rep.district_code = '" + districtCode.replaceAll("\\s+", "") + "' ";
+                } else {
+                    query += "or rep.district_code = '" + districtCode.replaceAll("\\s+", "") + "' ";
+                }
+                index ++;
+            }
+            query += " ) ";
         }
-        if (request.getWardCode() != null) {
-            query += "and rep.ward_code = '" + request.getWardCode().replaceAll("\\s+", "") + "' ";
+        if (request.getWardCode() != null && request.getWardCode().length > 0) {
+            int index = 0;
+            for (String wardCode: request.getWardCode()) {
+                if (index == 0) {
+                    query += "and ( rep.ward_code = '" + wardCode.replaceAll("\\s+", "") + "' ";
+                } else {
+                    query += "or rep.ward_code = '" + wardCode.replaceAll("\\s+", "") + "' ";
+                }
+                index ++;
+            }
+            query += " ) ";
         }
         if (request.getStartPrice() != null) {
             if (request.getEndPrice() != null) {
@@ -366,8 +405,17 @@ public class RealEstatePostService {
                 query += "and rep.area <= " + request.getEndArea() + " ";
             }
         }
-        if (request.getDirection() != null) {
-            query += "and rep.direction = '" + request.getDirection().replaceAll("\\s+", "") + "' ";
+        if (request.getDirection() != null && request.getDirection().length > 0) {
+            int index = 0;
+            for (String direction: request.getDirection()) {
+                if (index == 0) {
+                    query += "and ( rep.direction = '" + direction.replaceAll("\\s+", "") + "' ";
+                } else {
+                    query += "or rep.direction = '" + direction.replaceAll("\\s+", "") + "' ";
+                }
+                index ++;
+            }
+            query += " ) ";
         }
         if (request.getKeyword() != null && request.getKeyword().replaceAll("\\s", "").length() > 0) {
             String[] words = request.getKeyword().split("\\s+");
@@ -387,6 +435,10 @@ public class RealEstatePostService {
 
         // parameters
         Map<String, Object> params = new HashMap<>();
+        params.put("userId", request.getUserId());
+        if (request.getDeviceInfo() != null && request.getDeviceInfo().length() > 0) {
+            params.put("deviceInfo", request.getDeviceInfo());
+        }
         params.put("limit", request.getLimit());
         params.put("offset", request.getOffset());
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(params);
