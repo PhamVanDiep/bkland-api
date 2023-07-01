@@ -6,6 +6,7 @@ import com.api.bkland.payload.dto.PostPayDTO;
 import com.api.bkland.payload.dto.SpecialAccountPayDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.PaymentResponse;
+import com.api.bkland.service.PaymentService;
 import com.api.bkland.service.PostPayService;
 import com.api.bkland.service.SpecialAccountPayService;
 import org.modelmapper.ModelMapper;
@@ -29,6 +30,9 @@ public class PaymentController {
 
     @Autowired
     private SpecialAccountPayService specialAccountPayService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -106,6 +110,58 @@ public class PaymentController {
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi lấy danh sách lịch sử thanh toán của người dùng. "
+                            + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/statistic/thanh-toan-nam")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> thanhToanNam(@RequestParam Integer nam) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(paymentService.getPaymentStatistic(nam), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin thanh toán năm. " + e.getMessage()
+                            + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/statistic/thanh-toan-thang")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> thanhToanThang(@RequestParam Integer nam, @RequestParam Integer thang) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(paymentService.getPaymentStatisticMonth(nam, thang), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin thanh toán theo tháng. " + e.getMessage()
+                            + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/statistic/nap-tien-nam")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> napTienNam(@RequestParam Integer nam) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(paymentService.getChargeInYear(nam), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin nạp tiền trong năm. " + e.getMessage()
+                            + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/statistic/nap-tien-thang")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> napTienThang(@RequestParam Integer nam, @RequestParam Integer thang) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(paymentService.getChargeByMonth(nam, thang), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy thông tin nạp tiền trong năm. " + e.getMessage()
                             + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }

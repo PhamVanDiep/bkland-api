@@ -16,6 +16,8 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -46,6 +48,15 @@ public class RealEstatePostService {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private StatisticPriceFluctuationRepository statisticPriceFluctuationRepository;
+
+    @Autowired
+    private DistrictRepository districtRepository;
+
+    @Autowired
+    private WardRepository wardRepository;
 
     private Logger logger = LoggerFactory.getLogger(RealEstatePostService.class);
 
@@ -445,5 +456,86 @@ public class RealEstatePostService {
 
         List<Map<String, Object>> response = jdbcTemplate.queryForList(query, sqlParameterSource);
         return response;
+    }
+
+    @Transactional
+    public void calculatePricePerAreaUnit(String ngay) {
+//        List<String> provinceCodes = statisticPriceFluctuationRepository.getAllProvinceCodes();
+        String HaNoiCode = "01";
+        List<District> districtCodes = districtRepository.findByProvinceCode(HaNoiCode);
+        districtCodes
+                .stream()
+                .parallel()
+                .forEach(e -> {
+                    List<Ward> wardCodes = wardRepository.findByDistrictCode(e.getCode());
+                    wardCodes
+                            .stream()
+                            .parallel()
+                                    .forEach(ee -> {
+                                        StatisticPriceFluctuation sellHouse = getStatisticPriceFluctuation(true, EType.HOUSE, HaNoiCode, e.getCode(), ee.getCode(), ngay);
+                                        StatisticPriceFluctuation sellApartment = getStatisticPriceFluctuation(true, EType.APARTMENT, HaNoiCode, e.getCode(), ee.getCode(), ngay);
+                                        StatisticPriceFluctuation sellPlot = getStatisticPriceFluctuation(true, EType.PLOT, HaNoiCode, e.getCode(), ee.getCode(), ngay);
+                                        StatisticPriceFluctuation hireHouse = getStatisticPriceFluctuation(false, EType.HOUSE, HaNoiCode, e.getCode(), ee.getCode(), ngay);
+                                        StatisticPriceFluctuation hireApartment = getStatisticPriceFluctuation(false, EType.APARTMENT, HaNoiCode, e.getCode(), ee.getCode(), ngay);
+                                        if (sellHouse != null) {
+                                            statisticPriceFluctuationRepository.save(sellHouse);
+                                        }
+                                        if (sellApartment != null) {
+                                            statisticPriceFluctuationRepository.save(sellApartment);
+                                        }
+                                        if (sellPlot != null) {
+                                            statisticPriceFluctuationRepository.save(sellPlot);
+                                        }
+                                        if (hireHouse != null) {
+                                            statisticPriceFluctuationRepository.save(hireHouse);
+                                        }
+                                        if (hireApartment != null) {
+                                            statisticPriceFluctuationRepository.save(hireApartment);
+                                        }
+                                    });
+                });
+    }
+
+    private StatisticPriceFluctuation getStatisticPriceFluctuation(boolean sell, EType type, String provinceCode, String districtCode, String wardCode, String ngay) {
+        String query = "select avg(price/area) as result from real_estate_post \n" +
+                "where enable = 1 \n" +
+                "and (status = 'DA_KIEM_DUYET' or status = 'DA_HOAN_THANH') \n" +
+                "and datediff(now(), create_at) <= period\n" +
+                "and is_sell = :sell\n" +
+                "and type = :type\n" +
+                "and district_code = :districtCode\n" +
+                "and province_code = :provinceCode\n" +
+                "and ward_code = :wardCode\n" +
+                "and (date(create_at) = :ngay " +
+                "or date(update_at) = :ngay)";
+        Map<String, Object> params = new HashMap<>();
+        params.put("sell", sell ? 1 : 0);
+        params.put("type", type.toString());
+        params.put("districtCode", districtCode);
+        params.put("provinceCode", provinceCode);
+        params.put("wardCode", wardCode);
+        params.put("ngay", ngay);
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(params);
+        Map<String, Object> response = jdbcTemplate.queryForMap(query, sqlParameterSource);
+        if (response.get("result") == null) {
+            return null;
+        } else {
+            StatisticPriceFluctuation statisticPriceFluctuation = new StatisticPriceFluctuation();
+            statisticPriceFluctuation.setId(0L);
+            statisticPriceFluctuation.setSell(sell);
+            statisticPriceFluctuation.setType(type);
+            try {
+                statisticPriceFluctuation.setCreateAt(new SimpleDateFormat("yyyy-MM-dd").parse(ngay));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                statisticPriceFluctuation.setCreateAt(new Date());
+            }
+            statisticPriceFluctuation.setDistrictCode(districtCode);
+            statisticPriceFluctuation.setProvinceCode(provinceCode);
+            statisticPriceFluctuation.setWardCode(wardCode);
+            statisticPriceFluctuation.setPrice((Double) response.get("result"));
+            return statisticPriceFluctuation;
+        }
+//        statisticPriceFluctuation.setPrice(repository.calculatePricePerAreaUnit(sell ? 1 : 0, type.toString(), districtCode, provinceCode, wardCode));
     }
 }

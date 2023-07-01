@@ -131,4 +131,18 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "and u.enable = 1\n" +
             "order by rep.view and rep.priority desc limit 10;", nativeQuery = true)
     List<IRepClient> getLstMostView();
+
+//    @Query(name = "select code from provinces where code != 'NOT_FOUND'", nativeQuery = true)
+//    List<String> getAllProvinceCodes();
+
+//    @Query(name = "select avg(price/area) from real_estate_post \n" +
+//            "where enable = 1 \n" +
+//            "and status = 'DA_KIEM_DUYET' or status = 'DA_HOAN_THANH' \n" +
+//            "and datediff(now(), create_at) <= period\n" +
+//            "and is_sell = :sell\n" +
+//            "and type = :type\n" +
+//            "and district_code = :districtCode\n" +
+//            "and province_code = :provinceCode\n" +
+//            "and ward_code = :wardCode", nativeQuery = true)
+//    Float calculatePricePerAreaUnit(Integer sell, String type, String districtCode, String provinceCode, String wardCode);
 }

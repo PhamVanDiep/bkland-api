@@ -6,6 +6,7 @@ import com.api.bkland.entity.User;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.NotifyService;
+import com.api.bkland.service.RealEstatePostService;
 import com.api.bkland.service.TestService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class TestController {
 
     @Autowired
     private NotifyService notifyService;
+
+    @Autowired
+    private RealEstatePostService realEstatePostService;
 
     @GetMapping("/all")
     public String allAccess() {
@@ -94,6 +98,20 @@ public class TestController {
         }
     }
 
+    @PostMapping("/rep/statistic")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> abc() {
+        try {
+            String ngay = "2023-06-";
+            for (int i = 22; i <= 30; i++) {
+                realEstatePostService.calculatePricePerAreaUnit(ngay + i);
+            }
+            return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
     private UserDTO convertToDto(User user) {
         return modelMapper.map(user, UserDTO.class);
     }
