@@ -203,7 +203,7 @@ public class ProjectController {
     }
 
     @PostMapping("/interested")
-    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_USER')")
     public ResponseEntity<BaseResponse> userInterested(@RequestBody ProjectInterestedDTO body, @CurrentUser UserDetailsImpl userDetails) {
         try {
             if (!projectService.existsByIdAndEnable(body.getProjectId())) {
@@ -243,6 +243,23 @@ public class ProjectController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi lấy dữ liệu thống kê. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/interested-of-user")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> findAllProjectsInterestedByUser(@CurrentUser UserDetailsImpl userDetails) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    projectService.findAllProjectsInterestedByUser(userDetails.getId())
+                            .stream().map(e -> modelMapper.map(e, ProjectDTO.class)).toList(), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết người dùng đã quan tâm. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR
             ));
         }

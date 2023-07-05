@@ -538,7 +538,7 @@ public class RealEstatePostController {
     }
 
     @PostMapping("/api/v1/real-estate-post/interested")
-    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_USER')")
     public ResponseEntity<BaseResponse> userInterested(@RequestBody InterestedDTO body, @CurrentUser UserDetailsImpl userDetails) {
         try {
             if (!service.existsByIdAndEnable(body.getRealEstatePostId())) {

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,5 +154,19 @@ public class ProjectService {
                     chartOption.getSeries().add(e.getCnt());
                 });
         return chartOption;
+    }
+
+    public List<Project> findAllProjectsInterestedByUser(String userId) {
+        List<ProjectInterested> projectInterests = projectInterestedRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "createAt"));
+        List<Project> response = new ArrayList<>();
+        projectInterests
+                .stream()
+                .forEach(e -> {
+                    Optional<Project> projectOptional = repository.findByIdAndEnable(e.getProjectId(), true);
+                    if (projectOptional.isPresent()) {
+                        response.add(projectOptional.get());
+                    }
+                });
+        return response;
     }
 }

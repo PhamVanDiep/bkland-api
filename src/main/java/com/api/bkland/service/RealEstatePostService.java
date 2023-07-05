@@ -221,11 +221,21 @@ public class RealEstatePostService {
         return interestedRepository.existsByUserIdAndRealEstatePostId(userId, realEstatePostId);
     }
 
-    public Integer countInterested(String userId, String deviceInfo) {
+    public Object countInterested(String userId, String deviceInfo) {
+        String query = "select count(*) as cnt\n" +
+                "from interested i inner join real_estate_post rep on i.real_estate_post_id = rep.id\n" +
+                "where rep.enable = 1 and i.user_id = :userId ";
+        Map<String, Object> params = new HashMap<>();
         if (deviceInfo != null && deviceInfo.length() > 0 && (userId == null || userId.length() == 0)) {
-            return interestedRepository.countByUserIdAndDeviceInfo("anonymous", deviceInfo);
+//            return interestedRepository.countByUserIdAndDeviceInfo("anonymous", deviceInfo);
+            query += "and i.device_info = :deviceInfo";
+            params.put("deviceInfo", deviceInfo);
+            params.put("userId", "anonymous");
+        } else {
+            params.put("userId", userId);
         }
-        return interestedRepository.countByUserId(userId);
+        Map<String, Object> result = jdbcTemplate.queryForMap(query, new MapSqlParameterSource(params));
+        return result.get("cnt");
     }
 
     public List<RepDetailPageResponse> detailPageData(Byte sell, String type, Integer limit, Integer offset, String userId, String deviceInfo) {
