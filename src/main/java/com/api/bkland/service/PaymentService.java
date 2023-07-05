@@ -3,6 +3,7 @@ package com.api.bkland.service;
 import com.api.bkland.entity.response.IPaymentStatistic;
 import com.api.bkland.payload.response.PaymentStatisticResponse;
 import com.api.bkland.repository.PostPayRepository;
+import com.api.bkland.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +17,7 @@ public class PaymentService {
     private PostPayRepository postPayRepository;
 
     public PaymentStatisticResponse getPaymentStatistic(Integer nam) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int currMonth;
-        if (calendar.get(Calendar.YEAR) == nam) {
-            currMonth = calendar.get(Calendar.MONTH);
-            currMonth++;
-        } else {
-            currMonth = 12;
-        }
+        int currMonth = Util.getCurrMonth(nam);
         PaymentStatisticResponse response = new PaymentStatisticResponse();
         for (int i = 1; i <= currMonth; i++) {
             response.getMonth().add(i);
@@ -38,27 +31,7 @@ public class PaymentService {
     }
 
     public PaymentStatisticResponse getPaymentStatisticMonth(Integer year, Integer month) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int currMonth = calendar.get(Calendar.MONTH);
-        currMonth++;
-        int currYear = calendar.get(Calendar.YEAR);
-        int date;
-        if (year == currYear && month == currMonth) {
-            date = calendar.get(Calendar.DAY_OF_MONTH);
-        } else {
-            if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
-                date = 31;
-            } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-                date = 30;
-            } else {
-                if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
-                    date = 29;
-                } else {
-                    date = 28;
-                }
-            }
-        }
+        int date = Util.getDayOfMonth(month, year);
         PaymentStatisticResponse response = new PaymentStatisticResponse();
         for (int i = 1; i <= date; i++) {
             response.getNgay().add(i);
@@ -74,15 +47,7 @@ public class PaymentService {
     }
 
     public PaymentStatisticResponse getChargeInYear(Integer nam) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int currMonth;
-        if (calendar.get(Calendar.YEAR) == nam) {
-            currMonth = calendar.get(Calendar.MONTH);
-            currMonth++;
-        } else {
-            currMonth = 12;
-        }
+        int currMonth = Util.getCurrMonth(nam);
         PaymentStatisticResponse response = new PaymentStatisticResponse();
         for (int i = 1; i <= currMonth; i++) {
             response.getMonth().add(i);
@@ -93,27 +58,7 @@ public class PaymentService {
     }
 
     public PaymentStatisticResponse getChargeByMonth(Integer year, Integer month) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        int currMonth = calendar.get(Calendar.MONTH);
-        currMonth++;
-        int currYear = calendar.get(Calendar.YEAR);
-        int date;
-        if (year == currYear && month == currMonth) {
-            date = calendar.get(Calendar.DAY_OF_MONTH);
-        } else {
-            if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
-                date = 31;
-            } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-                date = 30;
-            } else {
-                if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
-                    date = 29;
-                } else {
-                    date = 28;
-                }
-            }
-        }
+        int date = Util.getDayOfMonth(month, year);
         PaymentStatisticResponse response = new PaymentStatisticResponse();
         for (int i = 1; i <= date; i++) {
             response.getNgay().add(i);

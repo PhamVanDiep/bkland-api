@@ -112,6 +112,6 @@ public interface UserDeviceTokenRepository extends JpaRepository<UserDeviceToken
             "and length(udt.notify_token) > 0\n" +
             "and udt.enable = 1\n" +
             "and udt.is_logout = 0 \n" +
-            "and udt.userId = :agencyId", nativeQuery = true)
+            "and udt.user_id = :agencyId", nativeQuery = true)
     List<String> thongBaoCoBaiDangNhoGiup(@Param("agencyId") String agencyId);
 }

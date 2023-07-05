@@ -273,4 +273,30 @@ public class ForumPostController {
                     HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
+    @GetMapping("/api/v1/forum-post/statistic/chart1")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getChart1Data(@RequestParam Integer month, @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getChart1Data(month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê bài viết trên diễn đàn.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/forum-post/statistic/chart2")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getChart2Data(@RequestParam Integer month, @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getChart2Data(month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê bài viết trên diễn đàn.",
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
 }

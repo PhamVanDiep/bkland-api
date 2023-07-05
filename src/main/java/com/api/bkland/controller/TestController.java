@@ -99,13 +99,10 @@ public class TestController {
     }
 
     @PostMapping("/rep/statistic")
-    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
-    public ResponseEntity<BaseResponse> abc() {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> abc(@RequestParam String date) {
         try {
-            String ngay = "2023-06-";
-            for (int i = 22; i <= 30; i++) {
-                realEstatePostService.calculatePricePerAreaUnit(ngay + i);
-            }
+            realEstatePostService.calculatePricePerAreaUnit(date);
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
         } catch (Exception e) {
             e.printStackTrace();

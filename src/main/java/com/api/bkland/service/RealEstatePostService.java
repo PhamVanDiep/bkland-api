@@ -5,8 +5,12 @@ import com.api.bkland.entity.*;
 import com.api.bkland.entity.response.*;
 import com.api.bkland.payload.request.SearchRequest;
 import com.api.bkland.payload.response.CountInterestAndCommentResponse;
+import com.api.bkland.payload.response.PaymentStatisticResponse;
 import com.api.bkland.payload.response.RepDetailPageResponse;
+import com.api.bkland.payload.response.chart.ChartOption;
+import com.api.bkland.payload.response.chart.Series;
 import com.api.bkland.repository.*;
+import com.api.bkland.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -303,6 +307,10 @@ public class RealEstatePostService {
         return repository.getLstMostView();
     }
 
+    public Object findByNewest() {
+        return repository.getLstNewest();
+    }
+
     public Integer countTotalBySellAndTypeClient(Byte sell, String type) {
         return repository.countTotalBySellAndTypeClient(sell, type);
     }
@@ -537,5 +545,373 @@ public class RealEstatePostService {
             return statisticPriceFluctuation;
         }
 //        statisticPriceFluctuation.setPrice(repository.calculatePricePerAreaUnit(sell ? 1 : 0, type.toString(), districtCode, provinceCode, wardCode));
+    }
+
+    public ChartOption baiVietChart1(Byte sell, String type, String provinceCode, Integer year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int currMonth;
+        if (calendar.get(Calendar.YEAR) == year) {
+            currMonth = calendar.get(Calendar.MONTH);
+            currMonth++;
+        } else {
+            currMonth = 12;
+        }
+        ChartOption chartOption = new ChartOption();
+        List<District> districts = districtRepository.findByProvinceCode(provinceCode);
+        int finalCurrMonth = currMonth;
+        districts
+                .stream()
+                .parallel()
+                .forEach(e -> {
+                    Series series = new Series();
+                    series.setName(e.getName());
+                    List<Long> data = new ArrayList<>();
+                    for (int i = 1; i <= finalCurrMonth; i++) {
+                        String query = "select count(*) as cnt from real_estate_post \n" +
+                                "where is_sell = :sell\n" +
+                                "and type = :type\n" +
+                                "and district_code = :districtCode\n" +
+                                "and province_code = :provinceCode\n" +
+                                "and month(create_at) = :month\n" +
+                                "and year(create_at) = :year";
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("sell", sell);
+                        params.put("type", type);
+                        params.put("districtCode", e.getCode());
+                        params.put("provinceCode", provinceCode);
+                        params.put("month", i);
+                        params.put("year", year);
+                        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(params);
+                        Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(query, sqlParameterSource);
+                        Long val = (Long) jdbcResponse.get("cnt");
+                        data.add(val);
+                    }
+                    series.setData(new ArrayList<Object>(data));
+                    chartOption.getSeries().add(series);
+                });
+        List<Integer> xaxis = new ArrayList<>();
+        for (int i = 1; i <= finalCurrMonth; i++) {
+            xaxis.add(i);
+        }
+        chartOption.setXaxis(new ArrayList<>(xaxis));
+        return chartOption;
+    }
+
+    public ChartOption baiVietChart2(Byte sell, String type, String provinceCode, Integer year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int currMonth;
+        if (calendar.get(Calendar.YEAR) == year) {
+            currMonth = calendar.get(Calendar.MONTH);
+            currMonth++;
+        } else {
+            currMonth = 12;
+        }
+        ChartOption chartOption = new ChartOption();
+        Map<String, String> typeMap = new HashMap<>();
+        typeMap.put("VIEW", "Số lượt xem");
+        typeMap.put("INTEREST", "Quan tâm");
+        typeMap.put("COMMENT", "Bình luận");
+        typeMap.put("REPORT", "Báo cáo");
+        int finalCurrMonth = currMonth;
+        for (Map.Entry<String, String> iterator: typeMap.entrySet()) {
+            Series series = new Series();
+            List<Long> data = new ArrayList<>();
+            for (int i = 1; i <= finalCurrMonth; i++) {
+                Long val = chart2Counter(sell, type, provinceCode, i, year, iterator.getKey());
+                data.add(val);
+            }
+            series.setName(iterator.getValue());
+            series.setData(new ArrayList<Object>(data));
+            chartOption.getSeries().add(series);
+        }
+        List<Integer> xaxis = new ArrayList<>();
+        for (int i = 1; i <= finalCurrMonth; i++) {
+            xaxis.add(i);
+        }
+        chartOption.setXaxis(new ArrayList<>(xaxis));
+        return chartOption;
+    }
+
+    private Long chart2Counter(Byte sell, String type, String provinceCode, Integer month, Integer year, String mapType) {
+        String query;
+        if (mapType.equals("VIEW")) {
+            query = "select count(*) as cnt\n" +
+                    "from post_view pv inner join real_estate_post rep on pv.real_estate_post_id = rep.id\n" +
+                    "and rep.is_sell = :sell\n" +
+                    "and rep.type = :type\n" +
+                    "and rep.province_code = :provinceCode\n" +
+                    "and year(pv.create_at) = :year\n" +
+                    "and month(pv.create_at) = :month";
+        } else if (mapType.equals("COMMENT")) {
+            query = "select count(*) as cnt\n" +
+                    "from post_comment pv inner join real_estate_post rep on pv.post_id = rep.id\n" +
+                    "and rep.is_sell = :sell\n" +
+                    "and rep.type = :type\n" +
+                    "and rep.province_code = :provinceCode\n" +
+                    "and year(pv.create_at) = :year\n" +
+                    "and month(pv.create_at) = :month";
+        } else if (mapType.equals("INTEREST")) {
+            query = "select count(*) as cnt\n" +
+                    "from interested pv inner join real_estate_post rep on pv.real_estate_post_id = rep.id\n" +
+                    "and rep.is_sell = :sell\n" +
+                    "and rep.type = :type\n" +
+                    "and rep.province_code = :provinceCode\n" +
+                    "and year(pv.create_at) = :year\n" +
+                    "and month(pv.create_at) = :month";
+        } else {
+            query = "select count(*) as cnt\n" +
+                    "from post_report pv inner join real_estate_post rep on pv.post_id = rep.id\n" +
+                    "and rep.is_sell = :sell\n" +
+                    "and rep.type = :type\n" +
+                    "and rep.province_code = :provinceCode\n" +
+                    "and year(pv.create_at) = :year\n" +
+                    "and month(pv.create_at) = :month";
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("sell", sell);
+        params.put("type", type);
+        params.put("provinceCode", provinceCode);
+        params.put("month", month);
+        params.put("year", year);
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(params);
+        Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(query, sqlParameterSource);
+        Long val = (Long) jdbcResponse.get("cnt");
+        return val;
+    }
+
+    public ChartOption getPriceFluctuationStatistic(Byte sell, String type, String provinceCode, String districtCode, String wardCode, Integer month, Integer year) {
+        ChartOption chartOption = new ChartOption();
+        String query = "select avg(price) as result " +
+                "from statistic_price_fluctuation\n" +
+                "where sell = :sell \n" +
+                "and type = :type \n" +
+                "and province_code = :provinceCode \n";
+        int val;
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("sell", sell);
+        params.put("type", type);
+        params.put("provinceCode", provinceCode);
+
+        if (month != 0) {
+            val = Util.getDayOfMonth(month, year);
+        } else {
+            val = Util.getCurrMonth(year);
+        }
+        for (int i = 1; i <= val; i++) {
+            chartOption.getXaxis().add(i);
+        }
+
+        if (districtCode != null && districtCode.length() > 0) {
+            query += "and district_code = :districtCode ";
+            params.put("districtCode", districtCode);
+            if (wardCode != null && wardCode.length() > 0) {
+                query += "and ward_code = :wardCode ";
+                params.put("wardCode", wardCode);
+                String finalQuery = query;
+                if (month != 0) {
+                    Series series = new Series();
+                    series.setName(wardCode);
+                    for (int i = 1; i <= val; i++) {
+                        String date = year + "-" + month + "-" + i;
+                        String sql = finalQuery + "and date(create_at) = :date ";
+                        params.put("date", date);
+                        Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(sql, new MapSqlParameterSource(params));
+                        series.getData().add(jdbcResponse.get("result"));
+                    }
+                    chartOption.getSeries().add(series);
+                } else {
+                    Series series = new Series();
+                    series.setName(wardCode);
+                    for (int i = 1; i <= val; i++) {
+                        String sql = finalQuery + "and year(create_at) = :year " +
+                                "and month(create_at) = :month ";
+                        params.put("month", i);
+                        params.put("year", year);
+                        Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(sql, new MapSqlParameterSource(params));
+                        series.getData().add(jdbcResponse.get("result"));
+                    }
+                    chartOption.getSeries().add(series);
+                }
+            } else {
+                List<Ward> wards = wardRepository.findByDistrictCode(districtCode);
+                String finalQuery = query;
+                if (month != 0) {
+                    wards
+                            .stream()
+                            .parallel()
+                            .forEach(e -> {
+                                Series series = new Series();
+                                series.setName(e.getName());
+                                for (int i = 1; i <= val; i++) {
+                                    String date = year + "-" + month + "-" + i;
+                                    String sql = finalQuery + "and date(create_at) = :date " +
+                                            "and ward_code = :wardCode ";
+                                    params.put("date", date);
+                                    params.put("wardCode", e.getCode());
+                                    Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(sql, new MapSqlParameterSource(params));
+                                    series.getData().add(jdbcResponse.get("result"));
+                                }
+                                chartOption.getSeries().add(series);
+                            });
+                } else {
+                    wards
+                            .stream()
+                            .parallel()
+                            .forEach(e -> {
+                                Series series = new Series();
+                                series.setName(e.getName());
+                                for (int i = 1; i <= val; i++) {
+                                    String sql = finalQuery + "and year(create_at) = :year " +
+                                            "and month(create_at) = :month " +
+                                            "and ward_code = :wardCode ";
+                                    params.put("month", i);
+                                    params.put("year", year);
+                                    params.put("wardCode", e.getCode());
+                                    Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(sql, new MapSqlParameterSource(params));
+                                    series.getData().add(jdbcResponse.get("result"));
+                                }
+                                chartOption.getSeries().add(series);
+                            });
+                }
+            }
+        } else {
+            if (wardCode != null && wardCode.length() > 0) {
+                return null;
+            } else {
+                List<District> districts = districtRepository.findByProvinceCode(provinceCode);
+                String finalQuery = query;
+                if (month != 0) {
+                    districts
+                            .stream()
+                            .parallel()
+                            .forEach(e -> {
+                                Series series = new Series();
+                                series.setName(e.getName());
+                                for (int i = 1; i <= val; i++) {
+                                    String date = year + "-" + month + "-" + i;
+                                    String sql = finalQuery + "and date(create_at) = :date " +
+                                            "and district_code = :districtCode ";
+                                    params.put("date", date);
+                                    params.put("districtCode", e.getCode());
+                                    Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(sql, new MapSqlParameterSource(params));
+                                    series.getData().add(jdbcResponse.get("result"));
+                                }
+                                chartOption.getSeries().add(series);
+                            });
+                } else {
+                    districts
+                            .stream()
+                            .parallel()
+                            .forEach(e -> {
+                                Series series = new Series();
+                                series.setName(e.getName());
+                                for (int i = 1; i <= val; i++) {
+                                    String sql = finalQuery + "and year(create_at) = :year " +
+                                            "and month(create_at) = :month " +
+                                            "and district_code = :districtCode ";
+                                    params.put("month", i);
+                                    params.put("year", year);
+                                    params.put("districtCode", e.getCode());
+                                    Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(sql, new MapSqlParameterSource(params));
+                                    series.getData().add(jdbcResponse.get("result"));
+                                }
+                                chartOption.getSeries().add(series);
+                            });
+                }
+            }
+        }
+        return chartOption;
+    }
+
+    public List<IRepAdmin> getLstMostChangePrice() {
+        return repository.getLstMostChangePrice();
+    }
+
+    public ChartOption getPriceOption(String postId) {
+        ChartOption chartOption = new ChartOption();
+        String query = "select price, DATE_FORMAT(create_at, '%Y-%m-%d %T') as createAt\n" +
+                "from real_estate_post_price \n" +
+                "where real_estate_post_id = :postId";
+        Map<String, Object> params = new HashMap<>();
+        params.put("postId", postId);
+        List<Map<String, Object>> jdbcResponse = jdbcTemplate.queryForList(query, new MapSqlParameterSource(params));
+        jdbcResponse
+                .stream()
+                .forEach(e -> {
+                    chartOption.getXaxis().add(e.get("createAt"));
+                    chartOption.getSeries().add(e.get("price"));
+                });
+        return chartOption;
+    }
+
+    public ChartOption getViewChartOption(String postId, Integer month, Integer year) {
+        String query = "select count(id) as cnt\n" +
+                "from post_view \n" +
+                "where real_estate_post_id = :postId\n";
+        return getChartOptionCommon(query, postId, month, year);
+    }
+
+    public ChartOption getCommentChartOption(String postId, Integer month, Integer year) {
+        String query = "select count(id) as cnt\n" +
+                "from post_comment \n" +
+                "where post_id = :postId\n";
+        return getChartOptionCommon(query, postId, month, year);
+    }
+
+    public ChartOption getInterestedChartOption(String postId, Integer month, Integer year) {
+        String query = "select count(id) as cnt\n" +
+                "from interested \n" +
+                "where real_estate_post_id = :postId\n";
+        return getChartOptionCommon(query, postId, month, year);
+    }
+
+    public ChartOption getReportChartOption(String postId, Integer month, Integer year) {
+        String query = "select count(id) as cnt\n" +
+                "from post_report \n" +
+                "where post_id = :postId\n";
+        return getChartOptionCommon(query, postId, month, year);
+    }
+
+    public ChartOption getClickedViewChartOption(String postId, Integer month, Integer year) {
+        String query = "select count(id) as cnt\n" +
+                "from clicked_info_view \n" +
+                "where real_estate_post_id = :postId\n";
+        return getChartOptionCommon(query, postId, month, year);
+    }
+
+    public ChartOption getChartOptionCommon(String query, String postId, Integer month, Integer year) {
+        ChartOption chartOption= new ChartOption();
+        int val;
+        Map<String, Object> params = new HashMap<>();
+        params.put("postId", postId);
+        if (month == 0) {
+            query += " and month(create_at) = :month and year(create_at) = :year ";
+            val = Util.getCurrMonth(year);
+            for (int i = 1; i <= val; i++) {
+                params.put("month", i);
+                params.put("year", year);
+                Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(query, new MapSqlParameterSource(params));
+                chartOption.getXaxis().add(i);
+                chartOption.getSeries().add(jdbcResponse.get("cnt"));
+            }
+        } else {
+            query += " and date(create_at) = :date ";
+            val = Util.getDayOfMonth(month, year);
+            for (int i = 1; i <= val; i++) {
+                String date = year + "-" + month + "-" + i;
+                params.put("date", date);
+                Map<String, Object> jdbcResponse = jdbcTemplate.queryForMap(query, new MapSqlParameterSource(params));
+                chartOption.getXaxis().add(i);
+                chartOption.getSeries().add(jdbcResponse.get("cnt"));
+            }
+        }
+        return chartOption;
+    }
+
+    public List<IRepClientAdministration> getAllRealEstatePostOfUser(String userId) {
+        return repository.getAllRealEstatePost(userId);
     }
 }

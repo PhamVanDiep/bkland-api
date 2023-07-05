@@ -132,17 +132,35 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "order by rep.view and rep.priority desc limit 10;", nativeQuery = true)
     List<IRepClient> getLstMostView();
 
-//    @Query(name = "select code from provinces where code != 'NOT_FOUND'", nativeQuery = true)
-//    List<String> getAllProvinceCodes();
+    @Query(value = "select rep.id, rep.title, rep.price, rep.area, rep.is_sell as sell, rep.address_show as addressShow, rep.create_at as createAt, " +
+            "(select id from post_media where post_id = rep.id limit 1) as imageUrl\n" +
+            "from real_estate_post rep inner join user u on rep.owner_id = u.id\n" +
+            "where rep.enable = 1\n" +
+            "and rep.status = 'DA_KIEM_DUYET'\n" +
+            "and datediff(now(), rep.create_at) <= period\n" +
+            "and u.enable = 1\n" +
+            "order by rep.create_at desc limit 10;", nativeQuery = true)
+    List<IRepClient> getLstNewest();
 
-//    @Query(name = "select avg(price/area) from real_estate_post \n" +
-//            "where enable = 1 \n" +
-//            "and status = 'DA_KIEM_DUYET' or status = 'DA_HOAN_THANH' \n" +
-//            "and datediff(now(), create_at) <= period\n" +
-//            "and is_sell = :sell\n" +
-//            "and type = :type\n" +
-//            "and district_code = :districtCode\n" +
-//            "and province_code = :provinceCode\n" +
-//            "and ward_code = :wardCode", nativeQuery = true)
-//    Float calculatePricePerAreaUnit(Integer sell, String type, String districtCode, String provinceCode, String wardCode);
+    @Query(value = "select rep.id, rep.is_sell as sell, rep.type, rep.status, rep.enable, rep.price, rep.area, rep.create_at as createAt,\n" +
+            "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName,\n" +
+            "u.phone_number as phoneNumber\n" +
+            "from real_estate_post rep \n" +
+            "inner join real_estate_post_price repp on rep.id = repp.real_estate_post_id\n" +
+            "inner join user u on rep.owner_id = u.id\n" +
+            "group by rep.id, rep.id, rep.type, rep.status, rep.enable, rep.price, rep.area, createAt\n" +
+            "having count(repp.real_estate_post_id) >= 2\n" +
+            "order by count(repp.real_estate_post_id) desc;", nativeQuery = true)
+    List<IRepAdmin> getLstMostChangePrice();
+
+    @Query(value = "select rep.id, rep.title, rep.is_sell as sell, rep.price, rep.description, rep.enable,\n" +
+            "rep.status, rep.create_at as createAt, rep.area, rep.update_at as updateAt,\n" +
+            "(select count(*) from clicked_info_view where real_estate_post_id = rep.id) as clickedView,\n" +
+            "(select count(*) from post_view where real_estate_post_id = rep.id) as view,\n" +
+            "(select count(*) from post_comment where post_id = rep.id) as comment,\n" +
+            "(select count(*) from post_report where post_id = rep.id) as report,\n" +
+            "(select count(*) from interested where real_estate_post_id = rep.id) as interested\n" +
+            "from real_estate_post rep where rep.owner_id = :userId\n" +
+            "order by createAt desc;", nativeQuery = true)
+    List<IRepClientAdministration> getAllRealEstatePost(String userId);
 }

@@ -2,22 +2,29 @@ package com.api.bkland.service;
 
 import com.api.bkland.entity.InfoPost;
 import com.api.bkland.entity.response.IInfoPost;
+import com.api.bkland.payload.response.chart.ChartOption;
 import com.api.bkland.repository.InfoPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class InfoPostService {
     @Autowired
     private InfoPostRepository repository;
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     public List<InfoPost> findAll() {
         List<InfoPost> infoPosts = repository.findAll(Sort.by(Sort.Direction.DESC, "createAt"));
@@ -77,5 +84,35 @@ public class InfoPostService {
 
     public Object getHomePageDuAnPosts() {
         return repository.bestProjects();
+    }
+
+    public ChartOption getChar1Options() {
+        String query = "select count(ip.id) as cnt, it.name\n" +
+                "from info_type it inner join info_post ip on it.id = ip.info_type_id\n" +
+                "group by it.name;";
+        List<Map<String, Object>> jdbcResponse = jdbcTemplate.queryForList(query, new MapSqlParameterSource());
+        ChartOption chartOption = new ChartOption();
+        jdbcResponse
+                .stream()
+                .forEach(e -> {
+                    chartOption.getXaxis().add(e.get("name"));
+                    chartOption.getSeries().add(e.get("cnt"));
+                });
+        return chartOption;
+    }
+
+    public ChartOption getChar2Options() {
+        String query = "select sum(ip.view) as cnt, it.name\n" +
+                "from info_type it inner join info_post ip on it.id = ip.info_type_id\n" +
+                "group by it.name;";
+        List<Map<String, Object>> jdbcResponse = jdbcTemplate.queryForList(query, new MapSqlParameterSource());
+        ChartOption chartOption = new ChartOption();
+        jdbcResponse
+                .stream()
+                .forEach(e -> {
+                    chartOption.getXaxis().add(e.get("name"));
+                    chartOption.getSeries().add(e.get("cnt"));
+                });
+        return chartOption;
     }
 }

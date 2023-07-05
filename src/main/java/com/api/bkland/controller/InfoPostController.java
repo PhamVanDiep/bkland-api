@@ -291,6 +291,34 @@ public class InfoPostController {
         }
     }
 
+    @GetMapping("/api/v1/info-post/statistic/chart1")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getChart1Data() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getChar1Options(), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/info-post/statistic/chart2")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getChart2Data() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getChar2Options(), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     private InfoPostResponse getInfoPostResponse(InfoPost infoPost) {
         User user = userService.findById(infoPost.getCreateBy());
         InfoPostDTO infoPostDTO = convertToDTO(infoPost);

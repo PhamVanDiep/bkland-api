@@ -715,6 +715,21 @@ public class RealEstatePostController {
         }
     }
 
+    @GetMapping("/api/no-auth/real-estate-post/newest")
+    public ResponseEntity<BaseResponse> getPostsByNewest() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(
+                    service.findByNewest(), "", HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết được xem nhiều nhất. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
     @PostMapping("/api/no-auth/real-estate-post/search")
     public ResponseEntity<BaseResponse> search(@RequestBody SearchRequest request) {
         try {
@@ -754,6 +769,193 @@ public class RealEstatePostController {
             return ResponseEntity.ok(new BaseResponse(
                     null,
                     "Đã xảy ra lỗi khi tìm kiếm bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/chart1")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getChart1Data(@RequestParam Byte sell,
+                                                      @RequestParam String type,
+                                                      @RequestParam String provinceCode,
+                                                      @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.baiVietChart1(sell, type, provinceCode, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/chart2")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getChart2Data(@RequestParam Byte sell,
+                                                      @RequestParam String type,
+                                                      @RequestParam String provinceCode,
+                                                      @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.baiVietChart2(sell, type, provinceCode, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/price-fluctuation")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getPriceFluctuationStatistic(@RequestParam Byte sell,
+                                                                     @RequestParam String type,
+                                                                     @RequestParam String provinceCode,
+                                                                     @RequestParam String districtCode,
+                                                                     @RequestParam String wardCode,
+                                                                     @RequestParam Integer month,
+                                                                     @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getPriceFluctuationStatistic(sell, type, provinceCode, districtCode, wardCode, month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê lịch sử biến động giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/most-change-price")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> getPriceFluctuationStatistic() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getLstMostChangePrice(), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê lịch sử biến động giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/price")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getPriceChartOption(@RequestParam String postId) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getPriceOption(postId), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/view")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getViewChartOption(@RequestParam String postId,
+                                                           @RequestParam Integer month,
+                                                           @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getViewChartOption(postId, month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/comment")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getCommentChartOption(@RequestParam String postId,
+                                                              @RequestParam Integer month,
+                                                              @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getCommentChartOption(postId, month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/interested")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getInterestedChartOption(@RequestParam String postId,
+                                                                 @RequestParam Integer month,
+                                                                 @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getInterestedChartOption(postId, month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/report")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getReportChartOption(@RequestParam String postId,
+                                                             @RequestParam Integer month,
+                                                             @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getReportChartOption(postId, month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/statistic/click")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getClickedViewChartOption(@RequestParam String postId,
+                                                             @RequestParam Integer month,
+                                                             @RequestParam Integer year) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getClickedViewChartOption(postId, month, year), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy thông tin thống kê giá. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            ));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/all-of-user")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getAllPostOfUser(@CurrentUser UserDetailsImpl userDetails) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getAllRealEstatePostOfUser(userDetails.getId()), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(
+                    null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài viết của người dùng. " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR
             ));
         }
