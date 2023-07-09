@@ -13,4 +13,7 @@ public interface IRepAdmin {
     Double getPrice();
     Double getArea();
     Instant getCreateAt();
+    String getImageUrl();
+    String getTitle();
+    String getAddressShow();
 }

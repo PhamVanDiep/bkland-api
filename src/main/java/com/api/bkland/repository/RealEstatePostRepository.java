@@ -85,6 +85,8 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
     Optional<IEnableUserChat> findOwnerContact(String id);
 
     @Query(value = "select rep.id, rep.type, rep.is_sell as sell, rep.status, rep.enable, rep.price, rep.area, rep.create_at as createAt, " +
+            "rep.title, rep.address_show as addressShow, " +
+            "(select id from post_media where post_id = rep.id limit 1) as imageUrl, " +
             "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName, u.phone_number as phoneNumber " +
             "from real_estate_post rep inner join user u on rep.owner_id = u.id " +
             "order by rep.create_at desc", nativeQuery = true)
@@ -163,4 +165,12 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "from real_estate_post rep where rep.owner_id = :userId\n" +
             "order by createAt desc;", nativeQuery = true)
     List<IRepClientAdministration> getAllRealEstatePost(String userId);
+
+    @Query(value = "select u.id, u.phone_number as phoneNumber, u.email, u.avatar_url as avatarUrl, i.create_at as createAt, \n" +
+            "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName\n" +
+            "from interested i inner join user u on u.id = i.user_id\n" +
+            "where i.user_id != 'anonymous'\n" +
+            "and i.real_estate_post_id = :postId\n" +
+            "order by createAt desc", nativeQuery = true)
+    List<IInterestedUser> getListInterestedUsers(String postId);
 }

@@ -924,4 +924,8 @@ public class RealEstatePostService {
     public List<IRepClientAdministration> getAllRealEstatePostOfUser(String userId) {
         return repository.getAllRealEstatePost(userId);
     }
+
+    public List<IInterestedUser> getAllInterestedUsersOfPost(String postId) {
+        return repository.getListInterestedUsers(postId);
+    }
 }

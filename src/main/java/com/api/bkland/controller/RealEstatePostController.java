@@ -960,4 +960,16 @@ public class RealEstatePostController {
             ));
         }
     }
+
+    @GetMapping("/api/v1/real-estate-post/interested/all-user")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> getAllInterestedUsers(@RequestParam String postId) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.getAllInterestedUsersOfPost(postId), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy danh sách người dùng quan tâm bài viết. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
 }
