@@ -8,6 +8,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -133,5 +137,9 @@ public class Util {
             }
         }
         return date;
+    }
+
+    public static Instant getCurrentDateTime() {
+        return ZonedDateTime.now(ZoneId.of("UTC+07:00")).toInstant();
     }
 }

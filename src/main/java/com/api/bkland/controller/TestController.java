@@ -8,6 +8,7 @@ import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.NotifyService;
 import com.api.bkland.service.RealEstatePostService;
 import com.api.bkland.service.TestService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -109,6 +111,13 @@ public class TestController {
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
+    @GetMapping("/current-time")
+    @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
+    public ResponseEntity<BaseResponse> getCurrentDateTime() {
+        return ResponseEntity.ok(new BaseResponse(Util.getCurrentDateTime(), "", HttpStatus.OK));
+    }
+
     private UserDTO convertToDto(User user) {
         return modelMapper.map(user, UserDTO.class);
     }
