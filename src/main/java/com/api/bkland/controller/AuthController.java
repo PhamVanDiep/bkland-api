@@ -12,6 +12,7 @@ import com.api.bkland.payload.request.TokenRefreshRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.service.AuthService;
 import com.api.bkland.service.UserDeviceTokenService;
+import com.api.bkland.util.Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class AuthController {
             }
             userDeviceToken.setLogout(true);
             userDeviceToken.setUpdateBy(userDeviceTokenDTO.getUpdateBy());
-            userDeviceToken.setUpdateAt(Instant.now());
+            userDeviceToken.setUpdateAt(Util.getCurrentDateTime());
             userDeviceTokenService.update(userDeviceToken);
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
         } catch (Exception e) {

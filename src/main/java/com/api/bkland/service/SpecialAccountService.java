@@ -66,7 +66,7 @@ public class SpecialAccountService {
             SpecialAccount specialAccount = new SpecialAccount();
             specialAccount.setUserId(request.getUserId());
             specialAccount.setAgency(true);
-            specialAccount.setLastPaid(Instant.now());
+            specialAccount.setLastPaid(Util.getCurrentDateTime());
             specialAccount.setMonthlyCharge(totalPaid);
             repository.save(specialAccount);
 
@@ -78,7 +78,7 @@ public class SpecialAccountService {
             specialAccountPay.setContent(PayContent.MONTHLY_CHARGE);
             specialAccountPay.setMonthlyPay(true);
             specialAccountPay.setCreateBy(userId);
-            specialAccountPay.setCreateAt(Instant.now());
+            specialAccountPay.setCreateAt(Util.getCurrentDateTime());
             specialAccountPayRepository.save(specialAccountPay);
 
             for (DistrictDTO districtDTO: districtDTOS) {
@@ -86,7 +86,7 @@ public class SpecialAccountService {
             }
 
             user.setAccountBalance(user.getAccountBalance() - totalPaid);
-            user.setUpdateAt(Instant.now());
+            user.setUpdateAt(Util.getCurrentDateTime());
             user.setUpdateBy(user.getId());
             userRepository.save(user);
 
@@ -131,11 +131,11 @@ public class SpecialAccountService {
                 specialAccountPay.setContent(PayContent.EXTRA_CHARGE);
                 specialAccountPay.setMonthlyPay(false);
                 specialAccountPay.setCreateBy(userId);
-                specialAccountPay.setCreateAt(Instant.now());
+                specialAccountPay.setCreateAt(Util.getCurrentDateTime());
                 specialAccountPayRepository.save(specialAccountPay);
 
                 user.setAccountBalance(user.getAccountBalance() - delta);
-                user.setUpdateAt(Instant.now());
+                user.setUpdateAt(Util.getCurrentDateTime());
                 user.setUpdateBy(user.getId());
                 userRepository.save(user);
             }

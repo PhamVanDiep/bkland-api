@@ -4,6 +4,7 @@ import com.api.bkland.repository.RefreshTokenRepository;
 import com.api.bkland.repository.UserRepository;
 import com.api.bkland.config.exception.TokenRefreshException;
 import com.api.bkland.entity.RefreshToken;
+import com.api.bkland.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setUser(userRepository.findById(userId).get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+        refreshToken.setExpiryDate(Util.getCurrentDateTime().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 
         refreshToken = refreshTokenRepository.save(refreshToken);
@@ -39,7 +40,7 @@ public class RefreshTokenService {
     }
 
     public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+        if (token.getExpiryDate().compareTo(Util.getCurrentDateTime()) < 0) {
             refreshTokenRepository.delete(token);
             throw new TokenRefreshException(token.getToken(), "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.");
         }

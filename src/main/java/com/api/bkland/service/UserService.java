@@ -2,6 +2,7 @@ package com.api.bkland.service;
 
 import com.api.bkland.entity.User;
 import com.api.bkland.repository.UserRepository;
+import com.api.bkland.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class UserService {
 
     @Transactional
     public User updateUserInfo(User user) {
-        user.setUpdateAt(Instant.now());
+        user.setUpdateAt(Util.getCurrentDateTime());
         return repository.save(user);
     }
 

@@ -4,6 +4,7 @@ import com.api.bkland.entity.About;
 import com.api.bkland.payload.dto.AboutDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.service.AboutService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class AboutController {
     public ResponseEntity<BaseResponse> updateAbout(@RequestBody AboutDTO aboutDTO) {
         try {
             aboutDTO.setUpdateBy("admin");
-            aboutDTO.setUpdateAt(Instant.now());
+            aboutDTO.setUpdateAt(Util.getCurrentDateTime());
             service.update(modelMapper.map(aboutDTO, About.class));
             return ResponseEntity.ok(new BaseResponse(null, "Cập nhật thông tin thành công.", HttpStatus.OK));
         } catch (Exception e) {

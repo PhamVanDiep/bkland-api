@@ -121,6 +121,11 @@ public class NotifyService {
         sendNotify(tokens, message);
     }
 
+    public void thongBaoHoanThanhBaiDang(String message, String realEstatePostId) {
+        List<String> tokens = userDeviceTokenRepository.thongBaoHoanThanhBaiDang(realEstatePostId);
+        sendNotify(tokens, message);
+    }
+
     private void sendNotify(List<String> tokens, String message) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

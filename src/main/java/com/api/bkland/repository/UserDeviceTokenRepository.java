@@ -114,4 +114,23 @@ public interface UserDeviceTokenRepository extends JpaRepository<UserDeviceToken
             "and udt.is_logout = 0 \n" +
             "and udt.user_id = :agencyId", nativeQuery = true)
     List<String> thongBaoCoBaiDangNhoGiup(@Param("agencyId") String agencyId);
+
+    @Query(value = "select udt.notify_token \n" +
+            "from interested i inner join user_device_token udt on i.user_id = udt.user_id\n" +
+            "inner join user u on u.id = i.user_id\n" +
+            "where i.real_estate_post_id = :realEstatePostId \n" +
+            "and u.enable = 1\n" +
+            "and udt.notify_token is not null\n" +
+            "and length(udt.notify_token) > 0\n" +
+            "and udt.is_logout = 0\n" +
+            "union\n" +
+            "select udt.notify_token \n" +
+            "from real_estate_post_agency repa inner join user_device_token udt on repa.agency_id = udt.user_id\n" +
+            "inner join user u on u.id = repa.agency_id \n" +
+            "where repa.real_estate_post_id = :realEstatePostId \n" +
+            "and u.enable = 1\n" +
+            "and udt.notify_token is not null\n" +
+            "and length(udt.notify_token) > 0\n" +
+            "and udt.is_logout = 0", nativeQuery = true)
+    List<String> thongBaoHoanThanhBaiDang(@Param("realEstatePostId") String realEstatePostId);
 }

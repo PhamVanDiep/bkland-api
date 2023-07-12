@@ -7,6 +7,7 @@ import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.ReportTypeResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.ReportTypeService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class ReportTypeController {
     ) {
         try {
             reportTypeDTO.setCreateBy(userDetails.getId());
-            reportTypeDTO.setCreateAt(Instant.now());
+            reportTypeDTO.setCreateAt(Util.getCurrentDateTime());
             ReportType reportType = service.save(modelMapper.map(reportTypeDTO, ReportType.class));
             return ResponseEntity.ok(new BaseResponse(
                     modelMapper.map(reportType, ReportTypeDTO.class),
@@ -59,7 +60,7 @@ public class ReportTypeController {
     ) {
         try {
             reportTypeDTO.setUpdateBy(userDetails.getId());
-            reportTypeDTO.setUpdateAt(Instant.now());
+            reportTypeDTO.setUpdateAt(Util.getCurrentDateTime());
             ReportType reportType = service.save(modelMapper.map(reportTypeDTO, ReportType.class));
             return ResponseEntity.ok(new BaseResponse(
                     modelMapper.map(reportType, ReportTypeDTO.class),

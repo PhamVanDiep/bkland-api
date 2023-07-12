@@ -14,6 +14,7 @@ import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.DistrictService;
 import com.api.bkland.service.PriceFluctuationService;
 import com.api.bkland.service.UserService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -90,7 +91,7 @@ public class PriceFluctuationController {
             PriceFluctuation priceFluctuation = new PriceFluctuation();
             priceFluctuation.setId(0L);
             priceFluctuation.setDistrictPrice(0L);
-            priceFluctuation.setCreateAt(Instant.now());
+            priceFluctuation.setCreateAt(Util.getCurrentDateTime());
             priceFluctuation.setEnable(true);
             priceFluctuation.setCreateBy(currentUser.getId());
             priceFluctuation.setUserId(request.getUserId());
@@ -130,11 +131,11 @@ public class PriceFluctuationController {
             PriceFluctuation priceFluctuation = new PriceFluctuation();
             priceFluctuation.setId(0L);
             priceFluctuation.setDistrictPrice(0L);
-            priceFluctuation.setCreateAt(Instant.now());
+            priceFluctuation.setCreateAt(Util.getCurrentDateTime());
             priceFluctuation.setEnable(true);
             priceFluctuation.setCreateBy(currentUser.getId());
             priceFluctuation.setUserId(request.getUserId());
-            priceFluctuation.setUpdateAt(Instant.now());
+            priceFluctuation.setUpdateAt(Util.getCurrentDateTime());
             priceFluctuation.setUpdateBy(currentUser.getId());
 
             for (String districtCode: request.getDistricts()) {
@@ -185,7 +186,7 @@ public class PriceFluctuationController {
                     .stream()
                     .forEach(e -> {
                         e.setUpdateBy(currentUser.getId());
-                        e.setUpdateAt(Instant.now());
+                        e.setUpdateAt(Util.getCurrentDateTime());
                         service.save(e);
                     });
             return ResponseEntity.ok(new BaseResponse(

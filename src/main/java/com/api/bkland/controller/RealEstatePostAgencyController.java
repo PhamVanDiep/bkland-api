@@ -14,6 +14,7 @@ import com.api.bkland.service.NotifyService;
 import com.api.bkland.service.RealEstatePostAgencyService;
 import com.api.bkland.service.RealEstatePostService;
 import com.api.bkland.service.SpecialAccountService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -115,7 +116,7 @@ public class RealEstatePostAgencyController {
                 }
                 RealEstatePostAgency realEstatePostAgency = new RealEstatePostAgency();
                 realEstatePostAgency.setCreateBy(userDetails.getId());
-                realEstatePostAgency.setCreateAt(Instant.now());
+                realEstatePostAgency.setCreateAt(Util.getCurrentDateTime());
                 realEstatePostAgency.setStatus(ERepAgencyStatus.DA_GUI_YEU_CAU);
                 realEstatePostAgency.setId(0L);
                 realEstatePostAgency.setAgencyId(e);
@@ -153,7 +154,7 @@ public class RealEstatePostAgencyController {
             }
             realEstatePostAgency.setStatus(body.getStatus());
             realEstatePostAgency.setUpdateBy(userDetails.getId());
-            realEstatePostAgency.setUpdateAt(Instant.now());
+            realEstatePostAgency.setUpdateAt(Util.getCurrentDateTime());
             Long response = service.updateStatus(realEstatePostAgency);
             notifyService.thongBaoCapNhatTrangThaiBaiDang(realEstatePostAgency.getRealEstatePostId(), body.getStatus());
             return ResponseEntity.ok(new BaseResponse(response, "Cập nhật trạng thái lời yêu cầu thành công.", HttpStatus.OK));

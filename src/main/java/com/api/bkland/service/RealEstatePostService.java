@@ -81,7 +81,7 @@ public class RealEstatePostService {
         realEstatePostPrice.setPrice(saved.getPrice());
         realEstatePostPrice.setRealEstatePost(saved);
         realEstatePostPrice.setCreateBy(saved.getCreateBy());
-        realEstatePostPrice.setCreateAt(Instant.now());
+        realEstatePostPrice.setCreateAt(Util.getCurrentDateTime());
         realEstatePostPriceRepository.save(realEstatePostPrice);
         return saved;
     }
@@ -91,7 +91,7 @@ public class RealEstatePostService {
         RealEstatePostPrice realEstatePostPrice = new RealEstatePostPrice();
         realEstatePostPrice.setId(0L);
         realEstatePostPrice.setRealEstatePost(findByIdAndEnable(repId));
-        realEstatePostPrice.setCreateAt(Instant.now());
+        realEstatePostPrice.setCreateAt(Util.getCurrentDateTime());
         realEstatePostPrice.setCreateBy(userId);
         realEstatePostPrice.setPrice(price);
         realEstatePostPriceRepository.save(realEstatePostPrice);
@@ -137,7 +137,7 @@ public class RealEstatePostService {
         postView.setId(0L);
         postView.setRealEstatePostId(realEstatePostId);
         postView.setCreateBy("undefined");
-        postView.setCreateAt(Instant.now());
+        postView.setCreateAt(Util.getCurrentDateTime());
         postViewRepository.save(postView);
     }
 
@@ -148,7 +148,7 @@ public class RealEstatePostService {
         clickedInfoView.setId(0L);
         clickedInfoView.setRealEstatePostId(realEstatePostId);
         clickedInfoView.setCreateBy("undefined");
-        clickedInfoView.setCreateAt(Instant.now());
+        clickedInfoView.setCreateAt(Util.getCurrentDateTime());
         clickedInfoViewRepository.save(clickedInfoView);
     }
 

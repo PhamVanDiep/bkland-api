@@ -48,9 +48,9 @@ public class ForumPostService {
     public void save(ForumPost forumPost, String userId, boolean isUpdate) {
         if (isUpdate) {
             forumPost.setUpdateBy(userId);
-            forumPost.setUpdateAt(Instant.now());
+            forumPost.setUpdateAt(Util.getCurrentDateTime());
         } else {
-            forumPost.setCreateAt(Instant.now());
+            forumPost.setCreateAt(Util.getCurrentDateTime());
             forumPost.setCreateBy(userId);
         }
         repository.save(forumPost);
@@ -88,7 +88,7 @@ public class ForumPostService {
             forumPostLike.setForumPostId(forumPostId);
             forumPostLike.setUserId(userId);
             forumPostLike.setCreateBy(userId);
-            forumPostLike.setCreateAt(Instant.now());
+            forumPostLike.setCreateAt(Util.getCurrentDateTime());
 
             forumPostLikeRepository.save(forumPostLike);
             return true;

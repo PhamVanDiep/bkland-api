@@ -181,7 +181,7 @@ public class RealEstatePostController {
                             HttpStatus.INTERNAL_SERVER_ERROR));
                 }
             }
-            realEstatePostDTO.setCreateAt(Instant.now());
+            realEstatePostDTO.setCreateAt(Util.getCurrentDateTime());
             realEstatePostDTO.setCreateBy(userDetails.getId());
             RealEstatePost realEstatePost = modelMapper.map(realEstatePostDTO, RealEstatePost.class);
             service.create(realEstatePost);
@@ -215,11 +215,11 @@ public class RealEstatePostController {
                     postPay.setPrice(pay);
                     postPay.setContent(PayContent.POST_PAY);
                     postPay.setAccountBalance(user.getAccountBalance() - pay);
-                    postPay.setCreateAt(Instant.now());
+                    postPay.setCreateAt(Util.getCurrentDateTime());
                     this.postPayService.createPostPay(postPay);
 
                     user.setAccountBalance(user.getAccountBalance() - pay);
-                    user.setUpdateAt(Instant.now());
+                    user.setUpdateAt(Util.getCurrentDateTime());
                     user.setUpdateBy(user.getId());
                     userService.updateUserInfo(user);
                 }
@@ -262,7 +262,7 @@ public class RealEstatePostController {
             Double currPrice = realEstatePostDB.getPrice();
 
             RealEstatePostDTO realEstatePostDTO = request.getRealEstatePost();
-            realEstatePostDTO.setUpdateAt(Instant.now());
+            realEstatePostDTO.setUpdateAt(Util.getCurrentDateTime());
             realEstatePostDTO.setUpdateBy(userDetails.getId());
             RealEstatePost realEstatePost = convertToEntity(realEstatePostDTO);
             service.update(realEstatePost);
@@ -452,9 +452,36 @@ public class RealEstatePostController {
                         "Bài viết " + realEstatePost.getTitle() + " đã được quản trị viên chấp nhận",
                         realEstatePost.getOwnerId().getId());
                 notifyService.notifyAgencyREPUpdate(Message.TAO_REP, realEstatePost.getDistrict().getCode());
+            } else if (request.getStatus().equals(EStatus.DA_HOAN_THANH)) {
+
             }
             return ResponseEntity.ok(new BaseResponse(
                     request.getStatus().toString(),
+                    "Cập nhật trạng thái bài viết thành công.",
+                    HttpStatus.OK
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi ẩn / hiện bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PostMapping("/api/v1/real-estate-post/complete-status")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> completeStatus(@RequestParam String realEstatePostId) {
+        try {
+            if (!service.existsByIdAndEnable(realEstatePostId)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy bài đăng phù hợp.", HttpStatus.NOT_FOUND));
+            }
+            RealEstatePost realEstatePost = service.findById(realEstatePostId);
+            if (!realEstatePost.getStatus().equals(EStatus.DA_KIEM_DUYET)) {
+                return ResponseEntity.ok(new BaseResponse(null, "Không thể đánh dấu đã hoàn thành cho bài viết vì bài viết không ở trạng thái đã kiểm duyệt.", HttpStatus.NOT_ACCEPTABLE));
+            }
+            service.updatePostStatus(EStatus.DA_HOAN_THANH.toString(), realEstatePostId);
+            notifyService.thongBaoHoanThanhBaiDang("Bài viết " + realEstatePost.getTitle() + " đã được " + (realEstatePost.isSell() ? "bán" : "cho thuê"), realEstatePostId);
+            return ResponseEntity.ok(new BaseResponse(
+                    EStatus.DA_HOAN_THANH.toString(),
                     "Cập nhật trạng thái bài viết thành công.",
                     HttpStatus.OK
             ));
@@ -516,7 +543,7 @@ public class RealEstatePostController {
             Optional<Interested> interestedOptional = service.findByDeviceInfoAndRealEstatePostId(body.getDeviceInfo(), body.getRealEstatePostId());
             if (interestedOptional.isEmpty()) {
                 body.setCreateBy("anonymous");
-                body.setCreateAt(Instant.now());
+                body.setCreateAt(Util.getCurrentDateTime());
                 body.setId(0L);
                 body.setUserId("anonymous");
                 Interested interested = modelMapper.map(body, Interested.class);
@@ -547,7 +574,7 @@ public class RealEstatePostController {
             Optional<Interested> interestedOptional = service.findByUserIdAndRealEstatePostId(userDetails.getId(), body.getRealEstatePostId());
             if (interestedOptional.isEmpty()) {
                 body.setCreateBy(userDetails.getId());
-                body.setCreateAt(Instant.now());
+                body.setCreateAt(Util.getCurrentDateTime());
                 body.setId(0L);
                 body.setUserId(userDetails.getId());
                 Interested interested = modelMapper.map(body, Interested.class);

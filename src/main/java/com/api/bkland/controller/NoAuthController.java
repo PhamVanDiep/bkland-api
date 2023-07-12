@@ -10,6 +10,7 @@ import com.api.bkland.service.ChatService;
 import com.api.bkland.service.PostReportService;
 import com.api.bkland.service.ProjectService;
 import com.api.bkland.service.ReportTypeService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,7 +64,7 @@ public class NoAuthController {
     public ResponseEntity<BaseResponse> create(@RequestBody PostReportDTO body) {
         try {
             body.setCreateBy("anonymous");
-            body.setCreateAt(Instant.now());
+            body.setCreateAt(Util.getCurrentDateTime());
             postReportService.save(modelMapper.map(body, PostReport.class));
             return ResponseEntity.ok(new BaseResponse(
                     null,
@@ -105,7 +106,7 @@ public class NoAuthController {
             Optional<ProjectInterested> interestedOptional = projectService.findByDeviceInfoAndProjectId(body.getDeviceInfo(), body.getProjectId());
             if (interestedOptional.isEmpty()) {
                 body.setCreateBy("anonymous");
-                body.setCreateAt(Instant.now());
+                body.setCreateAt(Util.getCurrentDateTime());
                 body.setId(0L);
                 body.setUserId("anonymous");
                 ProjectInterested interested = modelMapper.map(body, ProjectInterested.class);
@@ -162,7 +163,7 @@ public class NoAuthController {
             if (chatRoom == null) {
                 return ResponseEntity.ok(new BaseResponse(null, "Không tìm thấy thông tin cuộc trò chuyện", HttpStatus.NO_CONTENT));
             }
-            messageDTO.setCreateAt(Instant.now());
+            messageDTO.setCreateAt(Util.getCurrentDateTime());
             Message message = modelMapper.map(messageDTO, Message.class);
             message.setChatRoom(chatRoom);
             message.setId(0L);

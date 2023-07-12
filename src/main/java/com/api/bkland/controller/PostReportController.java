@@ -6,6 +6,7 @@ import com.api.bkland.payload.dto.PostReportDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.PostReportService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class PostReportController {
     public ResponseEntity<BaseResponse> create(@RequestBody PostReportDTO body, @CurrentUser UserDetailsImpl userDetails) {
         try {
             body.setCreateBy(userDetails.getId());
-            body.setCreateAt(Instant.now());
+            body.setCreateAt(Util.getCurrentDateTime());
             service.save(modelMapper.map(body, PostReport.class));
             return ResponseEntity.ok(new BaseResponse(
                     null,

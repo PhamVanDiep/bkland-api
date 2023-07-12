@@ -4,6 +4,7 @@ import com.api.bkland.entity.InfoType;
 import com.api.bkland.payload.dto.InfoTypeDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.service.InfoTypeService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -85,7 +86,7 @@ public class InfoTypeController {
     public ResponseEntity<BaseResponse> insert(@RequestBody InfoTypeDTO infoTypeDTO) {
         try {
             infoTypeDTO.setCreateBy("admin");
-            infoTypeDTO.setCreateAt(Instant.now());
+            infoTypeDTO.setCreateAt(Util.getCurrentDateTime());
             InfoType infoType = service.createInfoType(convertToEntity(infoTypeDTO));
             return ResponseEntity.ok(new BaseResponse(convertToDTO(infoType),
                     "Tạo danh mục tin tức mới thành công.",
@@ -104,7 +105,7 @@ public class InfoTypeController {
     public ResponseEntity<BaseResponse> update(@RequestBody InfoTypeDTO infoTypeDTO) {
         try {
             infoTypeDTO.setUpdateBy("admin");
-            infoTypeDTO.setUpdateAt(Instant.now());
+            infoTypeDTO.setUpdateAt(Util.getCurrentDateTime());
             InfoType infoType = service.updateInfoType(convertToEntity(infoTypeDTO));
             return ResponseEntity.ok(new BaseResponse(convertToDTO(infoType),
                     "Cập nhật danh mục tin tức thành công.",

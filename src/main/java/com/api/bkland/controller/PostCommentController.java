@@ -9,6 +9,7 @@ import com.api.bkland.payload.response.CommentResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.PostCommentService;
 import com.api.bkland.service.UserService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,7 @@ public class PostCommentController {
     public ResponseEntity<BaseResponse> noAuthCreate(@RequestBody PostCommentDTO body) {
         try {
             body.setCreateBy("anonymous");
-            body.setCreateAt(Instant.now());
+            body.setCreateAt(Util.getCurrentDateTime());
             PostComment postComment = service.save(modelMapper.map(body, PostComment.class));
             CommentResponse commentResponse = modelMapper.map(postComment, CommentResponse.class);
             commentResponse.setAvatarUrl("");
@@ -84,7 +85,7 @@ public class PostCommentController {
             ) {
         try {
             body.setCreateBy(userDetails.getId());
-            body.setCreateAt(Instant.now());
+            body.setCreateAt(Util.getCurrentDateTime());
             PostComment postComment = service.save(modelMapper.map(body, PostComment.class));
             CommentResponse commentResponse = modelMapper.map(postComment, CommentResponse.class);
             User user = userService.findById(userDetails.getId());
@@ -114,7 +115,7 @@ public class PostCommentController {
                         HttpStatus.NOT_ACCEPTABLE));
             }
             body.setUpdateBy(userDetails.getId());
-            body.setUpdateAt(Instant.now());
+            body.setUpdateAt(Util.getCurrentDateTime());
             PostComment postComment = service.save(modelMapper.map(body, PostComment.class));
             return ResponseEntity.ok(new BaseResponse(postComment.getId(), "", HttpStatus.OK));
         } catch (Exception e) {

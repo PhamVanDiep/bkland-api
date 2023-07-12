@@ -2,6 +2,7 @@ package com.api.bkland.service;
 
 import com.api.bkland.entity.UserDeviceToken;
 import com.api.bkland.repository.UserDeviceTokenRepository;
+import com.api.bkland.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class UserDeviceTokenService {
         UserDeviceToken repoSave = findByUserIdAndDeviceInfo(userDeviceToken.getUserId(), userDeviceToken.getDeviceInfo());
         if (repoSave != null) {
             repoSave.setLogout(false);
-            repoSave.setUpdateAt(Instant.now());
+            repoSave.setUpdateAt(Util.getCurrentDateTime());
         } else {
             repoSave = userDeviceToken;
         }

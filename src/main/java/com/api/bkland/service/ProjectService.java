@@ -11,6 +11,7 @@ import com.api.bkland.repository.ProjectInterestedRepository;
 import com.api.bkland.repository.ProjectParamRepository;
 import com.api.bkland.repository.ProjectRepository;
 import com.api.bkland.repository.ProjectViewRepository;
+import com.api.bkland.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +53,7 @@ public class ProjectService {
             ProjectView projectView = new ProjectView();
             projectView.setId(0L);
             projectView.setProjectId(id);
-            projectView.setCreateAt(Instant.now());
+            projectView.setCreateAt(Util.getCurrentDateTime());
             projectViewRepository.save(projectView);
         }
         Optional<Project> projectOptional = repository.findByIdAndEnable(id, true);
@@ -100,7 +101,7 @@ public class ProjectService {
         ProjectView projectView = new ProjectView();
         projectView.setId(0L);
         projectView.setProjectId(id);
-        projectView.setCreateAt(Instant.now());
+        projectView.setCreateAt(Util.getCurrentDateTime());
         return projectViewRepository.save(projectView).getId();
     }
 

@@ -6,6 +6,7 @@ import com.api.bkland.entity.response.IChatRoom;
 import com.api.bkland.entity.response.IEnableUserChat;
 import com.api.bkland.repository.ChatRoomRepository;
 import com.api.bkland.repository.MessageRepository;
+import com.api.bkland.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +65,7 @@ public class ChatService {
         if (chatRoomOptional1.isEmpty() && chatRoomOptional2.isEmpty()) {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.setAnonymous(true);
-            chatRoom.setCreateAt(Instant.now());
+            chatRoom.setCreateAt(Util.getCurrentDateTime());
             chatRoom.setCreateBy("anonymous");
             chatRoom.setEnable(true);
             chatRoom.setId(0);

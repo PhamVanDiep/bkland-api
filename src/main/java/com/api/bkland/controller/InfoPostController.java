@@ -15,6 +15,7 @@ import com.api.bkland.service.InfoPostService;
 import com.api.bkland.service.InfoTypeService;
 import com.api.bkland.service.NotifyService;
 import com.api.bkland.service.UserService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,7 +67,7 @@ public class InfoPostController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> create(@RequestBody InfoPostRequest request) {
         try {
-            request.getInfoPost().setCreateAt(Instant.now());
+            request.getInfoPost().setCreateAt(Util.getCurrentDateTime());
             InfoPost infoPost = service.create(convertToEntity(request.getInfoPost()));
             if (request.getInfoPost().getInfoType().getId() == 6) {
                 notifyService.notifyPriceFluctuation(Message.TAO_BAI_DANG, request.getDistrictCodes());
@@ -89,7 +90,7 @@ public class InfoPostController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> update(@RequestBody InfoPostDTO request) {
         try {
-            request.setUpdateAt(Instant.now());
+            request.setUpdateAt(Util.getCurrentDateTime());
             InfoPost infoPost = service.update(convertToEntity(request));
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),

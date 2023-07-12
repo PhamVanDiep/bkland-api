@@ -15,7 +15,10 @@ import java.util.Optional;
 @Repository
 public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, String> {
     @Modifying
-    @Query(value = "update real_estate_post set enable=0 where datediff(now(), create_at) > period;", nativeQuery = true)
+    @Query(value = "update real_estate_post set enable=0, status = 'DA_HET_HAN' \n" +
+            "where datediff(now(), create_at) > period \n" +
+            "and enable = 1\n" +
+            "and (status = 'CHO_KIEM_DUYET' or status = 'DA_KIEM_DUYET' or status = 'BI_TU_CHOI')", nativeQuery = true)
     void disablePostExpire();
 
     @Modifying

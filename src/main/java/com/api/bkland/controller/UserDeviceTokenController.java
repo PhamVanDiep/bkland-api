@@ -5,6 +5,7 @@ import com.api.bkland.payload.dto.UserDeviceTokenDTO;
 import com.api.bkland.payload.request.UserDeviceTokenRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.service.UserDeviceTokenService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class UserDeviceTokenController {
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> insertUserDeviceToken(@RequestBody UserDeviceTokenDTO body) {
         try {
-            body.setCreateAt(Instant.now());
+            body.setCreateAt(Util.getCurrentDateTime());
             service.create(convertToEntity(body));
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
         } catch (Exception e) {
@@ -56,7 +57,7 @@ public class UserDeviceTokenController {
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> updateUserDeviceToken(@RequestBody UserDeviceTokenDTO body) {
         try {
-            body.setUpdateAt(Instant.now());
+            body.setUpdateAt(Util.getCurrentDateTime());
             service.update(modelMapper.map(body, UserDeviceToken.class));
             return ResponseEntity.ok(new BaseResponse(null, "", HttpStatus.OK));
         } catch (Exception e) {

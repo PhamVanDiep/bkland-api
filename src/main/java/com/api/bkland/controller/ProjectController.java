@@ -11,6 +11,7 @@ import com.api.bkland.payload.dto.ProjectInterestedDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.ProjectService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class ProjectController {
             project.setId(id);
             project.setEnable(true);
             project.setCreateBy(userDetails.getId());
-            project.setCreateAt(Instant.now());
+            project.setCreateAt(Util.getCurrentDateTime());
             project
                     .getProjectParams()
                         .stream()
@@ -77,7 +78,7 @@ public class ProjectController {
             }
             Project project = modelMapper.map(body, Project.class);
             project.setUpdateBy(userDetails.getId());
-            project.setUpdateAt(Instant.now());
+            project.setUpdateAt(Util.getCurrentDateTime());
             for (ProjectParam e: project.getProjectParams()) {
                 if (!e.getProject().getId().equals(body.getId())) {
                     return ResponseEntity.ok(new BaseResponse(
@@ -212,7 +213,7 @@ public class ProjectController {
             Optional<ProjectInterested> interestedOptional = projectService.findByUserIdAndRealEstatePostId(userDetails.getId(), body.getProjectId());
             if (interestedOptional.isEmpty()) {
                 body.setCreateBy(userDetails.getId());
-                body.setCreateAt(Instant.now());
+                body.setCreateAt(Util.getCurrentDateTime());
                 body.setId(0L);
                 body.setUserId(userDetails.getId());
                 ProjectInterested interested = modelMapper.map(body, ProjectInterested.class);

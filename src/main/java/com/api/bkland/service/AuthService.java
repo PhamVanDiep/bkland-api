@@ -18,6 +18,7 @@ import com.api.bkland.payload.request.TokenRefreshRequest;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.payload.response.JwtResponse;
 import com.api.bkland.payload.response.TokenRefreshResponse;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,7 +94,7 @@ public class AuthService {
                 userDeviceToken.setId(0);
                 userDeviceToken.setUserId(userDetails.getId());
                 userDeviceToken.setLogout(false);
-                userDeviceToken.setCreateAt(Instant.now());
+                userDeviceToken.setCreateAt(Util.getCurrentDateTime());
                 userDeviceToken.setCreateBy(userDetails.getId());
                 userDeviceToken.setDeviceInfo(loginRequest.getDeviceInfo());
                 userDeviceToken.setEnable(false);
@@ -103,7 +104,7 @@ public class AuthService {
                 UserDeviceToken userDeviceToken = userDeviceTokenOptional.get();
                 userDeviceToken.setLogout(false);
                 userDeviceToken.setUpdateBy(userDetails.getId());
-                userDeviceToken.setUpdateAt(Instant.now());
+                userDeviceToken.setUpdateAt(Util.getCurrentDateTime());
             }
 
             return new BaseResponse(new JwtResponse(
@@ -134,7 +135,7 @@ public class AuthService {
         }
 
         signupRequest.setPassword(encoder.encode(signupRequest.getPassword()));
-        signupRequest.setCreateAt(Instant.now());
+        signupRequest.setCreateAt(Util.getCurrentDateTime());
 
         if (signupRequest.getRoles().size() == 0) {
             Set<RoleDTO> roleDTOS = new HashSet<>();
@@ -229,7 +230,7 @@ public class AuthService {
         }
         User user1 = user.get();
         user1.setPassword(encoder.encode(forgotPassword.getNewPassword()));
-        user1.setUpdateAt(Instant.now());
+        user1.setUpdateAt(Util.getCurrentDateTime());
         userRepository.save(user1);
         return true;
     }

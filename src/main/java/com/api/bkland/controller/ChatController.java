@@ -8,6 +8,7 @@ import com.api.bkland.payload.dto.MessageDTO;
 import com.api.bkland.payload.response.BaseResponse;
 import com.api.bkland.security.services.UserDetailsImpl;
 import com.api.bkland.service.ChatService;
+import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class ChatController {
             chatRoomDTO.setId(0);
             chatRoomDTO.setEnable(true);
             chatRoomDTO.setCreateBy(userDetails.getId());
-            chatRoomDTO.setCreateAt(Instant.now());
+            chatRoomDTO.setCreateAt(Util.getCurrentDateTime());
             ChatRoom chatRoom = chatService.createChatRoom(modelMapper.map(chatRoomDTO, ChatRoom.class));
             return ResponseEntity.ok(new BaseResponse(
                     modelMapper.map(chatRoom, ChatRoomDTO.class),
@@ -91,7 +92,7 @@ public class ChatController {
                 return ResponseEntity.ok(new BaseResponse(null, "Bạn không có quyền xóa cuộc trò chuyện", HttpStatus.NOT_ACCEPTABLE));
             }
             chatRoom.setEnable(Boolean.FALSE);
-            chatRoom.setUpdateAt(Instant.now());
+            chatRoom.setUpdateAt(Util.getCurrentDateTime());
             chatRoom.setUpdateBy(userDetails.getId());
             chatService.createChatRoom(chatRoom);
             return ResponseEntity.ok(new BaseResponse(chatRoom.getId(), "Xóa cuộc hội thoại thành công.", HttpStatus.OK));
@@ -130,7 +131,7 @@ public class ChatController {
             if (!chatRoom.getFirstUserId().equals(userDetails.getId()) && !chatRoom.getSecondUserId().equals(userDetails.getId())) {
                 return ResponseEntity.ok(new BaseResponse(null, "Bạn không có quyền gửi tin nhắn", HttpStatus.NOT_ACCEPTABLE));
             }
-            messageDTO.setCreateAt(Instant.now());
+            messageDTO.setCreateAt(Util.getCurrentDateTime());
             messageDTO.setCreateBy(userDetails.getId());
             Message message = modelMapper.map(messageDTO, Message.class);
             message.setChatRoom(chatRoom);

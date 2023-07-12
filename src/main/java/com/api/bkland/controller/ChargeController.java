@@ -24,6 +24,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,7 +70,7 @@ public class ChargeController {
     @PreAuthorize("hasRole('ROLE_AGENCY') or hasRole('ROLE_USER') or hasRole('ROLE_ENTERPRISE')")
     public ResponseEntity<BaseResponse> createCharge(@RequestBody ChargeDTO chargeDTO) {
         try {
-            chargeDTO.setCreateAt(Instant.now());
+            chargeDTO.setCreateAt(Util.getCurrentDateTime());
             if (chargeDTO.getChargeType().equals(EChargeType.TRANSFER_CHARGE)) {
                 chargeDTO.setStatus(EChargeStatus.CHO_XAC_NHAN);
             } else {
@@ -76,7 +80,7 @@ public class ChargeController {
             if (chargeDTO.getChargeType().equals(EChargeType.VNPAY)) {
                 User user = charge.getUser();
                 user.setAccountBalance(user.getAccountBalance() + chargeDTO.getSoTien());
-                user.setUpdateAt(Instant.now());
+                user.setUpdateAt(Util.getCurrentDateTime());
                 userService.updateUserInfo(user);
                 charge.setAccountBalance(user.getAccountBalance());
                 chargeService.update(charge);
@@ -106,7 +110,7 @@ public class ChargeController {
             if (chargeDTO.getChargeType().equals(EChargeType.TRANSFER_CHARGE)
                 && chargeDTO.getStatus().equals(EChargeStatus.DA_XAC_NHAN)) {
                 user.setAccountBalance(user.getAccountBalance() + chargeDTO.getSoTien());
-                user.setUpdateAt(Instant.now());
+                user.setUpdateAt(Util.getCurrentDateTime());
                 userService.updateUserInfo(user);
             }
             return ResponseEntity.ok(
@@ -183,15 +187,15 @@ public class ChargeController {
         vnp_Params.put("vnp_Locale", vnp_Locale);
         vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"));
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String vnp_CreateDate = formatter.format(cld.getTime());
+//        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"));
+        LocalDateTime localDateTime = ZonedDateTime.now(ZoneId.of("UTC+07:00")).toLocalDateTime();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String vnp_CreateDate = localDateTime.format(dateTimeFormatter);
 
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-        cld.add(Calendar.HOUR, 7);
-        cld.add(Calendar.MINUTE, 15);
-        String vnp_ExpireDate = formatter.format(cld.getTime());
+        LocalDateTime localDateTimeExpire = localDateTime.plusMinutes(15L);
+        String vnp_ExpireDate = localDateTimeExpire.format(dateTimeFormatter);
         //Add Params of 2.1.0 Version
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
         // Build data to hash and querystring
