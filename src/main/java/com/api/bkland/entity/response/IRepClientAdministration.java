@@ -6,6 +6,7 @@ public interface IRepClientAdministration {
     String getId();
     String getTitle();
     Byte getSell();
+    String getType();
     Double getPrice();
     String getDescription();
     Byte getEnable();
