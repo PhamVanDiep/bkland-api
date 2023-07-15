@@ -12,6 +12,8 @@ import com.api.bkland.service.ProjectService;
 import com.api.bkland.service.ReportTypeService;
 import com.api.bkland.util.Util;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,9 @@ public class NoAuthController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private Logger logger = LoggerFactory.getLogger(NoAuthController.class);
 
     @GetMapping("/report-type/rep")
     public ResponseEntity<BaseResponse> getAllReportType() {
@@ -168,6 +173,8 @@ public class NoAuthController {
             message.setChatRoom(chatRoom);
             message.setId(0L);
             Message response = chatService.saveMessage(message);
+            logger.info("Thoi gian lop Util: {}", response.getCreateAt().toString());
+            logger.info("Thoi gian Instant.now(): {}", Instant.now().toString());
             return ResponseEntity.ok(new BaseResponse(response, "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
