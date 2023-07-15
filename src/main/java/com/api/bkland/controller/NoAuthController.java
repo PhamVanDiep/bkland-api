@@ -44,7 +44,6 @@ public class NoAuthController {
     @Autowired
     private ProjectService projectService;
 
-    @Autowired
     private Logger logger = LoggerFactory.getLogger(NoAuthController.class);
 
     @GetMapping("/report-type/rep")
