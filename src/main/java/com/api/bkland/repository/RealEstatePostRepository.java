@@ -158,7 +158,7 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "order by count(repp.real_estate_post_id) desc;", nativeQuery = true)
     List<IRepAdmin> getLstMostChangePrice();
 
-    @Query(value = "select rep.id, rep.title, rep.is_sell as sell, rep.price, rep.description, rep.enable,\n" +
+    @Query(value = "select rep.id, rep.title, rep.is_sell as sell, rep.price, rep.description, rep.enable, rep.type, \n" +
             "rep.status, rep.create_at as createAt, rep.area, rep.update_at as updateAt,\n" +
             "(select count(*) from clicked_info_view where real_estate_post_id = rep.id) as clickedView,\n" +
             "(select count(*) from post_view where real_estate_post_id = rep.id) as view,\n" +
