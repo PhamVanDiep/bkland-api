@@ -1,17 +1,15 @@
 package com.api.bkland.service;
 
-import com.api.bkland.constant.Cost;
 import com.api.bkland.entity.*;
 import com.api.bkland.payload.dto.RoleDTO;
 import com.api.bkland.payload.dto.UserDTO;
 import com.api.bkland.payload.request.ForgotPassword;
 import com.api.bkland.repository.RoleRepository;
-import com.api.bkland.repository.SpecialAccountRepository;
 import com.api.bkland.repository.UserDeviceTokenRepository;
 import com.api.bkland.repository.UserRepository;
 import com.api.bkland.security.jwt.JwtUtils;
 import com.api.bkland.security.services.UserDetailsImpl;
-import com.api.bkland.config.exception.TokenRefreshException;
+import com.api.bkland.exception.TokenRefreshException;
 import com.api.bkland.constant.enumeric.ERole;
 import com.api.bkland.payload.request.LoginRequest;
 import com.api.bkland.payload.request.TokenRefreshRequest;
@@ -30,7 +28,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;

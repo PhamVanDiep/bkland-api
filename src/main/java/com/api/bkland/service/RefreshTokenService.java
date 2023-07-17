@@ -2,7 +2,7 @@ package com.api.bkland.service;
 
 import com.api.bkland.repository.RefreshTokenRepository;
 import com.api.bkland.repository.UserRepository;
-import com.api.bkland.config.exception.TokenRefreshException;
+import com.api.bkland.exception.TokenRefreshException;
 import com.api.bkland.entity.RefreshToken;
 import com.api.bkland.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 @Service
