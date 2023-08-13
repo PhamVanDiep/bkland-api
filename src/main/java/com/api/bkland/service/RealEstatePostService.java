@@ -69,8 +69,12 @@ public class RealEstatePostService {
         return realEstatePost.get();
     }
 
-    public List<RealEstatePost> findByOwnerId(String ownerId) {
-        return repository.findByOwnerId(ownerId);
+    public List<RealEstatePost> findByOwnerId(String ownerId, Integer page, Integer rows) {
+        return repository.findByOwnerId(ownerId, rows, page*rows);
+    }
+
+    public Integer getNoOfPostsByUserId(String ownerId) {
+        return repository.getNoOfRecords(ownerId);
     }
 
     @Transactional
@@ -123,6 +127,10 @@ public class RealEstatePostService {
 
     public List<IRepAdmin> findAll() {
         return repository.findAllByAdmin();
+    }
+
+    public List<IRepAdmin> findAll(Integer first, Integer rows) {
+        return repository.findAllByAdminPageable(rows, first);
     }
 
     @Transactional

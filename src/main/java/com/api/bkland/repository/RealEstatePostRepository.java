@@ -25,8 +25,11 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
     @Query(value = "update real_estate_post set enable=0 where id = :id", nativeQuery = true)
     void disablePostById(String id);
 
-    @Query(value = "select * from real_estate_post x where x.owner_id = :ownerId order by x.create_at desc", nativeQuery = true)
-    List<RealEstatePost> findByOwnerId(String ownerId);
+    @Query(value = "select * from real_estate_post x where x.owner_id = :ownerId order by x.create_at desc limit :rows offset :myJump", nativeQuery = true)
+    List<RealEstatePost> findByOwnerId(String ownerId, Integer rows, Integer myJump);
+
+    @Query(value = "select count(*) from real_estate_post x where x.owner_id = :ownerId", nativeQuery = true)
+    Integer getNoOfRecords(String ownerId);
 
     @Modifying
     @Query(value = "update real_estate_post set status = :status where id = :id ;", nativeQuery = true)
@@ -94,6 +97,14 @@ public interface RealEstatePostRepository extends JpaRepository<RealEstatePost, 
             "from real_estate_post rep inner join user u on rep.owner_id = u.id " +
             "order by rep.create_at desc", nativeQuery = true)
     List<IRepAdmin> findAllByAdmin();
+
+    @Query(value = "select rep.id, rep.type, rep.is_sell as sell, rep.status, rep.enable, rep.price, rep.area, rep.create_at as createAt, " +
+            "rep.title, rep.address_show as addressShow, " +
+            "(select id from post_media where post_id = rep.id limit 1) as imageUrl, " +
+            "concat(u.first_name, ' ', u.middle_name, ' ', u.last_name) as fullName, u.phone_number as phoneNumber " +
+            "from real_estate_post rep inner join user u on rep.owner_id = u.id " +
+            "order by rep.create_at desc limit :limit offset :offset", nativeQuery = true)
+    List<IRepAdmin> findAllByAdminPageable(Integer limit, Integer offset);
 
     @Query(value = "select rep.id\n" +
             "from real_estate_post rep left join interested i on rep.id = i.real_estate_post_id\n" +

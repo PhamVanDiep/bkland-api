@@ -70,7 +70,7 @@ public class InfoPostController {
             request.getInfoPost().setCreateAt(Util.getCurrentDateTime());
             InfoPost infoPost = service.create(convertToEntity(request.getInfoPost()));
             if (request.getInfoPost().getInfoType().getId() == 6) {
-                notifyService.notifyPriceFluctuation(Message.TAO_BAI_DANG, request.getDistrictCodes());
+                notifyService.notifyPriceFluctuation(Message.TAO_BAI_DANG, request.getDistrictCodes(), request.getInfoPost().getId());
             }
             return ResponseEntity.ok(new BaseResponse(
                     convertToDTO(infoPost),

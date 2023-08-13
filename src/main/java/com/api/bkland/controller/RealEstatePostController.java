@@ -224,7 +224,7 @@ public class RealEstatePostController {
                     userService.updateUserInfo(user);
                 }
             }
-            notifyService.notifyToAdmin(Message.NEW_REP_ADMIN);
+            notifyService.notifyToAdmin(Message.NEW_REP_ADMIN, realEstatePost.getId());
             return ResponseEntity.ok(new
                     BaseResponse(null,
                     "Đã tạo bài viết thành công. Chờ quản trị viên kiểm duyệt",
@@ -289,7 +289,7 @@ public class RealEstatePostController {
 
             if (currPrice.doubleValue() != request.getRealEstatePost().getPrice().doubleValue()) {
                 service.createRepPrice(request.getRealEstatePost().getPrice(), request.getRealEstatePost().getId(), userDetails.getId());
-                notifyService.notifyAgencyREPUpdate(Message.CAP_NHAT_REP, realEstatePostDTO.getDistrict().getCode());
+                notifyService.notifyAgencyREPUpdate(Message.CAP_NHAT_REP, realEstatePostDTO.getDistrict().getCode(), realEstatePostDTO.getId(), true);
                 notifyService.notifyInterested(Message.getCAP_NHAT_REP_INTERESTED(realEstatePostDTO.getTitle()), realEstatePostDTO.getId());
             }
 
@@ -369,11 +369,25 @@ public class RealEstatePostController {
         house.setStreetWidth(houseDTO.getStreetWidth());
         return house;
     }
-    @GetMapping("/api/v1/real-estate-post/user/{ownerId}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
-    public ResponseEntity<BaseResponse> findByOwnerId(@PathVariable("ownerId") String ownerId) {
+
+    @GetMapping("/api/v1/real-estate-post/recordsOfUser")
+    public ResponseEntity<BaseResponse> findRecordsByUserId(@CurrentUser UserDetailsImpl userDetails) {
         try {
-            List<RealEstatePost> realEstatePosts = service.findByOwnerId(ownerId);
+            return ResponseEntity.ok(new BaseResponse(service.getNoOfPostsByUserId(userDetails.getId()), "", HttpStatus.OK));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(new BaseResponse(null, "Xảy ra lỗi khi lấy số lượng bài viết của người dùng", HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+    @GetMapping("/api/v1/real-estate-post/user")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_AGENCY')")
+    public ResponseEntity<BaseResponse> findByOwnerId(
+            @RequestParam Integer page,
+            @RequestParam Integer rows,
+            @CurrentUser UserDetailsImpl userDetails
+    ) {
+        try {
+            List<RealEstatePost> realEstatePosts = service.findByOwnerId(userDetails.getId(), page, rows);
             return ResponseEntity.ok(new BaseResponse(
                     realEstatePosts.stream().map(e -> modelMapper.map(e, RealEstatePostDTO.class)).collect(Collectors.toList()),
                     "", HttpStatus.OK
@@ -390,6 +404,18 @@ public class RealEstatePostController {
     public ResponseEntity<BaseResponse> findAll() {
         try {
             return ResponseEntity.ok(new BaseResponse(service.findAll(), "", HttpStatus.OK));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new BaseResponse(null,
+                    "Đã xảy ra lỗi khi lấy danh sách bài đăng. " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @GetMapping("/api/v1/real-estate-post/all/page")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<BaseResponse> findAll(@RequestParam Integer first, @RequestParam Integer rows) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(service.findAll(first, rows), "", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(null,
                     "Đã xảy ra lỗi khi lấy danh sách bài đăng. " + e.getMessage(),
@@ -446,12 +472,12 @@ public class RealEstatePostController {
             if (request.getStatus().equals(EStatus.BI_TU_CHOI)) {
                 notifyService.notifyAcceptRejectREP(
                         "Bài viết " + realEstatePost.getTitle() + " đã bị quản trị viên từ chối",
-                        realEstatePost.getOwnerId().getId());
+                        realEstatePost.getOwnerId().getId(), realEstatePost.getId(), true);
             } else if (request.getStatus().equals(EStatus.DA_KIEM_DUYET)) {
                 notifyService.notifyAcceptRejectREP(
                         "Bài viết " + realEstatePost.getTitle() + " đã được quản trị viên chấp nhận",
-                        realEstatePost.getOwnerId().getId());
-                notifyService.notifyAgencyREPUpdate(Message.TAO_REP, realEstatePost.getDistrict().getCode());
+                        realEstatePost.getOwnerId().getId(), realEstatePost.getId(), false);
+                notifyService.notifyAgencyREPUpdate(Message.TAO_REP, realEstatePost.getDistrict().getCode(), realEstatePost.getId(), false);
             } else if (request.getStatus().equals(EStatus.DA_HOAN_THANH)) {
 
             }

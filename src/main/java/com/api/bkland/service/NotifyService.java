@@ -2,31 +2,20 @@ package com.api.bkland.service;
 
 import com.api.bkland.constant.Message;
 import com.api.bkland.constant.enumeric.ERepAgencyStatus;
-import com.api.bkland.entity.UserDeviceToken;
-import com.api.bkland.payload.request.notify.Notification;
-import com.api.bkland.payload.request.notify.NotifyRequest;
-import com.api.bkland.payload.response.BaseResponse;
-import com.api.bkland.payload.response.PushNotifyResponse;
-import com.api.bkland.repository.PriceFluctuationRepository;
 import com.api.bkland.repository.UserDeviceTokenRepository;
+import com.google.firebase.messaging.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import java.util.*;
 @Service
 public class NotifyService {
+    @Value("${app.domain}")
+    private String domain;
 
     @Autowired
     private UserDeviceTokenRepository userDeviceTokenRepository;
@@ -34,83 +23,61 @@ public class NotifyService {
     @Autowired
     private RestTemplate restTemplate;
 
-
-    private static final String FIREBASE_FCM = "https://fcm.googleapis.com/fcm/send";
-
-    private static final String FCM_KEY = "AAAAQHd6Jxs:APA91bGAxydZmPaHEfVY7ZM8kh_k6engPxiYImUjZ37B96AfIFH9sW5IheYnjrdzu5DZ76rB2ML8Ul-RI_Ufr3xGOXU7gowMrH0SPMblAHb_RsqSk9C-CNB4AzN1jPosu1k6gZBgQr_w";
+    @Autowired
+    private FirebaseMessaging fcm;
 
     private Logger logger = LoggerFactory.getLogger(NotifyService.class);
+
     public void notifyToAllUsers(String message) {
-        List<PushNotifyResponse> pushNotifyResponses = new ArrayList<>();
-        List<UserDeviceToken> userDeviceTokens = userDeviceTokenRepository
-                .findAll()
-                .stream()
-                .filter(e -> e.isEnable() && !e.isLogout())
-                .collect(Collectors.toList());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "key="+FCM_KEY);
-        for (UserDeviceToken userDeviceToken :
-                userDeviceTokens) {
-            Notification notification = new Notification();
-            notification.setTitle("Bkland");
-            notification.setBody(message);
-            NotifyRequest notifyRequest = new NotifyRequest();
-            notifyRequest.setNotification(notification);
-            notifyRequest.setTo(userDeviceToken.getNotifyToken());
-            HttpEntity<?> request = new HttpEntity<>(notifyRequest, headers);
-            PushNotifyResponse pushNotifyResponse = restTemplate
-                    .postForObject(FIREBASE_FCM, request, PushNotifyResponse.class);
-            pushNotifyResponses.add(pushNotifyResponse);
-            logger.info("response: {}", pushNotifyResponse.toString());
-        }
+        logger.info("domain: {}", domain);
+        sendNotify(userDeviceTokenRepository.getAllAdminToken(), message, domain);
     }
 
-    public void notifyPriceFluctuation(String message, List<String> districtCodes) {
+    public void notifyPriceFluctuation(String message, List<String> districtCodes, Long postId) {
         Set<String> tokenSet = new HashSet<>();
         for (String districtCode: districtCodes) {
             List<String> tokens = userDeviceTokenRepository.getTokensByDistrict(districtCode);
             tokenSet.addAll(tokens);
         }
-        sendNotify(tokenSet.stream().toList(), message);
+        sendNotify(tokenSet.stream().toList(), message, domain + "tien-ich/tin-tuc/detail/" + postId);
     }
 
-    public void notifyAgencyREPUpdate(String message, String districtCode) {
+    public void notifyAgencyREPUpdate(String message, String districtCode, String postId, boolean isUpdate) {
         List<String> tokens = userDeviceTokenRepository.notifyAgencyREPUpdate(districtCode);
-        sendNotify(tokens, message);
+        sendNotify(tokens, message, isUpdate ? domain + "user/cooperate-agency/" + postId : domain + "home/" + postId);
     }
 
-    public void notifyAcceptRejectREP(String message, String userId) {
+    public void notifyAcceptRejectREP(String message, String userId, String postId, boolean isAccept) {
         List<String> tokens = userDeviceTokenRepository.notifyAcceptRejectREP(userId);
-        sendNotify(tokens, message);
+        sendNotify(tokens, message, isAccept ? domain + "home/" + postId : domain + "user/post/main/" + postId);
     }
 
     public void notifyInterested(String message, String postId) {
         List<String> tokens = userDeviceTokenRepository.notifyInterested(postId);
-        sendNotify(tokens, message);
+        sendNotify(tokens, message, domain + "user/focus/" + postId);
     }
 
-    public void notifyToAdmin(String message) {
+    public void notifyToAdmin(String message, String postId) {
         List<String> tokens = userDeviceTokenRepository.getAllAdminToken();
-        sendNotify(tokens, message);
+        sendNotify(tokens, message, domain + "admin/post/main/" + postId);
     }
 
     public void thongBaoChuaDongTien() {
         List<String> tokens = userDeviceTokenRepository.thongBaoChuaDongTien();
-        sendNotify(tokens, Message.THONG_BAO_CHUA_DONG_TIEN);
+        sendNotify(tokens, Message.THONG_BAO_CHUA_DONG_TIEN, domain + "user/balance/fluctuation");
     }
 
     public void thongBaoDenHanDongTien() {
         List<String> tokens = userDeviceTokenRepository.thongBaoDenHanDongTien();
-        sendNotify(tokens, Message.THONG_BAO_DEN_HAN_DONG_TIEN);
+        sendNotify(tokens, Message.THONG_BAO_DEN_HAN_DONG_TIEN, domain + "user/balance/fluctuation");
     }
 
-    public void thongBaoCoBaiDangNhoGiup(String agencyId) {
+    public void thongBaoCoBaiDangNhoGiup(String agencyId, String postId) {
         List<String> tokens = userDeviceTokenRepository.thongBaoCoBaiDangNhoGiup(agencyId);
-        sendNotify(tokens, Message.CO_BAI_DANG_MOI_NHO_GIUP);
+        sendNotify(tokens, Message.CO_BAI_DANG_MOI_NHO_GIUP, domain + "user/cooperate-agency/" + postId);
     }
 
-    public void thongBaoCapNhatTrangThaiBaiDang(String realEstatePostId, ERepAgencyStatus status) {
+    public void thongBaoCapNhatTrangThaiBaiDang(String realEstatePostId, ERepAgencyStatus status, String postId) {
         String message;
         if (status.equals(ERepAgencyStatus.DA_TU_CHOI)) {
             message = "Bài viết bạn nhờ môi giới giúp đỡ đã bị từ chối";
@@ -118,27 +85,41 @@ public class NotifyService {
             message = "Bài viết bạn nhờ môi giới giúp đỡ đã được chấp nhận";
         }
         List<String> tokens = userDeviceTokenRepository.thongBaoCapNhatTrangThaiBaiDang(realEstatePostId);
-        sendNotify(tokens, message);
+        sendNotify(tokens, message, domain + "user/post/main/" + postId);
     }
 
     public void thongBaoHoanThanhBaiDang(String message, String realEstatePostId) {
         List<String> tokens = userDeviceTokenRepository.thongBaoHoanThanhBaiDang(realEstatePostId);
-        sendNotify(tokens, message);
+        sendNotify(tokens, message, domain);
     }
 
-    private void sendNotify(List<String> tokens, String message) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "key="+FCM_KEY);
-        for (String token : tokens) {
-            Notification notification = new Notification();
-            notification.setTitle("Bkland");
-            notification.setBody(message);
-            NotifyRequest notifyRequest = new NotifyRequest();
-            notifyRequest.setNotification(notification);
-            notifyRequest.setTo(token);
-            HttpEntity<?> request = new HttpEntity<>(notifyRequest, headers);
-            restTemplate.postForObject(FIREBASE_FCM, request, PushNotifyResponse.class);
+    private void sendNotify(List<String> tokens, String message, String link) {
+        try {
+            for (String token : tokens) {
+                logger.info("token: {}", token);
+                WebpushConfig webpushConfig = WebpushConfig.builder()
+                        .setNotification(
+                                WebpushNotification.builder()
+                                        .setBody(message).build())
+                        .setFcmOptions(
+                                WebpushFcmOptions.builder()
+                                        .setLink(link).build())
+                        .build();
+
+                com.google.firebase.messaging.Message msg =
+                        com.google.firebase.messaging.Message.builder()
+                                .setToken(token)
+                                .setWebpushConfig(webpushConfig)
+                                .setNotification(
+                                        Notification.builder()
+                                                .setTitle("Bkland")
+                                                .setBody(message)
+                                                .build())
+                                .build();
+                fcm.send(msg);
+            }
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
         }
     }
 }

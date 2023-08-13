@@ -125,7 +125,7 @@ public class RealEstatePostAgencyController {
             }
             service.saveAll(realEstatePostAgencies);
             body.getAgencies().stream().forEach(e -> {
-                notifyService.thongBaoCoBaiDangNhoGiup(e);
+                notifyService.thongBaoCoBaiDangNhoGiup(e, body.getRealEstatePostId());
             });
             return ResponseEntity.ok(new BaseResponse(null, "Đã gửi yêu cầu nhờ giúp đỡ.", HttpStatus.OK));
         } catch (Exception e) {
@@ -156,7 +156,7 @@ public class RealEstatePostAgencyController {
             realEstatePostAgency.setUpdateBy(userDetails.getId());
             realEstatePostAgency.setUpdateAt(Util.getCurrentDateTime());
             Long response = service.updateStatus(realEstatePostAgency);
-            notifyService.thongBaoCapNhatTrangThaiBaiDang(realEstatePostAgency.getRealEstatePostId(), body.getStatus());
+            notifyService.thongBaoCapNhatTrangThaiBaiDang(realEstatePostAgency.getRealEstatePostId(), body.getStatus(), body.getRealEstatePostId());
             return ResponseEntity.ok(new BaseResponse(response, "Cập nhật trạng thái lời yêu cầu thành công.", HttpStatus.OK));
         } catch (Exception e) {
             return ResponseEntity.ok(new BaseResponse(
